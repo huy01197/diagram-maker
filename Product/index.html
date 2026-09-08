@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trạm Kiến Trúc Kỹ Thuật - Hệ Thống Đầu Tư Chứng Khoán</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #070a12;
+      --panel-bg: #0d121f;
+      --card-bg: #111728;
+      --card-border: #1b2438;
+      --border-accent: #2962ff;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --blue: #38bdf8;
+      --green: #34d399;
+      --red: #fb7185;
+      --amber: #fbbf24;
+      --purple: #c084fc;
+      --indigo: #818cf8;
+      --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'Geist Mono', monospace;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: var(--panel-bg);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-tag {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      background: #141c2e;
+      color: var(--blue);
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: 1px solid #1e2d4a;
+      letter-spacing: 0.08em;
+    }
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+    }
+    .top-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--green);
+      font-weight: 600;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
+    }
+    .nav-bar {
+      background: #090d17;
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 28px;
+      display: flex;
+      gap: 10px;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 14px 20px;
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.15s ease;
+    }
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .tab-btn.active {
+      color: var(--text-main);
+      border-bottom-color: #2962ff;
+      background: rgba(41, 98, 255, 0.08);
+    }
+    .tab-badge {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+      background: #141c2e;
+      color: var(--text-dim);
+    }
+    .tab-btn.active .tab-badge {
+      background: #2962ff;
+      color: #ffffff;
+    }
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 28px;
+    }
+    .frame-container {
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: #090d16;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+    .frame-toolbar {
+      background: #0d121f;
+      border-bottom: 1px solid var(--card-border);
+      padding: 10px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .frame-path {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--blue);
+      font-weight: 600;
+    }
+    .frame-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .action-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .action-btn:hover {
+      background: #192338;
+      color: var(--text-main);
+      border-color: #2962ff;
+    }
+    iframe {
+      width: 100%;
+      height: 1180px;
+      border: none;
+      background: #0a0e17;
+    }
+    .specs-grid {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .spec-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 16px 18px;
+    }
+    .spec-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .spec-card-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .spec-card-tag {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+      background: #141c2e;
+      color: var(--blue);
+    }
+    .spec-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .spec-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+    }
+    .spec-k {
+      color: var(--text-dim);
+      font-family: var(--font-sans);
+    }
+    .spec-v {
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-block">
+      <span class="brand-tag">CHUẨN ĐẦU CUỐI TÀI CHÍNH</span>
+      <span class="brand-title">Trạm Điều Phối Sơ Đồ Kiến Trúc Hệ Thống Đầu Tư Chứng Khoán</span>
+    </div>
+    <div class="top-meta">
+      <div class="status-indicator">
+        <span class="status-dot"></span>
+        <span>TOÀN BỘ SƠ ĐỒ ĐÃ SẴN SÀNG</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav-bar">
+    <button class="tab-btn active" onclick="switchDiagram('telegram-stock-bot-architecture.html', this)">
+      <span>TELEGRAM STOCK BOT</span>
+      <span class="tab-badge">5 TẦNG CLEAN</span>
+      <span class="tab-badge">CLOSED-LOOP INTERACTIVE</span>
+    </button>
+    <button class="tab-btn" onclick="switchDiagram('vietnam-stock-heatmap-architecture.html', this)">
+      <span>VIETNAM STOCK HEATMAP</span>
+      <span class="tab-badge">LUỒNG SIÊU TỐC &lt; 16MS</span>
+      <span class="tab-badge">STREAMING DUAL-RAIL &lt; 16MS</span>
+    </button>
+    <button class="tab-btn" onclick="switchDiagram('vietnamese-stock-analysis-architecture.html', this)">
+      <span>VIETNAMESE STOCK ANALYSIS</span>
+      <span class="tab-badge">LƯU TRỮ CỘT PARQUET</span>
+      <span class="tab-badge">MEDALLION PARQUET LAKE</span>
+    </button>
+  </nav>
+
+  <div class="content-area">
+    <div class="frame-container">
+      <div class="frame-toolbar">
+        <span class="frame-path" id="framePath">Product/telegram-stock-bot-architecture.html</span>
+        <div class="frame-actions">
+          <a class="action-btn" id="openTabBtn" href="telegram-stock-bot-architecture.html" target="_blank">MỞ TRONG TAB MỚI</a>
+          <button class="action-btn" onclick="reloadIframe()">NẠP LẠI SƠ ĐỒ</button>
+        </div>
+      </div>
+      <iframe id="diagramFrame" src="telegram-stock-bot-architecture.html"></iframe>
+    </div>
+
+    <div class="specs-grid">
+      <div class="spec-card">
+        <div class="spec-card-header">
+          <span class="spec-card-title">Telegram Stock Bot</span>
+          <span class="spec-card-tag">TÍN HIỆU ĐỊNH LƯỢNG</span>
+          <span class="spec-card-tag">CLOSED-LOOP PIPELINE</span>
+        </div>
+        <div class="spec-list">
+          <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Clean 5-Tier Event-Driven</span></div>
+          <div class="spec-item"><span class="spec-k">Nguồn tiếp nhận:</span><span class="spec-v">Direct DChart API / KBS ISS</span></div>
+          <div class="spec-item"><span class="spec-k">Cơ chế dự phòng:</span><span class="spec-v">CafeF Scraper + SQLite TTL</span></div>
+          <div class="spec-item"><span class="spec-k">Độ trễ phản hồi:</span><span class="spec-v">&lt; 0.40s (Khởi động 1.2s)</span></div>
+          <div class="spec-item"><span class="spec-k">Đồ thị nến Nhật:</span><span class="spec-v">RAM io.BytesIO (0.35s)</span></div>
+          <div class="spec-item"><span class="spec-k">Giao tiếp người dùng:</span><span class="spec-v">Telegram Bot API v20+ Async</span></div>
+          <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Closed-Loop 2 Chiều &amp; Quant Router</span></div>
+          <div class="spec-item"><span class="spec-k">Nguồn dữ liệu:</span><span class="spec-v">SSI &amp; TCBS DChart (Bypass WAF)</span></div>
+          <div class="spec-item"><span class="spec-k">Bộ đệm kép:</span><span class="spec-v">SQLite WAL Mode (TTL 15p - 24h)</span></div>
+          <div class="spec-item"><span class="spec-k">Bảo mật &amp; Rate:</span><span class="spec-v">Token Bucket Per-User Anti-Spam</span></div>
+          <div class="spec-item"><span class="spec-k">Lõi định lượng:</span><span class="spec-v">CANSLIM Scoring 100 &amp; Pocket Pivot</span></div>
+          <div class="spec-item"><span class="spec-k">Trực quan hóa:</span><span class="spec-v">Mini Candlestick 4 Panel (send_photo)</span></div>
+        </div>
+      </div>
+
+      <div class="spec-card">
+        <div class="spec-card-header">
+          <span class="spec-card-title">Vietnam Stock Heatmap</span>
+          <span class="spec-card-tag">STREAMING TOPOLOGY</span>
+        </div>
+        <div class="spec-list">
+          <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Streaming Fan-In &amp; Dual-Rail</span></div>
+          <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Streaming Fan-In &amp; Dual-Rail Highway</span></div>
+          <div class="spec-item"><span class="spec-k">Nguồn tiếp nhận:</span><span class="spec-v">SignalR 2.500+ tick/s &amp; RSA Vault</span></div>
+          <div class="spec-item"><span class="spec-k">Bộ nhớ đệm:</span><span class="spec-v">In-Memory RAM Store O(1) &lt; 0.12ms</span></div>
+          <div class="spec-item"><span class="spec-k">Cơ chế kép:</span><span class="spec-v">WebSocket 60 FPS + Polling 2.5s</span></div>
+          <div class="spec-item"><span class="spec-k">Cơ chế kép:</span><span class="spec-v">WebSocket 60 FPS + Polling Live 2.5s</span></div>
+          <div class="spec-item"><span class="spec-k">Phân loại ngành:</span><span class="spec-v">15 VS-Sector &amp; 5 cấp màu biên độ</span></div>
+          <div class="spec-item"><span class="spec-k">Giao diện trực quan:</span><span class="spec-v">ECharts 5.4 Treemap Mini-Canvas</span></div>
+          <div class="spec-item"><span class="spec-k">Trực quan hóa:</span><span class="spec-v">ECharts 5.4 Treemap Mini-Canvas</span></div>
+        </div>
+      </div>
+
+      <div class="spec-card">
+        <div class="spec-card-header">
+          <span class="spec-card-title">Vietnamese Stock Analysis</span>
+          <span class="spec-card-tag">ĐƯỜNG ỐNG ETL CỘT</span>
+          <span class="spec-card-tag">MEDALLION LAKEHOUSE</span>
+        </div>
+        <div class="spec-list">
+          <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Columnar ETL &amp; Multi-Pane Terminal</span></div>
+          <div class="spec-item"><span class="spec-k">Nguồn tiếp nhận:</span><span class="spec-v">CafeF Upto ZIP / CSV Hàng ngày</span></div>
+          <div class="spec-item"><span class="spec-k">Lưu trữ cột:</span><span class="spec-v">Apache Parquet (Chuẩn nén Snappy)</span></div>
+          <div class="spec-item"><span class="spec-k">Độ trễ truy vấn:</span><span class="spec-v">&lt; 250ms cho 1.500+ mã niêm yết</span></div>
+          <div class="spec-item"><span class="spec-k">Lõi định lượng:</span><span class="spec-v">SMA/EMA, Bollinger, RSI, MACD</span></div>
+          <div class="spec-item"><span class="spec-k">Giao diện trực quan:</span><span class="spec-v">Streamlit &amp; Plotly 4 Tầng Độc Lập</span></div>
+          <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Medallion Bronze &rarr; Platinum Lake</span></div>
+          <div class="spec-item"><span class="spec-k">Dữ liệu thô:</span><span class="spec-v">10+ năm CafeF ZIP (1.500+ mã CP)</span></div>
+          <div class="spec-item"><span class="spec-k">Lưu trữ cột:</span><span class="spec-v">Snappy Parquet (-85% Disk, Đọc 10x)</span></div>
+          <div class="spec-item"><span class="spec-k">Truy vấn cột:</span><span class="spec-v">DuckDB / PyArrow mmap &lt; 250ms</span></div>
+          <div class="spec-item"><span class="spec-k">Lõi định lượng:</span><span class="spec-v">Vectorized (SMA, MACD, RSI, ATR)</span></div>
+          <div class="spec-item"><span class="spec-k">Trực quan hóa:</span><span class="spec-v">Streamlit &amp; Plotly WebGL 4 Panes</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchDiagram(fileUrl, btnElement) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btnElement.classList.add('active');
+      const frame = document.getElementById('diagramFrame');
+      frame.src = fileUrl;
+      document.getElementById('framePath').innerText = 'Product/' + fileUrl;
+      document.getElementById('openTabBtn').href = fileUrl;
+    }
+
+    function reloadIframe() {
+      const frame = document.getElementById('diagramFrame');
+      frame.src = frame.src;
+    }
+  </script>
+
+</body>
+</html>

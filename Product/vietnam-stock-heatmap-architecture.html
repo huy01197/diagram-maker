@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vietnam Stock Heatmap - Kiến Trúc Streaming Topology &amp; Đường Ray Kép</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #070a12;
+      --card-bg: #0c121e;
+      --border-base: #1b253b;
+      --text-main: #e2e8f0;
+      --text-muted: #8b9bb4;
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #089981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #a855f7;
+      --accent-rose: #f23645;
+      --accent-blue: #2962ff;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "Geist Mono", "SF Mono", Menlo, Consolas, monospace;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+    .container {
+      width: 100%;
+      max-width: 1360px;
+    }
+    .header {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid var(--border-base);
+      padding-bottom: 14px;
+    }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .title {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+    }
+    .metrics-group {
+      display: flex;
+      gap: 8px;
+    }
+    .metric-pill {
+      background: #0f172a;
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      padding: 5px 12px;
+      text-align: right;
+    }
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 8.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+    .metric-val.emerald { color: #34d399; }
+    .metric-val.amber { color: #fbbf24; }
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--border-base);
+      border-radius: 8px;
+      background: #080c16;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <div>
+        <div class="eyebrow">STREAMING TOPOLOGY · DUAL-RAIL EVENT PIPELINE</div>
+        <div class="title">Vietnam Stock Heatmap - Kiến Trúc Luồng Streaming &amp; Phân Bổ Thị Trường</div>
+      </div>
+      <div class="metrics-group">
+        <div class="metric-pill">
+          <div class="metric-label">ĐỘ TRỄ TICK KHỚP</div>
+          <div class="metric-val emerald">&lt; 16 ms (60 FPS)</div>
+        </div>
+        <div class="metric-pill">
+          <div class="metric-label">THÔNG LƯỢNG STREAM</div>
+          <div class="metric-val">2.500+ Tick/Giây</div>
+        </div>
+        <div class="metric-pill">
+          <div class="metric-label">TRUY VẤN RAM STORE</div>
+          <div class="metric-val">O(1) &lt; 0.12 ms</div>
+        </div>
+        <div class="metric-pill">
+          <div class="metric-label">TRUYỀN DẪN KÉP</div>
+          <div class="metric-val amber">WebSocket + REST</div>
+        </div>
+      </div>
+    </div>
+
+    <svg viewBox="0 0 1320 915" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="dotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.1" fill="#1b253b" opacity="0.7" />
+        </pattern>
+        <!-- Arrowhead markers with optimal refX and dimension for ultra-clean entry -->
+        <marker id="arr-cyan" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <polygon points="0 0, 8 4, 0 8" fill="#06b6d4" />
+        </marker>
+        <marker id="arr-emerald" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <polygon points="0 0, 8 4, 0 8" fill="#089981" />
+        </marker>
+        <marker id="arr-amber" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <polygon points="0 0, 8 4, 0 8" fill="#f59e0b" />
+        </marker>
+        <marker id="arr-purple" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <polygon points="0 0, 8 4, 0 8" fill="#a855f7" />
+        </marker>
+        <marker id="arr-blue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <polygon points="0 0, 8 4, 0 8" fill="#2962ff" />
+        </marker>
+        <marker id="arr-muted" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <polygon points="0 0, 8 4, 0 8" fill="#64748b" />
+        </marker>
+
+        <!-- Glow filter for primary real-time stream -->
+        <filter id="streamGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+      </defs>
+
+      <!-- Background Dot Grid (Clean layer without sector background boxes) -->
+      <rect width="1320" height="915" fill="#080c16" />
+      <rect width="1320" height="915" fill="url(#dotGrid)" />
+
+      <!-- Minimal Column Zone Labels (Pure typography, no bulky background boxes) -->
+      <g>
+        <text x="150" y="32" fill="#64748b" font-size="9.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle" letter-spacing="0.14em">1. NGUỒN TIẾP NHẬN &amp; BẢO MẬT</text>
+        <text x="580" y="32" fill="#38bdf8" font-size="9.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle" letter-spacing="0.14em">2. LÕI HỘI TỤ FAN-IN &amp; BỘ NHỚ RAM O(1)</text>
+        <text x="1115" y="32" fill="#34d399" font-size="9.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle" letter-spacing="0.14em">3. TRẠM TRÌNH CHIẾU CLIENT &amp; TRỰC QUAN</text>
+      </g>
+
+      <!-- ================================================================= -->
+      <!-- CONNECTOR PATHS EMITTED FIRST (CLEAR Z-INDEX & NO OBSCURATION)   -->
+      <!-- ================================================================= -->
+
+      <!-- INGRESS TO CORE (CORRIDOR X: 260 -> 360, WIDTH = 100px) -->
+      <!-- Stream 1: SignalR Live Stream -> Fan-In Queue -->
+      <path d="M 260 115 C 295 115, 320 115, 360 115" fill="none" stroke="#06b6d4" stroke-width="2" marker-end="url(#arr-cyan)" />
+      
+      <!-- Stream 2: RSA Token Vault -> Fan-in Auth -->
+      <path d="M 260 315 C 300 315, 315 140, 360 140" fill="none" stroke="#a855f7" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arr-purple)" />
+      
+      <!-- Stream 2b: RSA Token Vault -> RAM Store State Init -->
+      <path d="M 260 330 C 300 330, 320 310, 360 310" fill="none" stroke="#a855f7" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arr-purple)" />
+
+      <!-- Stream 3: Snapshot Cold Start Scanner -> RAM Store Base -->
+      <path d="M 260 540 C 305 540, 320 345, 360 345" fill="none" stroke="#f59e0b" stroke-width="1.6" marker-end="url(#arr-amber)" />
+
+      <!-- VERTICAL FLOWS INSIDE CORE (AMPLIFIED GAPS = 50px) -->
+      <!-- Fan-In Queue (Y: 45..180) -> RAM Store (Y: 230..395) -->
+      <path d="M 580 180 L 580 230" fill="none" stroke="#38bdf8" stroke-width="2.4" marker-end="url(#arr-cyan)" />
+
+      <!-- RAM Store (Y: 230..395) -> VS-Sector Aggregator (Y: 445..620) -->
+      <path d="M 580 395 L 580 445" fill="none" stroke="#089981" stroke-width="2.4" marker-end="url(#arr-emerald)" />
+
+      <!-- DUAL-RAIL HIGHWAY (CORRIDOR X: 800 -> 940, WIDTH = 140px) -->
+
+      <!-- PRIMARY HIGHWAY (EMERALD GREEN): WebSocket Push vi sai delta 60 FPS -->
+      <!-- Departs RAM Store at (800, 290) -> Arrives at aiohttp Hub at (940, 105) -->
+      <path d="M 800 290 C 855 290, 885 105, 940 105" fill="none" stroke="#089981" stroke-width="2.6" filter="url(#streamGlow)" marker-end="url(#arr-emerald)" />
+
+      <!-- FAILOVER HIGHWAY (AMBER DASHED): Polling Live Fallback 2.5s -->
+      <!-- Departs RAM Store at (800, 355) -> Arrives at Polling Live Hub at (940, 615) -->
+      <path d="M 800 355 C 855 355, 885 615, 940 615" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#arr-amber)" />
+
+      <!-- VS-Sector Data -> Drawer Inspector Sync -->
+      <path d="M 800 550 C 850 550, 885 660, 940 660" fill="none" stroke="#64748b" stroke-width="1.4" marker-end="url(#arr-muted)" />
+
+      <!-- VERTICAL FLOWS IN CLIENT RUNTIME (SPACIOUS 65px GAPS!) -->
+      <!-- Gap 1: aiohttp Hub (bottom Y: 165) -> ECharts Treemap (top Y: 230) -->
+      <path d="M 1115 165 L 1115 230" fill="none" stroke="#089981" stroke-width="2.6" marker-end="url(#arr-emerald)" />
+      
+      <!-- Gap 2: Polling Live Hub (top Y: 565) -> ECharts Treemap (bottom Y: 500) -->
+      <path d="M 1115 565 L 1115 500" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#arr-amber)" />
+
+
+      <!-- ================================================================= -->
+      <!-- SECTOR PHỤ (REPOSITIONED AUXILIARY PILLS - 100% CLEAR OF ARROWS)  -->
+      <!-- ================================================================= -->
+
+      <!-- Auxiliary Sector Pill 1: < 16MS LIVE -->
+      <!-- Positioned comfortably ABOVE the emerald curve at (825, 140), completely avoiding line & arrow -->
+      <g transform="translate(820, 140)">
+        <rect x="0" y="0" width="96" height="26" rx="5" fill="#06221c" stroke="#089981" stroke-width="1.2" />
+        <circle cx="12" cy="13" r="3.5" fill="#34d399" />
+        <text x="52" y="17" fill="#34d399" font-size="9" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">&lt; 16MS LIVE</text>
+        <text x="48" y="-6" fill="#6ee7b7" font-size="7.5" font-family="var(--font-mono)" text-anchor="middle">PRIMARY STREAM</text>
+      </g>
+
+      <!-- Auxiliary Sector Pill 2: REST 2.5S -->
+      <!-- Positioned comfortably ABOVE the amber curve at (822, 455), completely avoiding line & arrow -->
+      <g transform="translate(820, 455)">
+        <rect x="0" y="0" width="96" height="26" rx="5" fill="#24170a" stroke="#f59e0b" stroke-width="1.2" />
+        <circle cx="12" cy="13" r="3.5" fill="#fbbf24" />
+        <text x="52" y="17" fill="#fbbf24" font-size="9" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">REST 2.5S</text>
+        <text x="48" y="-6" fill="#fde68a" font-size="7.5" font-family="var(--font-mono)" text-anchor="middle">FAILOVER POLLING</text>
+      </g>
+
+
+      <!-- ================================================================= -->
+      <!-- COLUMN 1: INGRESS NODES (X = 40, W = 220)                         -->
+      <!-- ================================================================= -->
+
+      <!-- Node 1.1: SignalR Live Stream Ingress -->
+      <g>
+        <rect x="40" y="45" width="220" height="130" rx="6" fill="#0d1525" stroke="#06b6d4" stroke-width="1.4" />
+        <rect x="48" y="53" width="76" height="15" rx="3" fill="#06b6d4" fill-opacity="0.15" />
+        <text x="86" y="64" fill="#06b6d4" font-size="8.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">SIGNALR HUB</text>
+        
+        <text x="48" y="86" fill="#ffffff" font-size="12" font-family="var(--font-sans)" font-weight="700">SSI FastConnect</text>
+        
+        <rect x="48" y="95" width="204" height="22" rx="3" fill="#111827" />
+        <text x="54" y="110" fill="#94a3b8" font-size="9.5" font-family="var(--font-sans)"><tspan fill="#38bdf8" font-family="var(--font-mono)">1.</tspan> Lắng nghe kênh X:ALL, MI:ALL</text>
+        
+        <rect x="48" y="121" width="204" height="22" rx="3" fill="#111827" />
+        <text x="54" y="136" fill="#94a3b8" font-size="9.5" font-family="var(--font-sans)"><tspan fill="#38bdf8" font-family="var(--font-mono)">2.</tspan> Tần suất &gt; 2.500 tick / giây</text>
+
+        <rect x="48" y="148" width="204" height="18" rx="3" fill="#06b6d4" fill-opacity="0.12" />
+        <text x="150" y="160" fill="#38bdf8" font-size="8.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle">STREAMING TICK CHỦ ĐỘNG</text>
+      </g>
+
+      <!-- Node 1.2: RSA Security & Auth Vault -->
+      <g>
+        <rect x="40" y="245" width="220" height="145" rx="6" fill="#0d1525" stroke="#a855f7" stroke-width="1.4" />
+        <rect x="48" y="253" width="70" height="15" rx="3" fill="#a855f7" fill-opacity="0.15" />
+        <text x="83" y="264" fill="#c084fc" font-size="8.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">BẢO MẬT RSA</text>
+        
+        <text x="48" y="286" fill="#ffffff" font-size="12" font-family="var(--font-sans)" font-weight="700">Khóa Ký Số &amp; JWT</text>
+        
+        <rect x="48" y="295" width="204" height="22" rx="3" fill="#111827" />
+        <text x="54" y="310" fill="#94a3b8" font-size="9.5" font-family="var(--font-sans)"><tspan fill="#c084fc" font-family="var(--font-mono)">1.</tspan> Đọc config.json &amp; PrivateKey</text>
+        
+        <rect x="48" y="321" width="204" height="22" rx="3" fill="#111827" />
+        <text x="54" y="336" fill="#94a3b8" font-size="9.5" font-family="var(--font-sans)"><tspan fill="#c084fc" font-family="var(--font-mono)">2.</tspan> Ký số chuẩn hóa SHA-256</text>
+
+        <rect x="48" y="347" width="204" height="22" rx="3" fill="#111827" />
+        <text x="54" y="362" fill="#94a3b8" font-size="9.5" font-family="var(--font-sans)"><tspan fill="#c084fc" font-family="var(--font-mono)">3.</tspan> Tự động cấp &amp; gia hạn Token</text>
+
+        <rect x="48" y="374" width="204" height="8" rx="2" fill="#a855f7" fill-opacity="0.25" />
+      </g>
+
+      <!-- Node 1.3: Snapshot Cold Start & Holiday Recovery -->
+      <g>
+        <rect x="40" y="465" width="220" height="145" rx="6" fill="#0d1525" stroke="#f59e0b" stroke-width="1.4" />
+        <rect x="48" y="473" width="76" height="15" rx="3" fill="#f59e0b" fill-opacity="0.15" />
+        <text x="86" y="484" fill="#fbbf24" font-size="8.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">KHỞI TẠO 0MS</text>
+        
+        <text x="48" y="506" fill="#ffffff" font-size="12" font-family="var(--font-sans)" font-weight="700">Quét Lùi 10 Ngày</text>
+        
+        <rect x="48" y="515" width="204" height="22" rx="3" fill="#111827" />
+        <text x="54" y="530" fill="#94a3b8" font-size="9.5" font-family="var(--font-sans)"><tspan fill="#fbbf24" font-family="var(--font-mono)">1.</tspan> Quét lùi tránh ngày nghỉ lễ</text>
+        
+        <rect x="48" y="541" width="204" height="22" rx="3" fill="#111827" />
+        <text x="54" y="556" fill="#94a3b8" font-size="9.5" font-family="var(--font-sans)"><tspan fill="#fbbf24" font-family="var(--font-mono)">2.</tspan> Tải snapshot giá tham chiếu</text>
+
+        <rect x="48" y="567" width="204" height="22" rx="3" fill="#111827" />
+        <text x="54" y="582" fill="#94a3b8" font-size="9.5" font-family="var(--font-sans)"><tspan fill="#fbbf24" font-family="var(--font-mono)">3.</tspan> Dự phòng VNDirect finfo API</text>
+
+        <rect x="48" y="594" width="204" height="8" rx="2" fill="#f59e0b" fill-opacity="0.25" />
+      </g>
+
+
+      <!-- ================================================================= -->
+      <!-- COLUMN 2: ULTRA-FAST CORE NODES (X = 360, W = 440)                -->
+      <!-- ================================================================= -->
+
+      <!-- Node 2.1: Fan-In Queue & Packet Decoder -->
+      <g>
+        <rect x="360" y="45" width="440" height="135" rx="6" fill="#0d1525" stroke="#06b6d4" stroke-width="1.4" />
+        <rect x="372" y="53" width="95" height="15" rx="3" fill="#06b6d4" fill-opacity="0.15" />
+        <text x="419" y="64" fill="#06b6d4" font-size="8.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">FAN-IN WORKER</text>
+        
+        <text x="372" y="86" fill="#ffffff" font-size="13" font-family="var(--font-sans)" font-weight="700">Phễu Thu Gom &amp; Giải Mã Tick Tốc Độ Cao</text>
+        
+        <!-- Funnel slots representation -->
+        <g transform="translate(372, 95)">
+          <rect x="0" y="0" width="134" height="44" rx="4" fill="#111827" stroke="#1f293d" />
+          <text x="67" y="17" fill="#38bdf8" font-size="9" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">GÓI TIN X (KHỚP)</text>
+          <text x="67" y="34" fill="#94a3b8" font-size="8.5" font-family="var(--font-sans)" text-anchor="middle">Giá khớp, Vol, Mua/bán</text>
+
+          <rect x="141" y="0" width="134" height="44" rx="4" fill="#111827" stroke="#1f293d" />
+          <text x="208" y="17" fill="#a855f7" font-size="9" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">GÓI TIN MI (CHỈ SỐ)</text>
+          <text x="208" y="34" fill="#94a3b8" font-size="8.5" font-family="var(--font-sans)" text-anchor="middle">VN-Index, VN30, HNX30</text>
+
+          <rect x="282" y="0" width="134" height="44" rx="4" fill="#111827" stroke="#1f293d" />
+          <text x="349" y="17" fill="#34d399" font-size="9" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">TÍNH % BIẾN ĐỘNG</text>
+          <text x="349" y="34" fill="#94a3b8" font-size="8.5" font-family="var(--font-sans)" text-anchor="middle">So sánh giá Ref Snapshot</text>
+        </g>
+
+        <rect x="372" y="150" width="416" height="20" rx="3" fill="#06b6d4" fill-opacity="0.12" />
+        <text x="580" y="163" fill="#38bdf8" font-size="8.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle">DECODE REAL-TIME TRONG LUỒNG ASYNC &lt; 0.05MS</text>
+      </g>
+
+      <!-- Node 2.2: In-Memory RAM Store with Mutex Lock (Centerpiece) -->
+      <g>
+        <rect x="360" y="230" width="440" height="165" rx="6" fill="#0d182b" stroke="#38bdf8" stroke-width="1.8" />
+        <rect x="372" y="238" width="115" height="15" rx="3" fill="#38bdf8" fill-opacity="0.2" />
+        <text x="429" y="249" fill="#38bdf8" font-size="8.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">IN-MEMORY STORE</text>
+        
+        <text x="372" y="271" fill="#ffffff" font-size="14" font-family="var(--font-sans)" font-weight="700">Kho Dữ Liệu RAM O(1) &amp; Khóa An Toàn Mutex</text>
+        
+        <rect x="372" y="282" width="416" height="25" rx="4" fill="#111e33" />
+        <text x="382" y="298" fill="#e2e8f0" font-size="10" font-family="var(--font-sans)"><tspan fill="#38bdf8" font-family="var(--font-mono)" font-weight="700">HASH-MAP O(1):</tspan> Quản lý tức thời trạng thái hơn 700 mã cổ phiếu 3 sàn</text>
+        
+        <rect x="372" y="312" width="416" height="25" rx="4" fill="#111e33" />
+        <text x="382" y="328" fill="#e2e8f0" font-size="10" font-family="var(--font-sans)"><tspan fill="#38bdf8" font-family="var(--font-mono)" font-weight="700">MUTEX LOCK:</tspan> Khóa Thread-safe ngăn chặn race condition giữa nạp và đọc</text>
+
+        <rect x="372" y="342" width="416" height="25" rx="4" fill="#111e33" />
+        <text x="382" y="358" fill="#e2e8f0" font-size="10" font-family="var(--font-sans)"><tspan fill="#38bdf8" font-family="var(--font-mono)" font-weight="700">ZERO DISK I/O:</tspan> Hoàn toàn không ghi đĩa trong phiên, loại bỏ nghẽn I/O</text>
+
+        <rect x="372" y="373" width="416" height="12" rx="2" fill="#38bdf8" fill-opacity="0.2" />
+      </g>
+
+      <!-- Node 2.3: 15 VS-Sector Classifier & Breadth Counter -->
+      <g>
+        <rect x="360" y="445" width="440" height="175" rx="6" fill="#0d1525" stroke="#089981" stroke-width="1.4" />
+        <rect x="372" y="453" width="105" height="15" rx="3" fill="#089981" fill-opacity="0.15" />
+        <text x="424" y="464" fill="#34d399" font-size="8.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">VS-SECTOR CORE</text>
+        
+        <text x="372" y="486" fill="#ffffff" font-size="13" font-family="var(--font-sans)" font-weight="700">Phân Loại 15 Nhóm Ngành &amp; Thước Đo Độ Rộng</text>
+        
+        <!-- Sector chips visual representation -->
+        <g transform="translate(372, 495)">
+          <rect x="0" y="0" width="78" height="21" rx="3" fill="#1e293b" />
+          <text x="39" y="14" fill="#94a3b8" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">Ngân Hàng</text>
+
+          <rect x="84" y="0" width="78" height="21" rx="3" fill="#1e293b" />
+          <text x="123" y="14" fill="#94a3b8" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">Bất Động Sản</text>
+
+          <rect x="168" y="0" width="78" height="21" rx="3" fill="#1e293b" />
+          <text x="207" y="14" fill="#94a3b8" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">Thép - VLXD</text>
+
+          <rect x="252" y="0" width="78" height="21" rx="3" fill="#1e293b" />
+          <text x="291" y="14" fill="#94a3b8" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">Chứng Khoán</text>
+
+          <rect x="336" y="0" width="80" height="21" rx="3" fill="#1e293b" />
+          <text x="376" y="14" fill="#94a3b8" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">+11 Ngành Khác</text>
+        </g>
+
+        <!-- 5-Color Spectrum Bar -->
+        <g transform="translate(372, 524)">
+          <rect x="0" y="0" width="83" height="20" rx="2" fill="#c084fc" fill-opacity="0.35" stroke="#a855f7" stroke-width="0.8" />
+          <text x="41" y="13" fill="#e9d5ff" font-size="8" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">TRẦN (+6.9%)</text>
+
+          <rect x="83" y="0" width="83" height="20" rx="2" fill="#089981" fill-opacity="0.35" stroke="#089981" stroke-width="0.8" />
+          <text x="124" y="13" fill="#a7f3d0" font-size="8" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">TĂNG GIÁ</text>
+
+          <rect x="166" y="0" width="83" height="20" rx="2" fill="#f59e0b" fill-opacity="0.35" stroke="#f59e0b" stroke-width="0.8" />
+          <text x="207" y="13" fill="#fde68a" font-size="8" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">THAM CHIẾU</text>
+
+          <rect x="249" y="0" width="83" height="20" rx="2" fill="#f23645" fill-opacity="0.35" stroke="#f23645" stroke-width="0.8" />
+          <text x="290" y="13" fill="#fecdd3" font-size="8" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">GIẢM GIÁ</text>
+
+          <rect x="332" y="0" width="84" height="20" rx="2" fill="#06b6d4" fill-opacity="0.35" stroke="#06b6d4" stroke-width="0.8" />
+          <text x="374" y="13" fill="#cffafe" font-size="8" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">SÀN (-6.9%)</text>
+        </g>
+
+        <rect x="372" y="552" width="416" height="58" rx="4" fill="#111827" />
+        <text x="382" y="570" fill="#94a3b8" font-size="9" font-family="var(--font-sans)">• Tính toán tỷ trọng diện tích dựa trên Giá trị giao dịch (Turnover Value)</text>
+        <text x="382" y="588" fill="#94a3b8" font-size="9" font-family="var(--font-sans)">• Thống kê phân bổ dòng tiền độ rộng thị trường: Số mã Trần/Tăng/TC/Giảm/Sàn</text>
+        <text x="382" y="604" fill="#94a3b8" font-size="9" font-family="var(--font-sans)">• Tự động sắp xếp Top ngành thanh khoản cao nhất toàn thị trường</text>
+      </g>
+
+
+      <!-- ================================================================= -->
+      <!-- COLUMN 3: PRESENTATION RUNTIME (X = 940, W = 350)                 -->
+      <!-- ================================================================= -->
+
+      <!-- Node 3.1: aiohttp Web Server & WebSocket Hub (Y: 45, H: 120) -->
+      <g>
+        <rect x="940" y="45" width="350" height="120" rx="6" fill="#0d1525" stroke="#089981" stroke-width="1.6" />
+        <rect x="952" y="53" width="125" height="15" rx="3" fill="#089981" fill-opacity="0.2" />
+        <text x="1014" y="64" fill="#34d399" font-size="8.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">FASTCONNECT LIVE HUB</text>
+        
+        <text x="952" y="84" fill="#ffffff" font-size="12.5" font-family="var(--font-sans)" font-weight="700">Máy Chủ aiohttp &amp; WebSocket /ws</text>
+        
+        <rect x="952" y="93" width="326" height="20" rx="3" fill="#111827" />
+        <text x="960" y="107" fill="#94a3b8" font-size="9.5" font-family="var(--font-sans)"><tspan fill="#34d399" font-family="var(--font-mono)">1.</tspan> Cổng 8050: Tự động giải phóng cổng cũ (1-Click Play)</text>
+        
+        <rect x="952" y="117" width="326" height="20" rx="3" fill="#111827" />
+        <text x="960" y="131" fill="#94a3b8" font-size="9.5" font-family="var(--font-sans)"><tspan fill="#34d399" font-family="var(--font-mono)">2.</tspan> Đẩy gói tin vi sai delta 60 FPS về toàn bộ client</text>
+
+        <rect x="952" y="141" width="326" height="18" rx="3" fill="#089981" fill-opacity="0.12" />
+        <text x="1115" y="153" fill="#34d399" font-size="8.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle">THOÁT TỨC THỜI CTRL+C SIGINT TRONG 0.05S</text>
+      </g>
+
+      <!-- Node 3.2: ECharts 5.4 Treemap Visual Canvas (Y: 230, H: 270) -->
+      <!-- Generous 65px spacing above & below! -->
+      <g>
+        <rect x="940" y="230" width="350" height="270" rx="6" fill="#0b1320" stroke="#38bdf8" stroke-width="1.8" />
+        <rect x="952" y="238" width="130" height="15" rx="3" fill="#38bdf8" fill-opacity="0.2" />
+        <text x="1017" y="249" fill="#38bdf8" font-size="8.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">ECHARTS 5.4 CANVAS</text>
+        
+        <text x="952" y="270" fill="#ffffff" font-size="13" font-family="var(--font-sans)" font-weight="700">Giao Diện Bản Đồ Nhiệt Toàn Cảnh (Treemap)</text>
+        
+        <!-- VISUAL MINI-TREEMAP DISPLAY -->
+        <g transform="translate(952, 280)">
+          <!-- Sector 1: Ngân Hàng (Left box) -->
+          <g>
+            <rect x="0" y="0" width="155" height="110" rx="3" fill="#0c231e" stroke="#089981" stroke-width="1.2" />
+            <rect x="4" y="4" width="62" height="14" rx="2" fill="#089981" fill-opacity="0.3" />
+            <text x="35" y="14" fill="#34d399" font-size="7.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">NGÂN HÀNG</text>
+
+            <rect x="4" y="22" width="71" height="50" rx="2" fill="#089981" fill-opacity="0.85" />
+            <text x="39" y="44" fill="#ffffff" font-size="10" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">VCB</text>
+            <text x="39" y="58" fill="#e2e8f0" font-size="8" font-family="var(--font-mono)" text-anchor="middle">+3.2%</text>
+
+            <rect x="79" y="22" width="72" height="50" rx="2" fill="#089981" fill-opacity="0.55" />
+            <text x="115" y="44" fill="#ffffff" font-size="10" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">BID</text>
+            <text x="115" y="58" fill="#e2e8f0" font-size="8" font-family="var(--font-mono)" text-anchor="middle">+1.8%</text>
+
+            <rect x="4" y="76" width="71" height="30" rx="2" fill="#a855f7" fill-opacity="0.75" />
+            <text x="39" y="94" fill="#ffffff" font-size="8.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">CTG (Trần)</text>
+
+            <rect x="79" y="76" width="72" height="30" rx="2" fill="#f59e0b" fill-opacity="0.6" />
+            <text x="115" y="94" fill="#ffffff" font-size="8.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">TCB (TC)</text>
+          </g>
+
+          <!-- Sector 2: Bất Động Sản (Middle box) -->
+          <g transform="translate(160, 0)">
+            <rect x="0" y="0" width="100" height="110" rx="3" fill="#251216" stroke="#f23645" stroke-width="1.2" />
+            <rect x="4" y="4" width="70" height="14" rx="2" fill="#f23645" fill-opacity="0.3" />
+            <text x="39" y="14" fill="#f87171" font-size="7.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">BẤT ĐỘNG SẢN</text>
+
+            <rect x="4" y="22" width="92" height="46" rx="2" fill="#f23645" fill-opacity="0.75" />
+            <text x="50" y="42" fill="#ffffff" font-size="9.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">VHM</text>
+            <text x="50" y="56" fill="#fecdd3" font-size="8" font-family="var(--font-mono)" text-anchor="middle">-2.4%</text>
+
+            <rect x="4" y="72" width="92" height="34" rx="2" fill="#f23645" fill-opacity="0.5" />
+            <text x="50" y="92" fill="#ffffff" font-size="8.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">NVL -1.5%</text>
+          </g>
+
+          <!-- Sector 3: Thép & Chứng Khoán (Right column) -->
+          <g transform="translate(265, 0)">
+            <!-- Thép -->
+            <rect x="0" y="0" width="61" height="52" rx="3" fill="#0d1f2d" stroke="#38bdf8" stroke-width="1.2" />
+            <rect x="3" y="3" width="36" height="12" rx="2" fill="#38bdf8" fill-opacity="0.3" />
+            <text x="21" y="11" fill="#7dd3fc" font-size="6.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">THÉP</text>
+            <text x="30" y="33" fill="#ffffff" font-size="9" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">HPG</text>
+            <text x="30" y="45" fill="#34d399" font-size="7.5" font-family="var(--font-mono)" text-anchor="middle">+2.1%</text>
+
+            <!-- Chứng khoán -->
+            <g transform="translate(0, 56)">
+              <rect x="0" y="0" width="61" height="54" rx="3" fill="#1e1b2e" stroke="#c084fc" stroke-width="1.2" />
+              <rect x="3" y="3" width="55" height="12" rx="2" fill="#a855f7" fill-opacity="0.3" />
+              <text x="30" y="11" fill="#e9d5ff" font-size="6.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">CHỨNG KHOÁN</text>
+              <text x="30" y="35" fill="#ffffff" font-size="9" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">SSI</text>
+              <text x="30" y="47" fill="#34d399" font-size="7.5" font-family="var(--font-mono)" text-anchor="middle">+4.5%</text>
+            </g>
+          </g>
+        </g>
+
+        <!-- Technical notes below mini treemap -->
+        <rect x="952" y="400" width="326" height="88" rx="4" fill="#111827" />
+        <text x="962" y="418" fill="#94a3b8" font-size="9" font-family="var(--font-sans)">• Hook ZRender Centroid: Căn giữa nhãn cổ phiếu trong ô</text>
+        <text x="962" y="436" fill="#94a3b8" font-size="9" font-family="var(--font-sans)">• Tự động ẩn text khi ô &lt; 38px để chống tràn diện tích</text>
+        <text x="962" y="454" fill="#94a3b8" font-size="9" font-family="var(--font-sans)">• Hiệu ứng Flash Update chớp sáng khi có tick mới (&lt; 16ms)</text>
+        <text x="962" y="472" fill="#94a3b8" font-size="9" font-family="var(--font-sans)">• Thước đo độ rộng 3 màu: Trần/Tăng, Tham chiếu, Giảm/Sàn</text>
+      </g>
+
+      <!-- Node 3.3: Polling Fallback & Inspector Drawer (Y: 565, H: 135) -->
+      <!-- Generous 65px spacing above! -->
+      <g>
+        <rect x="940" y="565" width="350" height="135" rx="6" fill="#0d1525" stroke="#f59e0b" stroke-width="1.4" />
+        <rect x="952" y="573" width="135" height="15" rx="3" fill="#f59e0b" fill-opacity="0.15" />
+        <text x="1019" y="584" fill="#fbbf24" font-size="8.5" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">FAILOVER &amp; INSPECTOR</text>
+        
+        <text x="952" y="605" fill="#ffffff" font-size="12.5" font-family="var(--font-sans)" font-weight="700">Chế Độ Polling Live &amp; Bảng Soi Thông Số</text>
+        
+        <rect x="952" y="615" width="326" height="22" rx="3" fill="#111827" />
+        <text x="960" y="630" fill="#94a3b8" font-size="9.5" font-family="var(--font-sans)"><tspan fill="#fbbf24" font-family="var(--font-mono)">1.</tspan> Tự chuyển POLLING LIVE (chu kỳ 2.5s) khi đứt mạng</text>
+        
+        <rect x="952" y="641" width="326" height="22" rx="3" fill="#111827" />
+        <text x="960" y="656" fill="#94a3b8" font-size="9.5" font-family="var(--font-sans)"><tspan fill="#fbbf24" font-family="var(--font-mono)">2.</tspan> Drawer phụ: Top 6 ngành hút tiền, độ rộng thị trường</text>
+
+        <rect x="952" y="668" width="326" height="20" rx="3" fill="#f59e0b" fill-opacity="0.12" />
+        <text x="1115" y="681" fill="#fbbf24" font-size="8.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle">TỰ ĐỘNG THỬ KẾT NỐI LẠI (AUTO-RECONNECT) MỖI 3S</text>
+      </g>
+
+
+      <!-- ================================================================= -->
+      <!-- FOOTER ARCHITECTURE TAKEAWAYS (SPACIOUS BOTTOM)                   -->
+      <!-- ================================================================= -->
+      <g transform="translate(40, 750)">
+        <!-- Card 1 -->
+        <rect x="0" y="0" width="295" height="135" rx="6" fill="#0c121e" stroke="#1b253b" stroke-width="1.2" />
+        <text x="16" y="24" fill="#38bdf8" font-size="12" font-family="var(--font-sans)" font-weight="700">Thông Lượng Stream Cực Hạn</text>
+        <text x="16" y="44" fill="#94a3b8" font-size="10" font-family="var(--font-sans)">Tiếp nhận hơn 2.500 tick/giây từ các kênh</text>
+        <text x="16" y="60" fill="#94a3b8" font-size="10" font-family="var(--font-sans)">SignalR HOSE &amp; HNX. Phễu gom bất đồng</text>
+        <text x="16" y="76" fill="#94a3b8" font-size="10" font-family="var(--font-sans)">bộ giải mã tức thì không tạo độ trễ xếp hàng.</text>
+        <rect x="16" y="96" width="130" height="22" rx="3" fill="#1e293b" />
+        <text x="81" y="111" fill="#38bdf8" font-size="9" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">2.500+ TICK/GIÂY</text>
+
+        <!-- Card 2 -->
+        <rect x="320" y="0" width="295" height="135" rx="6" fill="#0c121e" stroke="#1b253b" stroke-width="1.2" />
+        <text x="336" y="24" fill="#34d399" font-size="12" font-family="var(--font-sans)" font-weight="700">Lưu Trữ RAM O(1) Không Ổ Đĩa</text>
+        <text x="336" y="44" fill="#94a3b8" font-size="10" font-family="var(--font-sans)">Lớp MarketStateStore quản trị 700+ mã</text>
+        <text x="336" y="60" fill="#94a3b8" font-size="10" font-family="var(--font-sans)">trên RAM với khóa Mutex Thread-safe.</text>
+        <text x="336" y="76" fill="#94a3b8" font-size="10" font-family="var(--font-sans)">Truy xuất vi sai dưới 0.12ms mượt mà.</text>
+        <rect x="336" y="96" width="130" height="22" rx="3" fill="#1e293b" />
+        <text x="401" y="111" fill="#34d399" font-size="9" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">O(1) &lt; 0.12MS</text>
+
+        <!-- Card 3 -->
+        <rect x="640" y="0" width="295" height="135" rx="6" fill="#0c121e" stroke="#1b253b" stroke-width="1.2" />
+        <text x="656" y="24" fill="#fbbf24" font-size="12" font-family="var(--font-sans)" font-weight="700">Đường Ray Kép Tự Khắc Phục</text>
+        <text x="656" y="44" fill="#94a3b8" font-size="10" font-family="var(--font-sans)">Đường ray chính WebSocket đẩy tick 60 FPS.</text>
+        <text x="656" y="60" fill="#94a3b8" font-size="10" font-family="var(--font-sans)">Nếu đứt kết nối, tự chuyển sang Polling</text>
+        <text x="656" y="76" fill="#94a3b8" font-size="10" font-family="var(--font-sans)">REST 2.5s giữ bản đồ hoạt động liên tục.</text>
+        <rect x="656" y="96" width="130" height="22" rx="3" fill="#1e293b" />
+        <text x="721" y="111" fill="#fbbf24" font-size="9" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">DUAL-RAIL RESILIENCE</text>
+
+        <!-- Card 4 -->
+        <rect x="960" y="0" width="290" height="135" rx="6" fill="#0c121e" stroke="#1b253b" stroke-width="1.2" />
+        <text x="976" y="24" fill="#a855f7" font-size="12" font-family="var(--font-sans)" font-weight="700">ECharts Part-of-Whole Chuẩn Mực</text>
+        <text x="976" y="44" fill="#94a3b8" font-size="10" font-family="var(--font-sans)">Diện tích ô mã hóa chính xác Giá trị GD.</text>
+        <text x="976" y="60" fill="#94a3b8" font-size="10" font-family="var(--font-sans)">Màu sắc phân cấp theo 5 biên độ thực tế.</text>
+        <text x="976" y="76" fill="#94a3b8" font-size="10" font-family="var(--font-sans)">Căn chỉnh ZRender chống tràn nhãn chữ.</text>
+        <rect x="976" y="96" width="130" height="22" rx="3" fill="#1e293b" />
+        <text x="1041" y="111" fill="#c084fc" font-size="9" font-family="var(--font-mono)" font-weight="700" text-anchor="middle">ECHARTS TREEMAP</text>
+      </g>
+
+    </svg>
+  </div>
+
+</body>
+</html>
