@@ -296,18 +296,13 @@
           <span class="spec-card-tag">CLOSED-LOOP PIPELINE</span>
         </div>
         <div class="spec-list">
-          <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Clean 5-Tier Event-Driven</span></div>
-          <div class="spec-item"><span class="spec-k">Nguồn tiếp nhận:</span><span class="spec-v">Direct DChart API / KBS ISS</span></div>
-          <div class="spec-item"><span class="spec-k">Cơ chế dự phòng:</span><span class="spec-v">CafeF Scraper + SQLite TTL</span></div>
-          <div class="spec-item"><span class="spec-k">Độ trễ phản hồi:</span><span class="spec-v">&lt; 0.40s (Khởi động 1.2s)</span></div>
-          <div class="spec-item"><span class="spec-k">Đồ thị nến Nhật:</span><span class="spec-v">RAM io.BytesIO (0.35s)</span></div>
+          <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Clean 5-Tier Closed-Loop &amp; Quant Router</span></div>
+          <div class="spec-item"><span class="spec-k">Nguồn tiếp nhận:</span><span class="spec-v">Direct DChart API (Bypass WAF) &amp; KBS ISS</span></div>
+          <div class="spec-item"><span class="spec-k">Cơ chế dự phòng:</span><span class="spec-v">CafeF Scraper + SQLite WAL Mode (TTL 15p - 24h)</span></div>
+          <div class="spec-item"><span class="spec-k">Điều tiết tần suất:</span><span class="spec-v">Token Bucket Per-User Anti-Spam</span></div>
+          <div class="spec-item"><span class="spec-k">Độ trễ phản hồi:</span><span class="spec-v">&lt; 0.40s (Lõi định lượng CANSLIM 100)</span></div>
+          <div class="spec-item"><span class="spec-k">Trực quan hóa:</span><span class="spec-v">Mini Candlestick 4 Panel (RAM io.BytesIO)</span></div>
           <div class="spec-item"><span class="spec-k">Giao tiếp người dùng:</span><span class="spec-v">Telegram Bot API v20+ Async</span></div>
-          <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Closed-Loop 2 Chiều &amp; Quant Router</span></div>
-          <div class="spec-item"><span class="spec-k">Nguồn dữ liệu:</span><span class="spec-v">SSI &amp; TCBS DChart (Bypass WAF)</span></div>
-          <div class="spec-item"><span class="spec-k">Bộ đệm kép:</span><span class="spec-v">SQLite WAL Mode (TTL 15p - 24h)</span></div>
-          <div class="spec-item"><span class="spec-k">Bảo mật &amp; Rate:</span><span class="spec-v">Token Bucket Per-User Anti-Spam</span></div>
-          <div class="spec-item"><span class="spec-k">Lõi định lượng:</span><span class="spec-v">CANSLIM Scoring 100 &amp; Pocket Pivot</span></div>
-          <div class="spec-item"><span class="spec-k">Trực quan hóa:</span><span class="spec-v">Mini Candlestick 4 Panel (send_photo)</span></div>
         </div>
       </div>
 
@@ -317,14 +312,11 @@
           <span class="spec-card-tag">STREAMING TOPOLOGY</span>
         </div>
         <div class="spec-list">
-          <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Streaming Fan-In &amp; Dual-Rail</span></div>
           <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Streaming Fan-In &amp; Dual-Rail Highway</span></div>
-          <div class="spec-item"><span class="spec-k">Nguồn tiếp nhận:</span><span class="spec-v">SignalR 2.500+ tick/s &amp; RSA Vault</span></div>
+          <div class="spec-item"><span class="spec-k">Nguồn tiếp nhận:</span><span class="spec-v">SignalR 2.500+ tick/s &amp; RSA Token Vault</span></div>
           <div class="spec-item"><span class="spec-k">Bộ nhớ đệm:</span><span class="spec-v">In-Memory RAM Store O(1) &lt; 0.12ms</span></div>
-          <div class="spec-item"><span class="spec-k">Cơ chế kép:</span><span class="spec-v">WebSocket 60 FPS + Polling 2.5s</span></div>
           <div class="spec-item"><span class="spec-k">Cơ chế kép:</span><span class="spec-v">WebSocket 60 FPS + Polling Live 2.5s</span></div>
           <div class="spec-item"><span class="spec-k">Phân loại ngành:</span><span class="spec-v">15 VS-Sector &amp; 5 cấp màu biên độ</span></div>
-          <div class="spec-item"><span class="spec-k">Giao diện trực quan:</span><span class="spec-v">ECharts 5.4 Treemap Mini-Canvas</span></div>
           <div class="spec-item"><span class="spec-k">Trực quan hóa:</span><span class="spec-v">ECharts 5.4 Treemap Mini-Canvas</span></div>
         </div>
       </div>
@@ -336,17 +328,11 @@
           <span class="spec-card-tag">MEDALLION LAKEHOUSE</span>
         </div>
         <div class="spec-list">
-          <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Columnar ETL &amp; Multi-Pane Terminal</span></div>
-          <div class="spec-item"><span class="spec-k">Nguồn tiếp nhận:</span><span class="spec-v">CafeF Upto ZIP / CSV Hàng ngày</span></div>
-          <div class="spec-item"><span class="spec-k">Lưu trữ cột:</span><span class="spec-v">Apache Parquet (Chuẩn nén Snappy)</span></div>
-          <div class="spec-item"><span class="spec-k">Độ trễ truy vấn:</span><span class="spec-v">&lt; 250ms cho 1.500+ mã niêm yết</span></div>
-          <div class="spec-item"><span class="spec-k">Lõi định lượng:</span><span class="spec-v">SMA/EMA, Bollinger, RSI, MACD</span></div>
-          <div class="spec-item"><span class="spec-k">Giao diện trực quan:</span><span class="spec-v">Streamlit &amp; Plotly 4 Tầng Độc Lập</span></div>
-          <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Medallion Bronze &rarr; Platinum Lake</span></div>
-          <div class="spec-item"><span class="spec-k">Dữ liệu thô:</span><span class="spec-v">10+ năm CafeF ZIP (1.500+ mã CP)</span></div>
+          <div class="spec-item"><span class="spec-k">Kiến trúc:</span><span class="spec-v">Medallion Columnar Lakehouse (Bronze &rarr; Platinum)</span></div>
+          <div class="spec-item"><span class="spec-k">Dữ liệu thô:</span><span class="spec-v">10+ năm CafeF ZIP/CSV (1.500+ mã CP)</span></div>
           <div class="spec-item"><span class="spec-k">Lưu trữ cột:</span><span class="spec-v">Snappy Parquet (-85% Disk, Đọc 10x)</span></div>
           <div class="spec-item"><span class="spec-k">Truy vấn cột:</span><span class="spec-v">DuckDB / PyArrow mmap &lt; 250ms</span></div>
-          <div class="spec-item"><span class="spec-k">Lõi định lượng:</span><span class="spec-v">Vectorized (SMA, MACD, RSI, ATR)</span></div>
+          <div class="spec-item"><span class="spec-k">Lõi định lượng:</span><span class="spec-v">Vectorized (SMA, MACD, RSI, Bollinger, ATR)</span></div>
           <div class="spec-item"><span class="spec-k">Trực quan hóa:</span><span class="spec-v">Streamlit &amp; Plotly WebGL 4 Panes</span></div>
         </div>
       </div>
