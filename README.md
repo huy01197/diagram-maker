@@ -10,7 +10,7 @@
 [![Giấy phép: MIT](https://img.shields.io/badge/Gi%E1%BA%A5y_ph%C3%A9p-MIT-green?style=for-the-badge)](LICENSE)
 
 > **`diagram-maker`** là bộ công cụ tự động hóa toàn trình (End-to-End Architecture Engine) chuyên chuyển đổi các tệp đặc tả JSON AST thành **Sơ đồ Kiến trúc Vector SVG & HTML độc lập**, tuân thủ nghiêm ngặt chuẩn mực thiết kế **Institutional Financial Terminal** (tương đương Bloomberg, TradingView, TCBS).  
-> Hệ thống đoạn tuyệt với các sơ đồ khối văn phòng thông thường: không dùng icon hoạt họa, không dùng emoji màu mè, thay vào đó tập trung 100% vào **Triết lý Show, don\x27t tell** thông qua ngôn ngữ đồ họa Neo-Dark, các **Micro-Mockup nghiệp vụ tài chính nhúng trực tiếp** (Treemap phân bổ dòng tiền, Candlestick OHLCV + Volume + CANSLIM BUY, Multi-Pane Plotly 4 tầng), và thuật toán **Zero-Collision Bezier Routing**.
+> Hệ thống đoạn tuyệt với các sơ đồ khối văn phòng thông thường: không dùng icon hoạt họa, không dùng emoji màu mè, tập trung tối đa vào trải nghiệm trực quan hóa dữ liệu qua ngôn ngữ đồ họa Neo-Dark, các **Micro-Mockup nghiệp vụ tài chính nhúng trực tiếp** (Treemap phân bổ dòng tiền, Candlestick OHLCV + Volume + CANSLIM BUY, Multi-Pane Plotly 4 tầng), và thuật toán **Zero-Collision Bezier Routing**.
 
 * **Kho lưu trữ mã nguồn:** [github.com/huy01197/diagram-maker](https://github.com/huy01197/diagram-maker)
 * **Trạm Kiến trúc Tương tác (Interactive Portal):** [**Product/index.html**](Product/index.html)
@@ -107,7 +107,7 @@ Hệ thống được thiết kế dựa trên 3 cấu trúc topology chuyên bi
 
 ## 3. Đo Lường Đối Chuẩn: diagram-maker Với Các Công Cụ Phổ Thông
 
-So sánh định lượng giữa `diagram-maker` và các giải pháp vẽ sơ đồ hiện có trên thị trường theo nguyên tắc **Show, don\x27t tell**:
+Bảng đo lường đối chuẩn định lượng giữa `diagram-maker` và các giải pháp vẽ sơ đồ phổ biến trên thị trường:
 
 | Tiêu chí kỹ thuật | Công cụ vẽ thông thường (Mermaid / Graphviz / PlantUML) | diagram-maker Engine (Institutional Standard) |
 | :--- | :--- | :--- |
@@ -147,7 +147,7 @@ diagram-maker/
 ├── main.py                        # Điểm khởi chạy 1-Click & CLI Entrypoint
 ├── requirements.txt               # Danh mục phụ thuộc (Zero External Dependencies)
 ├── LICENSE                        # Giấy phép nguồn mở MIT
-├── README.md                      # Tài liệu kỹ thuật chi tiết chuẩn Show, don't tell
+├── README.md                      # Tài liệu kỹ thuật chi tiết dự án
 │
 ├── Product/                       # Trạm điều phối sơ đồ kiến trúc thành phẩm
 │   ├── index.html                 # Trạm điều khiển tập trung (Dashboard Hub có chuyển Tab)
