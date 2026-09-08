@@ -3,16 +3,18 @@ diagram-maker: Command Line Interface & Unified Dispatcher
 Provides commands to compile individual JSON specs or batch process entire specification suites.
 """
 
-import os
 import sys
 import json
 import argparse
 from pathlib import Path
 from .compiler import GraphCompiler
 from .slide_compiler import SlideCompiler
+from .engine import DiagramEngine
 
 def detect_spec_type(spec_data):
-    """Xác định loại spec: 'diagram' nếu có columns/connections, ngược lại là 'slide'"""
+    """Xác định loại spec: 'topology' (Topology 2.0 đa dạng), 'diagram' (Cột 4/5-tier), hoặc 'slide'"""
+    if "topology" in spec_data:
+        return "topology"
     if "columns" in spec_data or "connections" in spec_data:
         return "diagram"
     return "slide"
@@ -20,7 +22,11 @@ def detect_spec_type(spec_data):
 def compile_spec(spec_data):
     """Biên dịch đối tượng dictionary spec thành mã HTML"""
     spec_type = detect_spec_type(spec_data)
-    if spec_type == "diagram":
+    if spec_type == "topology":
+        engine = DiagramEngine(spec_data)
+        topo_name = engine.detect_topology()
+        return f"topology:{topo_name}", engine.compile()
+    elif spec_type == "diagram":
         compiler = GraphCompiler(spec_data)
         return "diagram", compiler.compile_to_html()
     else:
@@ -40,8 +46,9 @@ def compile_file(input_path, output_path=None):
 
     if output_path is None:
         base_name = input_path.stem
-        # Nếu là diagram, gán tiền tố diagram_ nếu chưa có
-        if spec_type == "diagram" and not base_name.startswith("diagram_"):
+        if spec_type.startswith("topology"):
+            out_name = f"{base_name}.html"
+        elif spec_type == "diagram" and not base_name.startswith("diagram_"):
             out_name = f"diagram_{base_name}.html"
         else:
             out_name = f"{base_name}.html"
@@ -80,6 +87,8 @@ def compile_all(repo_root=None):
         
         # Đặt tên file xuất chuẩn mực trong output/
         if spec_stem.startswith("sample_"):
+            out_filename = f"{spec_stem}.html"
+        elif any(spec_stem == x for x in ["vietnam_stock_heatmap", "telegram_stock_bot", "vietnamese_stock_analysis"]):
             out_filename = f"{spec_stem}.html"
         else:
             out_filename = f"diagram_{spec_stem}.html"

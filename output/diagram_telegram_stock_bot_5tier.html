@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kiến Trúc Toàn Trình Telegram Stock Bot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
       background-color: #0a0e17;
       color: #f3f4f6;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
       overflow: hidden;
     }
@@ -127,25 +130,27 @@
 
       <!-- Header -->
       <g transform="translate(40, 48)">
-        <rect width="327.2" height="24" rx="12" fill="#064e3b" fill-opacity="0.6" stroke="#059669" stroke-width="1"/>
-        <text x="163.6" y="16" fill="#34d399" font-size="11" font-weight="700" font-family="system-ui" letter-spacing="1" text-anchor="middle">HỆ THỐNG PHÁT TÍN HIỆU ĐẦU TƯ TỰ ĐỘNG</text>
+        <rect width="351.4" height="24" rx="12" fill="#064e3b" fill-opacity="0.6" stroke="#059669" stroke-width="1"/>
+        <text x="175.7" y="16" fill="#34d399" font-size="11" font-weight="700" font-family="system-ui" letter-spacing="1" text-anchor="middle">HỆ THỐNG PHÁT TÍN HIỆU ĐẦU TƯ TỰ ĐỘNG</text>
         <text x="0" y="52" fill="#ffffff" font-size="26" font-weight="800" font-family="system-ui">Kiến Trúc Toàn Trình Telegram Stock Bot</text>
-        <text x="0" y="74" fill="#9ca3af" font-size="13" font-family="system-ui">Mô hình Clean 4-Layer: Auto-Fallback 3 lớp, Phân tích đa nhân tố (TA + CANSLIM) và Telegram Engine</text>
+        <text x="0" y="74" fill="#9ca3af" font-size="13" font-family="system-ui">Mô hình 5 tầng Clean Architecture: Tự động chuyển đổi dự phòng 3 lớp, Phân tích đồng thuận đa nhân tố (Kỹ thuật + CANSLIM) và Bot Telegram</text>
       </g>
 
       <!-- BEZIER DYNAMIC WIRES -->
-<path d="M 250.0 312.0 C 267.5 312.0, 267.5 312.0, 285.0 312.0" stroke="#fbbf24" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-amber)"/>
-<path d="M 497.5 312.0 C 515.0 312.0, 515.0 312.0, 532.5 312.0" stroke="#38bdf8" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-sky)"/>
-<path d="M 745.0 312.0 C 762.5 312.0, 762.5 312.0, 780.0 312.0" stroke="#fbbf24" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-amber)"/>
-<path d="M 992.5 312.0 C 1010.0 312.0, 1010.0 312.0, 1027.5 312.0" stroke="#38bdf8" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-sky)"/>
-<path d="M 250.0 478.0 C 267.5 478.0, 267.5 478.0, 285.0 478.0" stroke="#c084fc" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-purple)"/>
-<path d="M 497.5 478.0 C 515.0 478.0, 515.0 478.0, 532.5 478.0" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-emerald)"/>
-<path d="M 745.0 478.0 C 762.5 478.0, 762.5 478.0, 780.0 478.0" stroke="#fb7185" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-rose)"/>
-<path d="M 992.5 478.0 C 1010.0 478.0, 1010.0 478.0, 1027.5 478.0" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-emerald)"/>
-<path d="M 250.0 312.0 C 267.5 312.0, 267.5 478.0, 285.0 478.0" stroke="#38bdf8" stroke-width="2.2" stroke-opacity="0.9" fill="none"  filter="url(#glowEffect)" marker-end="url(#arrow-sky)"/>
-<path d="M 497.5 478.0 C 515.0 478.0, 515.0 312.0, 532.5 312.0" stroke="#c084fc" stroke-width="1.6" stroke-opacity="0.65" fill="none"   marker-end="url(#arrow-purple)"/>
-<path d="M 992.5 312.0 C 1010.0 312.0, 1010.0 478.0, 1027.5 478.0" stroke="#fbbf24" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-amber)"/>
-<path d="M 992.5 478.0 C 1010.0 478.0, 1010.0 312.0, 1027.5 312.0" stroke="#fb7185" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-rose)"/>
+<path d="M 250.0 312.0 C 266.8 312.0, 266.8 478.0, 283.5 478.0" stroke="#38bdf8" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line" filter="url(#glowEffect)" marker-end="url(#arrow-sky)"/>
+<path d="M 250.0 312.0 C 266.8 312.0, 266.8 312.0, 283.5 312.0" stroke="#fbbf24" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-amber)"/>
+<path d="M 250.0 478.0 C 266.8 478.0, 266.8 478.0, 283.5 478.0" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-emerald)"/>
+<path d="M 498.0 312.0 C 514.8 312.0, 514.8 312.0, 531.5 312.0" stroke="#fbbf24" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-amber)"/>
+<path d="M 498.0 478.0 C 514.8 478.0, 514.8 312.0, 531.5 312.0" stroke="#38bdf8" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-sky)"/>
+<path d="M 498.0 478.0 C 514.8 478.0, 514.8 478.0, 531.5 478.0" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-emerald)"/>
+<path d="M 746.0 312.0 C 762.8 312.0, 762.8 312.0, 779.5 312.0" stroke="#38bdf8" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-sky)"/>
+<path d="M 746.0 478.0 C 762.8 478.0, 762.8 312.0, 779.5 312.0" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-emerald)"/>
+<path d="M 746.0 312.0 C 762.8 312.0, 762.8 478.0, 779.5 478.0" stroke="#fb7185" stroke-width="1.6" stroke-opacity="0.65" fill="none"   marker-end="url(#arrow-rose)"/>
+<path d="M 746.0 478.0 C 762.8 478.0, 762.8 478.0, 779.5 478.0" stroke="#fb7185" stroke-width="1.6" stroke-opacity="0.65" fill="none"   marker-end="url(#arrow-rose)"/>
+<path d="M 994.0 312.0 C 1010.8 312.0, 1010.8 312.0, 1027.5 312.0" stroke="#fbbf24" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-amber)"/>
+<path d="M 994.0 312.0 C 1010.8 312.0, 1010.8 478.0, 1027.5 478.0" stroke="#38bdf8" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-sky)"/>
+<path d="M 994.0 478.0 C 1010.8 478.0, 1010.8 312.0, 1027.5 312.0" stroke="#fb7185" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-rose)"/>
+<path d="M 994.0 478.0 C 1010.8 478.0, 1010.8 478.0, 1027.5 478.0" stroke="#34d399" stroke-width="1.6" stroke-opacity="0.65" fill="none"   marker-end="url(#arrow-emerald)"/>
 
       <!-- Node: direct_dchart -->
 <g transform="translate(40.0, 237.0)" filter="url(#nodeShadow)">
@@ -159,7 +164,7 @@
   </g>
   <g transform="translate(12, 78)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Direct Financial REST</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Kết nối Direct REST API</text>
   </g>
   <g transform="translate(12, 110)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
@@ -170,133 +175,133 @@
 <g transform="translate(40.0, 403.0)" filter="url(#nodeShadow)">
   <rect width="210" height="150" rx="16" fill="#111827" stroke="#059669" stroke-width="1.5"/>
   <text x="14" y="31" fill="#34d399" font-size="12.5" font-weight="700" font-family="system-ui">KBS Priceboard</text>
-  <rect x="130.0" y="16" width="68.0" height="20" rx="6" fill="#064e3b" stroke="#059669" stroke-width="0.8"/>
-  <text x="164.0" y="30" fill="#34d399" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">LIVE BOARD</text>
+  <rect x="113.2" y="16" width="84.8" height="20" rx="6" fill="#064e3b" stroke="#059669" stroke-width="0.8"/>
+  <text x="155.6" y="30" fill="#34d399" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">BẢNG GIÁ SỐNG</text>
   <g transform="translate(12, 46)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
     <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Bảng giá khớp lệnh sống</text>
   </g>
   <g transform="translate(12, 78)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Giao dịch Khối ngoại</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Theo dõi giao dịch Khối ngoại</text>
   </g>
   <g transform="translate(12, 110)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Khử hoàn toàn vnstock</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Tự chủ dữ liệu hoàn toàn</text>
   </g>
 </g>
 <!-- Node: cafef_scraper -->
-<g transform="translate(287.5, 237.0)" filter="url(#nodeShadow)">
-  <rect width="210" height="150" rx="16" fill="#111827" stroke="#d97706" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#fbbf24" font-size="12.5" font-weight="700" font-family="system-ui">CafeF Scraper</text>
-  <rect x="141.2" y="16" width="56.8" height="20" rx="6" fill="#451a03" stroke="#b45309" stroke-width="0.8"/>
-  <text x="169.6" y="30" fill="#fbbf24" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">FALLBACK</text>
+<g transform="translate(286.0, 237.0)" filter="url(#nodeShadow)">
+  <rect width="212" height="150" rx="16" fill="#111827" stroke="#d97706" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#fbbf24" font-size="12.5" font-weight="700" font-family="system-ui">CafeF Scraper Dự Phòng</text>
+  <rect x="143.2" y="16" width="56.8" height="20" rx="6" fill="#451a03" stroke="#b45309" stroke-width="0.8"/>
+  <text x="171.6" y="30" fill="#fbbf24" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">DỰ PHÒNG</text>
   <g transform="translate(12, 46)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
     <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. 4 lớp kỹ thuật chống WAF</text>
   </g>
   <g transform="translate(12, 78)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Header spoofing rotation</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Xoay vòng Header User-Agent</text>
   </g>
   <g transform="translate(12, 110)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Exponential Backoff</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Cơ chế Exponential Backoff</text>
   </g>
 </g>
 <!-- Node: sqlite_cache -->
-<g transform="translate(287.5, 403.0)" filter="url(#nodeShadow)">
-  <rect width="210" height="150" rx="16" fill="#111827" stroke="#7c3aed" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#c084fc" font-size="12.5" font-weight="700" font-family="system-ui">SQLite Cache TTL</text>
-  <rect x="130.0" y="16" width="68.0" height="20" rx="6" fill="#2e1065" stroke="#6d28d9" stroke-width="0.8"/>
-  <text x="164.0" y="30" fill="#c084fc" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">TTL BUFFER</text>
+<g transform="translate(286.0, 403.0)" filter="url(#nodeShadow)">
+  <rect width="212" height="150" rx="16" fill="#111827" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#c084fc" font-size="12.5" font-weight="700" font-family="system-ui">Bộ Đệm SQLite TTL</text>
+  <rect x="132.0" y="16" width="68.0" height="20" rx="6" fill="#2e1065" stroke="#6d28d9" stroke-width="0.8"/>
+  <text x="166.0" y="30" fill="#c084fc" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">BỘ ĐỆM TTL</text>
   <g transform="translate(12, 46)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Phân tầng 15m / 3m / 24h</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Phân tầng TTL 15m / 3m / 24h</text>
   </g>
   <g transform="translate(12, 78)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Bản sao an toàn rớt mạng</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Bộ đệm an toàn khi mất mạng</text>
   </g>
   <g transform="translate(12, 110)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Zero file rác ổ cứng</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Không tạo tệp rác trên đĩa</text>
   </g>
 </g>
 <!-- Node: ta_engine -->
-<g transform="translate(535.0, 237.0)" filter="url(#nodeShadow)">
-  <rect width="210" height="150" rx="16" fill="#111827" stroke="#0284c7" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#38bdf8" font-size="12.5" font-weight="700" font-family="system-ui">Kỹ Thuật TA</text>
-  <rect x="135.6" y="16" width="62.4" height="20" rx="6" fill="#082f49" stroke="#0284c7" stroke-width="0.8"/>
-  <text x="166.8" y="30" fill="#38bdf8" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">EMA + RSI</text>
+<g transform="translate(534.0, 237.0)" filter="url(#nodeShadow)">
+  <rect width="212" height="150" rx="16" fill="#111827" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#38bdf8" font-size="12.5" font-weight="700" font-family="system-ui">Phân Tích Kỹ Thuật (TA)</text>
+  <rect x="137.6" y="16" width="62.4" height="20" rx="6" fill="#082f49" stroke="#0284c7" stroke-width="0.8"/>
+  <text x="168.8" y="30" fill="#38bdf8" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">EMA + RSI</text>
   <g transform="translate(12, 46)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Golden Cross EMA 20/50</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Điểm giao cắt EMA 20/50</text>
   </g>
   <g transform="translate(12, 78)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
     <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. RSI 14 Wilder Smoothing</text>
   </g>
   <g transform="translate(12, 110)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Phân kỳ MACD Histogram</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Phân kỳ MACD Histogram &gt; 0</text>
   </g>
 </g>
 <!-- Node: canslim_engine -->
-<g transform="translate(535.0, 403.0)" filter="url(#nodeShadow)">
-  <rect width="210" height="150" rx="16" fill="#111827" stroke="#059669" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#34d399" font-size="12.5" font-weight="700" font-family="system-ui">Tăng Trưởng FA</text>
-  <rect x="146.8" y="16" width="51.2" height="20" rx="6" fill="#064e3b" stroke="#059669" stroke-width="0.8"/>
-  <text x="172.4" y="30" fill="#34d399" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">CANSLIM</text>
+<g transform="translate(534.0, 403.0)" filter="url(#nodeShadow)">
+  <rect width="212" height="150" rx="16" fill="#111827" stroke="#059669" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#34d399" font-size="12.5" font-weight="700" font-family="system-ui">Tăng Trưởng Cơ Bản (FA)</text>
+  <rect x="120.8" y="16" width="79.2" height="20" rx="6" fill="#064e3b" stroke="#059669" stroke-width="0.8"/>
+  <text x="160.4" y="30" fill="#34d399" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">CANSLIM SEPA</text>
   <g transform="translate(12, 46)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. ROE &gt;= 15%, LNST &gt;= 15%</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Tỷ suất ROE &gt;= 15%, LNST &gt;= 15%</text>
   </g>
   <g transform="translate(12, 78)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Nợ vay/VCSH &lt;= 2.0</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Hệ số Nợ vay / VCSH &lt;= 2.0</text>
   </g>
   <g transform="translate(12, 110)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Volume &gt;= 1.5x MA20</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Khối lượng bùng nổ &gt;= 1.5x MA20</text>
   </g>
 </g>
 <!-- Node: composite_scorer -->
-<g transform="translate(782.5, 237.0)" filter="url(#nodeShadow)">
-  <rect width="210" height="150" rx="16" fill="#111827" stroke="#d97706" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#fbbf24" font-size="12.5" font-weight="700" font-family="system-ui">Composite Score</text>
-  <rect x="158.0" y="16" width="40.0" height="20" rx="6" fill="#451a03" stroke="#b45309" stroke-width="0.8"/>
-  <text x="178.0" y="30" fill="#fbbf24" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">0-100</text>
+<g transform="translate(782.0, 237.0)" filter="url(#nodeShadow)">
+  <rect width="212" height="150" rx="16" fill="#111827" stroke="#d97706" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#fbbf24" font-size="12.5" font-weight="700" font-family="system-ui">Đồng Thuận Định Lượng</text>
+  <rect x="132.0" y="16" width="68.0" height="20" rx="6" fill="#451a03" stroke="#b45309" stroke-width="0.8"/>
+  <text x="166.0" y="30" fill="#fbbf24" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">ĐIỂM 0-100</text>
   <g transform="translate(12, 46)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Đồng thuận TA + CANSLIM</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Đồng thuận đa nhân tố TA + FA</text>
   </g>
   <g transform="translate(12, 78)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Xếp hạng STRONG BUY/BUY</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Phân loại STRONG BUY / BUY / HOLD</text>
   </g>
   <g transform="translate(12, 110)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Quản trị R:R vàng 1:2</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Quản trị rủi ro tỷ lệ vàng 1:2</text>
   </g>
 </g>
 <!-- Node: backtest_engine -->
-<g transform="translate(782.5, 403.0)" filter="url(#nodeShadow)">
-  <rect width="210" height="150" rx="16" fill="#111827" stroke="#e11d48" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#fb7185" font-size="12.5" font-weight="700" font-family="system-ui">Kiểm Định Lịch Sử</text>
-  <rect x="141.2" y="16" width="56.8" height="20" rx="6" fill="#4c0519" stroke="#be123c" stroke-width="0.8"/>
-  <text x="169.6" y="30" fill="#fb7185" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">BACKTEST</text>
+<g transform="translate(782.0, 403.0)" filter="url(#nodeShadow)">
+  <rect width="212" height="150" rx="16" fill="#111827" stroke="#e11d48" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#fb7185" font-size="12.5" font-weight="700" font-family="system-ui">Kiểm Định Hiệu Năng</text>
+  <rect x="143.2" y="16" width="56.8" height="20" rx="6" fill="#4c0519" stroke="#be123c" stroke-width="0.8"/>
+  <text x="171.6" y="30" fill="#fb7185" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">BACKTEST</text>
   <g transform="translate(12, 46)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Khấu trừ 0.3% thuế &amp; phí</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Khấu trừ 0.3% thuế &amp; phí môi giới</text>
   </g>
   <g transform="translate(12, 78)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Đo lường Win Rate %</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Đo lường tỷ lệ thắng Win Rate %</text>
   </g>
   <g transform="translate(12, 110)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Max Drawdown &amp; Profit</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Mức sụt giảm Max Drawdown &amp; PF</text>
   </g>
 </g>
 <!-- Node: telegram_controller -->
@@ -307,39 +312,39 @@
   <text x="166.8" y="30" fill="#38bdf8" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">ASYNC BOT</text>
   <g transform="translate(12, 46)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Async Controller v20+</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Bộ điều khiển Async Bot v20+</text>
   </g>
   <g transform="translate(12, 78)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Nhận diện mã tự nhiên</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Nhận diện lệnh tự nhiên /signal</text>
   </g>
   <g transform="translate(12, 110)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Watchlist Alerts tự động</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Cảnh báo danh mục Watchlist tự động</text>
   </g>
 </g>
 <!-- Node: chart_renderer -->
 <g transform="translate(1030.0, 403.0)" filter="url(#nodeShadow)">
   <rect width="210" height="150" rx="16" fill="#111827" stroke="#059669" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#34d399" font-size="12.5" font-weight="700" font-family="system-ui">Đồ Thị Nến Nhật</text>
+  <text x="14" y="31" fill="#34d399" font-size="12.5" font-weight="700" font-family="system-ui">Đồ Thị Nến Nhật RAM</text>
   <rect x="146.8" y="16" width="51.2" height="20" rx="6" fill="#064e3b" stroke="#059669" stroke-width="0.8"/>
   <text x="172.4" y="30" fill="#34d399" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">BYTESIO</text>
   <g transform="translate(12, 46)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Matplotlib Agg headless</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Vẽ trên bộ nhớ RAM io.BytesIO</text>
   </g>
   <g transform="translate(12, 78)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Nén RAM io.BytesIO (0.35s)</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Kết xuất đồ thị nén trong 0.35s</text>
   </g>
   <g transform="translate(12, 110)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Thẻ Card định dạng chuẩn</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Thẻ khuyến nghị trực quan chuẩn hóa</text>
   </g>
 </g>
 
       <!-- Footer Branding -->
-      <text x="40" y="682" fill="#4b5563" font-size="11" font-family="monospace">Super AI Layout Engine • Dynamic Bezier Graph Routing • Zero-Wrap Vector Canvas</text>
+      <text x="40" y="682" fill="#4b5563" font-size="11" font-family="monospace">Diagram Maker Engine • Dynamic Bezier Graph Routing • Zero-Wrap Vector Canvas</text>
     </svg>
   </div>
 

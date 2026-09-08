@@ -1,0 +1,35 @@
+{
+  "title": "Vietnam Stock Heatmap - Kiến Trúc Luồng Streaming & Phân Bổ Thị Trường",
+  "eyebrow": "STREAMING TOPOLOGY · DUAL-RAIL EVENT PIPELINE",
+  "topology": "streaming",
+  "width": 1320,
+  "height": 915,
+  "metrics": [
+    { "label": "Độ Trễ Tick Khớp", "value": "< 16 ms (60 FPS)", "color": "#34d399" },
+    { "label": "Thông Lượng Stream", "value": "2.500+ Tick/Giây", "color": "#38bdf8" },
+    { "label": "Truy Vấn RAM Store", "value": "O(1) < 0.12 ms", "color": "#38bdf8" },
+    { "label": "Truyền Dẫn Kép", "value": "WebSocket + REST", "color": "#fbbf24" }
+  ],
+  "footer_notes": [
+    {
+      "color": "#38bdf8",
+      "title": "TIẾP NHẬN SIGNALR SSI",
+      "desc": "Lắng nghe luồng dữ liệu khớp lệnh trực tiếp hơn 2.500 tick/s từ sàn chứng khoán, xác thực bảo mật chuẩn RSA/JWT."
+    },
+    {
+      "color": "#34d399",
+      "title": "LÕI BỘ NHỚ RAM O(1)",
+      "desc": "Khóa Thread-safe Mutex loại bỏ race-condition, quản lý tức thời trạng thái hơn 700 mã cổ phiếu không ghi đĩa."
+    },
+    {
+      "color": "#fbbf24",
+      "title": "PHÂN BỔ 15 VS-SECTOR",
+      "desc": "Thước đo dòng tiền 5 cấp màu biên độ kết hợp phân loại ngành và tính toán độ rộng toàn diện thị trường."
+    },
+    {
+      "color": "#34d399",
+      "title": "CANVAS ECHARTS & REST",
+      "desc": "Kênh chính đẩy delta qua WebSocket /ws 60 FPS, kênh dự phòng Polling Live 2.5s đảm bảo không gián đoạn."
+    }
+  ]
+}

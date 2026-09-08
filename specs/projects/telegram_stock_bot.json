@@ -1,0 +1,35 @@
+{
+  "title": "Telegram Stock Bot - Kiến Trúc Luồng Sự Kiện Tương Tác & Phân Tích Định Lượng",
+  "eyebrow": "EVENT-DRIVEN CLOSED-LOOP PIPELINE · QUANTITATIVE BOT ENGINE",
+  "topology": "interactive_loop",
+  "width": 1320,
+  "height": 915,
+  "metrics": [
+    { "label": "Độ Trễ Phản Hồi", "value": "< 850 ms", "color": "#38bdf8" },
+    { "label": "Bộ Nhớ Đệm", "value": "SQLite WAL Mode", "color": "#34d399" },
+    { "label": "Chiến Lược Định Lượng", "value": "CANSLIM + TA 4 Panel", "color": "#fbbf24" },
+    { "label": "Vòng Tương Tác", "value": "Closed-Loop 2 Chiều", "color": "#c084fc" }
+  ],
+  "footer_notes": [
+    {
+      "color": "#06b6d4",
+      "title": "CỔNG TIẾP NHẬN TELEGRAM",
+      "desc": "Webhook / Polling async giải mã tham số dòng lệnh siêu tốc < 5ms kèm cơ chế chống spam Token Bucket per User ID."
+    },
+    {
+      "color": "#a855f7",
+      "title": "BỘ ĐỆM KÉP SQLITE",
+      "desc": "Lưu trữ nến 100 phiên cục bộ tại data_cache/stock.db, TTL thông minh giúp giảm hơn 80% truy vấn mạng bên ngoài."
+    },
+    {
+      "color": "#f59e0b",
+      "title": "ĐỊNH LƯỢNG CANSLIM",
+      "desc": "Bộ chỉ báo 4 chiều (Xu hướng, Động lượng, Biên độ, Bùng nổ Vol) tính toán tín hiệu Mua/Bán và Pocket Pivot trong < 35ms."
+    },
+    {
+      "color": "#089981",
+      "title": "ĐỒ THỊ NẾN 4 PANEL",
+      "desc": "Trình kết xuất đồ họa nến chuyên nghiệp qua mplfinance, đóng gói gửi ảnh trực tiếp về Telegram User trong < 120ms."
+    }
+  ]
+}

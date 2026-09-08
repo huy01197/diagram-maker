@@ -4,8 +4,6 @@ Renders declarative JSON slide specs into high-contrast glassmorphic presentatio
 Compliant with Institutional Financial Terminal aesthetics and zero-emoji design rules.
 """
 
-import json
-import os
 
 HTML_SLIDE_TEMPLATE = """<!DOCTYPE html>
 <html lang="vi" class="dark">

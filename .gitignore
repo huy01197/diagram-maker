@@ -24,14 +24,37 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual Environments
+# Virtual Environments & Environment Variables
 .env
+.env.*
+*.env
+.env.local
 .venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Security, Keys & Certificates
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+*.token
+credentials.json
+client_secret*.json
+api_key.json
+*secret*
+*.session
+
+# Databases & Cache Stores
+*.db
+*.sqlite
+*.sqlite3
+data_cache/
 
 # Operating System Files
 .DS_Store
@@ -47,6 +70,13 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+# Test & Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # Output scratch & temporary logs
 *.log

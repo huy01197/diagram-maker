@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kiến Trúc Toàn Trình Vietnam Stock Real-Time Heatmap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
       background-color: #0a0e17;
       color: #f3f4f6;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
       overflow: hidden;
     }
@@ -127,215 +130,218 @@
 
       <!-- Header -->
       <g transform="translate(40, 48)">
-        <rect width="350.0" height="24" rx="12" fill="#064e3b" fill-opacity="0.6" stroke="#059669" stroke-width="1"/>
-        <text x="175.0" y="16" fill="#34d399" font-size="11" font-weight="700" font-family="system-ui" letter-spacing="1" text-anchor="middle">HẠ TẦNG XỬ LÝ DÒNG TIỀN VẬN HÀNH THỰC TẾ</text>
+        <rect width="376.0" height="24" rx="12" fill="#064e3b" fill-opacity="0.6" stroke="#059669" stroke-width="1"/>
+        <text x="188.0" y="16" fill="#34d399" font-size="11" font-weight="700" font-family="system-ui" letter-spacing="1" text-anchor="middle">HẠ TẦNG XỬ LÝ DÒNG TIỀN VẬN HÀNH THỰC TẾ</text>
         <text x="0" y="52" fill="#ffffff" font-size="26" font-weight="800" font-family="system-ui">Kiến Trúc Toàn Trình Vietnam Stock Real-Time Heatmap</text>
-        <text x="0" y="74" fill="#9ca3af" font-size="13" font-family="system-ui">Quy trình xác thực RSA, luồng SignalR 2,500+ tick/s, In-Memory RAM Store O(1) và Treemap ECharts</text>
+        <text x="0" y="74" fill="#9ca3af" font-size="13" font-family="system-ui">Quy trình xác thực RSA, Luồng SignalR 2.500+ tick/giây, Bộ nhớ đệm RAM Store O(1) và Bản đồ nhiệt Treemap ECharts</text>
       </g>
 
       <!-- BEZIER DYNAMIC WIRES -->
-<path d="M 250.0 312.0 C 267.5 312.0, 267.5 312.0, 285.0 312.0" stroke="#c084fc" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-purple)"/>
-<path d="M 250.0 478.0 C 267.5 478.0, 267.5 478.0, 285.0 478.0" stroke="#38bdf8" stroke-width="1.6" stroke-opacity="0.65" fill="none"   marker-end="url(#arrow-sky)"/>
-<path d="M 497.5 312.0 C 515.0 312.0, 515.0 312.0, 532.5 312.0" stroke="#38bdf8" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line" filter="url(#glowEffect)" marker-end="url(#arrow-sky)"/>
-<path d="M 497.5 478.0 C 515.0 478.0, 515.0 478.0, 532.5 478.0" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-emerald)"/>
-<path d="M 745.0 312.0 C 762.5 312.0, 762.5 312.0, 780.0 312.0" stroke="#38bdf8" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-sky)"/>
-<path d="M 745.0 478.0 C 762.5 478.0, 762.5 478.0, 780.0 478.0" stroke="#fbbf24" stroke-width="1.6" stroke-opacity="0.65" fill="none"   marker-end="url(#arrow-amber)"/>
-<path d="M 992.5 312.0 C 1010.0 312.0, 1010.0 312.0, 1027.5 312.0" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line" filter="url(#glowEffect)" marker-end="url(#arrow-emerald)"/>
-<path d="M 992.5 478.0 C 1010.0 478.0, 1010.0 478.0, 1027.5 478.0" stroke="#c084fc" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-purple)"/>
+<path d="M 252.0 312.0 C 268.8 312.0, 268.8 312.0, 285.5 312.0" stroke="#c084fc" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-purple)"/>
+<path d="M 252.0 478.0 C 268.8 478.0, 268.8 478.0, 285.5 478.0" stroke="#38bdf8" stroke-width="1.6" stroke-opacity="0.65" fill="none"   marker-end="url(#arrow-sky)"/>
+<path d="M 498.0 312.0 C 514.8 312.0, 514.8 312.0, 531.5 312.0" stroke="#38bdf8" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line" filter="url(#glowEffect)" marker-end="url(#arrow-sky)"/>
+<path d="M 498.0 478.0 C 514.8 478.0, 514.8 312.0, 531.5 312.0" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-emerald)"/>
+<path d="M 746.0 312.0 C 771.0 312.0, 506.5 478.0, 531.5 478.0" stroke="#38bdf8" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-sky)"/>
+<path d="M 746.0 312.0 C 762.8 312.0, 762.8 312.0, 779.5 312.0" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-emerald)"/>
+<path d="M 746.0 478.0 C 762.8 478.0, 762.8 478.0, 779.5 478.0" stroke="#fbbf24" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-amber)"/>
+<path d="M 746.0 312.0 C 762.8 312.0, 762.8 478.0, 779.5 478.0" stroke="#c084fc" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line" filter="url(#glowEffect)" marker-end="url(#arrow-purple)"/>
+<path d="M 992.0 312.0 C 1008.8 312.0, 1008.8 312.0, 1025.5 312.0" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-emerald)"/>
+<path d="M 992.0 478.0 C 1008.8 478.0, 1008.8 312.0, 1025.5 312.0" stroke="#c084fc" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line" filter="url(#glowEffect)" marker-end="url(#arrow-purple)"/>
+<path d="M 992.0 478.0 C 1008.8 478.0, 1008.8 478.0, 1025.5 478.0" stroke="#fbbf24" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-amber)"/>
 
       <!-- Node: ssi_vault -->
 <g transform="translate(40.0, 237.0)" filter="url(#nodeShadow)">
-  <rect width="210" height="150" rx="16" fill="#111827" stroke="#7c3aed" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#c084fc" font-size="12.5" font-weight="700" font-family="system-ui">SSI Security Vault</text>
-  <rect x="146.8" y="16" width="51.2" height="20" rx="6" fill="#2e1065" stroke="#6d28d9" stroke-width="0.8"/>
-  <text x="172.4" y="30" fill="#c084fc" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">RSA KEY</text>
+  <rect width="212" height="150" rx="16" fill="#111827" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#c084fc" font-size="12.5" font-weight="700" font-family="system-ui">Xác Thực Bảo Mật SSI</text>
+  <rect x="143.2" y="16" width="56.8" height="20" rx="6" fill="#2e1065" stroke="#6d28d9" stroke-width="0.8"/>
+  <text x="171.6" y="30" fill="#c084fc" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">KHÓA RSA</text>
   <g transform="translate(12, 46)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Đọc khóa config.json</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Đọc khóa cấu hình config.json</text>
   </g>
   <g transform="translate(12, 78)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Ký số RSA PrivateKey</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Ký số bảo mật RSA PrivateKey</text>
   </g>
   <g transform="translate(12, 110)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Cấp &amp; gia hạn Token</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Tự động cấp và gia hạn Token</text>
   </g>
 </g>
 <!-- Node: sliding_fetcher -->
 <g transform="translate(40.0, 403.0)" filter="url(#nodeShadow)">
-  <rect width="210" height="150" rx="16" fill="#111827" stroke="#0284c7" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#38bdf8" font-size="12.5" font-weight="700" font-family="system-ui">Sliding Fetcher</text>
-  <rect x="130.0" y="16" width="68.0" height="20" rx="6" fill="#082f49" stroke="#0284c7" stroke-width="0.8"/>
-  <text x="164.0" y="30" fill="#38bdf8" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">10-DAY WIN</text>
+  <rect width="212" height="150" rx="16" fill="#111827" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#38bdf8" font-size="12.5" font-weight="700" font-family="system-ui">Bộ Quét Lùi Snapshot</text>
+  <rect x="126.4" y="16" width="73.6" height="20" rx="6" fill="#082f49" stroke="#0284c7" stroke-width="0.8"/>
+  <text x="163.2" y="30" fill="#38bdf8" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">LÙI 10 NGÀY</text>
   <g transform="translate(12, 46)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Quét lùi 10 ngày nghỉ</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Quét lùi 10 ngày tránh kỳ nghỉ</text>
   </g>
   <g transform="translate(12, 78)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Snapshot chỉ số &amp; giá</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Nạp snapshot giá tham chiếu</text>
   </g>
   <g transform="translate(12, 110)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Dự phòng VNDirect finfo</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Cơ chế dự phòng VNDirect finfo</text>
   </g>
 </g>
 <!-- Node: signalr_worker -->
-<g transform="translate(287.5, 237.0)" filter="url(#nodeShadow)">
+<g transform="translate(288.0, 237.0)" filter="url(#nodeShadow)">
   <rect width="210" height="150" rx="16" fill="#111827" stroke="#0284c7" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#38bdf8" font-size="12.5" font-weight="700" font-family="system-ui">SignalR Connector</text>
+  <text x="14" y="31" fill="#38bdf8" font-size="12.5" font-weight="700" font-family="system-ui">Bộ Kết Nối SignalR</text>
   <rect x="152.4" y="16" width="45.6" height="20" rx="6" fill="#082f49" stroke="#0284c7" stroke-width="0.8"/>
   <text x="175.2" y="30" fill="#38bdf8" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">WORKER</text>
   <g transform="translate(12, 46)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Lắng nghe kênh X:ALL</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Lắng nghe trực tiếp kênh X:ALL</text>
   </g>
   <g transform="translate(12, 78)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Lắng nghe kênh MI:ALL</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Lắng nghe trực tiếp kênh MI:ALL</text>
   </g>
   <g transform="translate(12, 110)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Tự reconnect khi rớt</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Tự động kết nối lại khi rớt mạng</text>
   </g>
 </g>
 <!-- Node: packet_parser -->
-<g transform="translate(287.5, 403.0)" filter="url(#nodeShadow)">
+<g transform="translate(288.0, 403.0)" filter="url(#nodeShadow)">
   <rect width="210" height="150" rx="16" fill="#111827" stroke="#059669" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#34d399" font-size="12.5" font-weight="700" font-family="system-ui">Packet Parser</text>
-  <rect x="152.4" y="16" width="45.6" height="20" rx="6" fill="#064e3b" stroke="#059669" stroke-width="0.8"/>
-  <text x="175.2" y="30" fill="#34d399" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">DECODE</text>
+  <text x="14" y="31" fill="#34d399" font-size="12.5" font-weight="700" font-family="system-ui">Bộ Giải Mã Gói Tin</text>
+  <rect x="146.8" y="16" width="51.2" height="20" rx="6" fill="#064e3b" stroke="#059669" stroke-width="0.8"/>
+  <text x="172.4" y="30" fill="#34d399" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">GIẢI MÃ</text>
   <g transform="translate(12, 46)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Giải mã gói tin X và M</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Giải mã gói tin khớp lệnh X &amp; M</text>
   </g>
   <g transform="translate(12, 78)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Tính % giá tham chiếu</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Tính toán % theo giá tham chiếu</text>
   </g>
   <g transform="translate(12, 110)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Ghi đè vào RAM Store</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Chuẩn hóa dữ liệu đẩy sang RAM</text>
   </g>
 </g>
 <!-- Node: ram_store -->
-<g transform="translate(535.0, 237.0)" filter="url(#nodeShadow)">
-  <rect width="210" height="150" rx="16" fill="#111827" stroke="#0284c7" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#38bdf8" font-size="12.5" font-weight="700" font-family="system-ui">In-Memory Store</text>
-  <rect x="130.0" y="16" width="68.0" height="20" rx="6" fill="#082f49" stroke="#0284c7" stroke-width="0.8"/>
-  <text x="164.0" y="30" fill="#38bdf8" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">O(1) MUTEX</text>
+<g transform="translate(534.0, 237.0)" filter="url(#nodeShadow)">
+  <rect width="212" height="150" rx="16" fill="#111827" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#38bdf8" font-size="12.5" font-weight="700" font-family="system-ui">Bộ Nhớ Đệm RAM Store</text>
+  <rect x="132.0" y="16" width="68.0" height="20" rx="6" fill="#082f49" stroke="#0284c7" stroke-width="0.8"/>
+  <text x="166.0" y="30" fill="#38bdf8" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">O(1) MUTEX</text>
   <g transform="translate(12, 46)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Hash-Map 700+ mã CP</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Bảng băm Hash-Map 700+ mã CP</text>
   </g>
   <g transform="translate(12, 78)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Thread-Safe Mutex Lock</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Cơ chế khóa Thread-Safe Mutex</text>
   </g>
   <g transform="translate(12, 110)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Truy xuất &lt; 0.12ms</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Thời gian truy xuất siêu tốc &lt; 0.12ms</text>
   </g>
 </g>
 <!-- Node: sector_classifier -->
-<g transform="translate(535.0, 403.0)" filter="url(#nodeShadow)">
-  <rect width="210" height="150" rx="16" fill="#111827" stroke="#d97706" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#fbbf24" font-size="12.5" font-weight="700" font-family="system-ui">Phân Loại Ngành</text>
-  <rect x="135.6" y="16" width="62.4" height="20" rx="6" fill="#451a03" stroke="#b45309" stroke-width="0.8"/>
-  <text x="166.8" y="30" fill="#fbbf24" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">VS-SECTOR</text>
+<g transform="translate(534.0, 403.0)" filter="url(#nodeShadow)">
+  <rect width="212" height="150" rx="16" fill="#111827" stroke="#d97706" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#fbbf24" font-size="12.5" font-weight="700" font-family="system-ui">Phân Loại 15 Ngành</text>
+  <rect x="137.6" y="16" width="62.4" height="20" rx="6" fill="#451a03" stroke="#b45309" stroke-width="0.8"/>
+  <text x="168.8" y="30" fill="#fbbf24" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">VS-SECTOR</text>
   <g transform="translate(12, 46)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Chuẩn hóa 15 nhóm ngành</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Chuẩn hóa phân loại 15 nhóm ngành</text>
   </g>
   <g transform="translate(12, 78)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Xếp theo thanh khoản</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Sắp xếp diện tích theo thanh khoản</text>
   </g>
   <g transform="translate(12, 110)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Gom nhóm Khác ở đáy</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Bảng màu biên độ 5 cấp tài chính</text>
   </g>
 </g>
 <!-- Node: aiohttp_server -->
-<g transform="translate(782.5, 237.0)" filter="url(#nodeShadow)">
+<g transform="translate(782.0, 237.0)" filter="url(#nodeShadow)">
   <rect width="210" height="150" rx="16" fill="#111827" stroke="#059669" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#34d399" font-size="12.5" font-weight="700" font-family="system-ui">Máy Chủ aiohttp</text>
+  <text x="14" y="31" fill="#34d399" font-size="12.5" font-weight="700" font-family="system-ui">Máy Chủ Web aiohttp</text>
   <rect x="135.6" y="16" width="62.4" height="20" rx="6" fill="#064e3b" stroke="#059669" stroke-width="0.8"/>
-  <text x="166.8" y="30" fill="#34d399" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">PORT 8050</text>
+  <text x="166.8" y="30" fill="#34d399" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">CỔNG 8050</text>
   <g transform="translate(12, 46)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. 1-Click Port Scrubber</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Tự động giải phóng cổng xung đột</text>
   </g>
   <g transform="translate(12, 78)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Thoát SIGINT 0.05s</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Cơ chế ngắt tiến trình sạch SIGINT</text>
   </g>
   <g transform="translate(12, 110)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Cung cấp REST APIs</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Cung cấp API Snapshot toàn diện</text>
   </g>
 </g>
 <!-- Node: dual_dispatcher -->
-<g transform="translate(782.5, 403.0)" filter="url(#nodeShadow)">
+<g transform="translate(782.0, 403.0)" filter="url(#nodeShadow)">
   <rect width="210" height="150" rx="16" fill="#111827" stroke="#7c3aed" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#c084fc" font-size="12.5" font-weight="700" font-family="system-ui">Bộ Điều Phối Kép</text>
-  <rect x="141.2" y="16" width="56.8" height="20" rx="6" fill="#2e1065" stroke="#6d28d9" stroke-width="0.8"/>
-  <text x="169.6" y="30" fill="#c084fc" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">FAILOVER</text>
+  <text x="14" y="31" fill="#c084fc" font-size="12.5" font-weight="700" font-family="system-ui">Bộ Phát Sóng Kép</text>
+  <rect x="135.6" y="16" width="62.4" height="20" rx="6" fill="#2e1065" stroke="#6d28d9" stroke-width="0.8"/>
+  <text x="166.8" y="30" fill="#c084fc" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">WEBSOCKET</text>
   <g transform="translate(12, 46)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. FASTCONNECT WebSocket</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Kết nối WebSocket FastConnect</text>
   </g>
   <g transform="translate(12, 78)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. POLLING LIVE 2.5s</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Phát sóng delta ticks vi sai 60 FPS</text>
   </g>
   <g transform="translate(12, 110)">
     <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Snapshot 0ms Cold-Start</text>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Khởi động nguội 0ms tức thời</text>
   </g>
 </g>
 <!-- Node: echarts_treemap -->
-<g transform="translate(1030.0, 237.0)" filter="url(#nodeShadow)">
-  <rect width="210" height="150" rx="16" fill="#111827" stroke="#0284c7" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#38bdf8" font-size="12.5" font-weight="700" font-family="system-ui">Treemap ECharts</text>
-  <rect x="130.0" y="16" width="68.0" height="20" rx="6" fill="#082f49" stroke="#0284c7" stroke-width="0.8"/>
-  <text x="164.0" y="30" fill="#38bdf8" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">100% FOCUS</text>
+<g transform="translate(1028.0, 237.0)" filter="url(#nodeShadow)">
+  <rect width="212" height="150" rx="16" fill="#111827" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#38bdf8" font-size="12.5" font-weight="700" font-family="system-ui">Bản Đồ Nhiệt Treemap</text>
+  <rect x="126.4" y="16" width="73.6" height="20" rx="6" fill="#082f49" stroke="#0284c7" stroke-width="0.8"/>
+  <text x="163.2" y="30" fill="#38bdf8" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">ECHARTS 5.4</text>
   <g transform="translate(12, 46)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. ZRender Centroid Hook</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Căn giữa trọng tâm ZRender Hook</text>
   </g>
   <g transform="translate(12, 78)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Ẩn chữ ô nhỏ &lt; 38px</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Tự ẩn nhãn ô diện tích nhỏ &lt; 38px</text>
   </g>
   <g transform="translate(12, 110)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Hiệu ứng chớp Flash</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Hiệu ứng chớp Flash khi khớp lệnh</text>
   </g>
 </g>
 <!-- Node: responsive_drawer -->
-<g transform="translate(1030.0, 403.0)" filter="url(#nodeShadow)">
-  <rect width="210" height="150" rx="16" fill="#111827" stroke="#d97706" stroke-width="1.5"/>
-  <text x="14" y="31" fill="#fbbf24" font-size="12.5" font-weight="700" font-family="system-ui">Responsive Drawer</text>
-  <rect x="135.6" y="16" width="62.4" height="20" rx="6" fill="#451a03" stroke="#b45309" stroke-width="0.8"/>
-  <text x="166.8" y="30" fill="#fbbf24" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">INSPECTOR</text>
+<g transform="translate(1028.0, 403.0)" filter="url(#nodeShadow)">
+  <rect width="212" height="150" rx="16" fill="#111827" stroke="#d97706" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#fbbf24" font-size="12.5" font-weight="700" font-family="system-ui">Ngăn Kéo Bảng Soi</text>
+  <rect x="143.2" y="16" width="56.8" height="20" rx="6" fill="#451a03" stroke="#b45309" stroke-width="0.8"/>
+  <text x="171.6" y="30" fill="#fbbf24" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">BẢNG SOI</text>
   <g transform="translate(12, 46)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Thanh độ rộng 3 màu</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">1. Thước đo độ rộng 3 màu trực quan</text>
   </g>
   <g transform="translate(12, 78)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Top 6 ngành dòng tiền</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">2. Top 6 ngành thu hút dòng tiền</text>
   </g>
   <g transform="translate(12, 110)">
-    <rect width="186" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
-    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Bảng soi con trỏ chuột</text>
+    <rect width="188" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="9.5" font-weight="600" font-family="system-ui">3. Bảng soi chi tiết theo con trỏ chuột</text>
   </g>
 </g>
 
       <!-- Footer Branding -->
-      <text x="40" y="682" fill="#4b5563" font-size="11" font-family="monospace">Super AI Layout Engine • Dynamic Bezier Graph Routing • Zero-Wrap Vector Canvas</text>
+      <text x="40" y="682" fill="#4b5563" font-size="11" font-family="monospace">Diagram Maker Engine • Dynamic Bezier Graph Routing • Zero-Wrap Vector Canvas</text>
     </svg>
   </div>
 

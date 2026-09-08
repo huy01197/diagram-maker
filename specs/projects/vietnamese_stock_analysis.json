@@ -1,0 +1,35 @@
+{
+  "title": "Vietnamese Stock Analysis - Kiến Trúc Medallion Parquet Lakehouse & Terminal Đa Khung",
+  "eyebrow": "MEDALLION ARCHITECTURE · COLUMNAR LAKEHOUSE · MULTI-PANE QUANT ENGINE",
+  "topology": "medallion",
+  "width": 1320,
+  "height": 915,
+  "metrics": [
+    { "label": "Truy Vấn Cột Parquet", "value": "< 250 ms (1.500+ Mã)", "color": "#38bdf8" },
+    { "label": "Chuẩn Nén Snappy", "value": "-85% Disk Storage", "color": "#34d399" },
+    { "label": "Đồ Thị Kỹ Thuật", "value": "4 Panes Plotly Synced", "color": "#fbbf24" },
+    { "label": "Kiến Trúc Dữ Liệu", "value": "Medallion Bronze → Platinum", "color": "#c084fc" }
+  ],
+  "footer_notes": [
+    {
+      "color": "#f59e0b",
+      "title": "TẦNG BRONZE LAKE",
+      "desc": "Thu thập tự động 10+ năm lịch sử CafeF Upto ZIP toàn thị trường, kiểm tra mã MD5 và giải nén đa luồng song song."
+    },
+    {
+      "color": "#06b6d4",
+      "title": "TẦNG SILVER PARQUET",
+      "desc": "Chuẩn hóa schema cột OHLCV, nén Snappy tiết kiệm 85% dung lượng đĩa, tốc độ đọc nhanh gấp 10x so với CSV."
+    },
+    {
+      "color": "#a855f7",
+      "title": "TẦNG GOLD FEATURE STORE",
+      "desc": "Kho tính toán chỉ báo kỹ thuật (SMA, MACD, RSI, Bollinger) và phân bổ dòng tiền 15 ngành tối ưu cho phân tích định lượng."
+    },
+    {
+      "color": "#089981",
+      "title": "TẦNG PLATINUM TERMINAL",
+      "desc": "Giao diện Streamlit Dark Terminal với biểu đồ 4 tầng Plotly đồng bộ (Nến, Khối lượng, MACD, RSI) kết xuất WebGL siêu tốc."
+    }
+  ]
+}

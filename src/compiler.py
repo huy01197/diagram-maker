@@ -4,8 +4,6 @@ Chuyển đổi khai báo đồ thị (JSON AST) thành SVG Vector với thuật
 Tuân thủ chuẩn Institutional Dark Terminal.
 """
 
-import json
-import os
 import html
 
 COLOR_PALETTE = {
@@ -353,8 +351,8 @@ class GraphCompiler:
             nodes_svg.append(self.render_node(n_id, n_layout))
         nodes_rendered = "\n".join(nodes_svg)
 
-        # Header Category Badge: Thiết kế theo chuẩn Illustrator Extra Width (bán kính rx=12 + 11px padding đối xứng mỗi bên = +46)
-        cat_badge_w = len(self.category) * 7.6 + 46
+        # Header Category Badge: Thiết kế theo chuẩn Illustrator Extra Width (bán kính rx=12 + padding chuẩn tiếng Việt)
+        cat_badge_w = len(self.category) * 8.2 + 48
         cat_esc = html.escape(self.category)
         title_esc = html.escape(self.title)
         sub_esc = html.escape(self.subtitle)
@@ -365,12 +363,15 @@ class GraphCompiler:
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{title_esc}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {{
       background-color: #0a0e17;
       color: #f3f4f6;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
       overflow: hidden;
     }}
@@ -521,21 +522,3 @@ class GraphCompiler:
 </html>"""
         return html_output
 
-if __name__ == "__main__":
-    cur_dir = os.path.dirname(os.path.abspath(__file__))
-    spec_path = os.path.join(cur_dir, "sample_diagram_spec.json")
-    
-    if os.path.exists(spec_path):
-        with open(spec_path, "r", encoding="utf-8") as f:
-            spec = json.load(f)
-    else:
-        raise FileNotFoundError(f"Spec file not found: {spec_path}")
-
-    compiler = GraphCompiler(spec)
-    out_html = compiler.compile_to_html()
-    
-    out_path = os.path.join(cur_dir, "generated_diagram.html")
-    with open(out_path, "w", encoding="utf-8") as f:
-        f.write(out_html)
-        
-    print(f"-> Đã biên dịch thành công sơ đồ động: {out_path}")

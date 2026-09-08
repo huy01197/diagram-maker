@@ -1,7 +1,7 @@
 {
   "title": "Kiến Trúc Toàn Trình Telegram Stock Bot",
   "category": "HỆ THỐNG PHÁT TÍN HIỆU ĐẦU TƯ TỰ ĐỘNG",
-  "subtitle": "Mô hình Clean 4-Layer: Auto-Fallback 3 lớp, Phân tích đa nhân tố (TA + CANSLIM) và Telegram Engine",
+  "subtitle": "Mô hình 5 tầng Clean Architecture: Tự động chuyển đổi dự phòng 3 lớp, Phân tích đồng thuận đa nhân tố (Kỹ thuật + CANSLIM) và Bot Telegram",
   "columns": [
     {
       "id": "col_ingestion",
@@ -14,20 +14,20 @@
           "width": 210,
           "items": [
             "1. Nến lịch sử & trong phiên",
-            "2. Direct Financial REST",
+            "2. Kết nối Direct REST API",
             "3. Khởi động nhanh 1.2s"
           ]
         },
         {
           "id": "kbs_priceboard",
           "title": "KBS Priceboard",
-          "badge": "LIVE BOARD",
+          "badge": "BẢNG GIÁ SỐNG",
           "color": "emerald",
           "width": 210,
           "items": [
             "1. Bảng giá khớp lệnh sống",
-            "2. Giao dịch Khối ngoại",
-            "3. Khử hoàn toàn vnstock"
+            "2. Theo dõi giao dịch Khối ngoại",
+            "3. Tự chủ dữ liệu hoàn toàn"
           ]
         }
       ]
@@ -37,26 +37,26 @@
       "nodes": [
         {
           "id": "cafef_scraper",
-          "title": "CafeF Scraper",
-          "badge": "FALLBACK",
+          "title": "CafeF Scraper Dự Phòng",
+          "badge": "DỰ PHÒNG",
           "color": "amber",
           "width": 210,
           "items": [
             "1. 4 lớp kỹ thuật chống WAF",
-            "2. Header spoofing rotation",
-            "3. Exponential Backoff"
+            "2. Xoay vòng Header User-Agent",
+            "3. Cơ chế Exponential Backoff"
           ]
         },
         {
           "id": "sqlite_cache",
-          "title": "SQLite Cache TTL",
-          "badge": "TTL BUFFER",
+          "title": "Bộ Đệm SQLite TTL",
+          "badge": "BỘ ĐỆM TTL",
           "color": "purple",
           "width": 210,
           "items": [
-            "1. Phân tầng 15m / 3m / 24h",
-            "2. Bản sao an toàn rớt mạng",
-            "3. Zero file rác ổ cứng"
+            "1. Phân tầng TTL 15m / 3m / 24h",
+            "2. Bộ đệm an toàn khi mất mạng",
+            "3. Không tạo tệp rác trên đĩa"
           ]
         }
       ]
@@ -66,26 +66,26 @@
       "nodes": [
         {
           "id": "ta_engine",
-          "title": "Kỹ Thuật TA",
+          "title": "Phân Tích Kỹ Thuật (TA)",
           "badge": "EMA + RSI",
           "color": "sky",
           "width": 210,
           "items": [
-            "1. Golden Cross EMA 20/50",
+            "1. Điểm giao cắt EMA 20/50",
             "2. RSI 14 Wilder Smoothing",
-            "3. Phân kỳ MACD Histogram"
+            "3. Phân kỳ MACD Histogram > 0"
           ]
         },
         {
           "id": "canslim_engine",
-          "title": "Tăng Trưởng FA",
-          "badge": "CANSLIM",
+          "title": "Tăng Trưởng Cơ Bản (FA)",
+          "badge": "CANSLIM SEPA",
           "color": "emerald",
           "width": 210,
           "items": [
-            "1. ROE >= 15%, LNST >= 15%",
-            "2. Nợ vay/VCSH <= 2.0",
-            "3. Volume >= 1.5x MA20"
+            "1. Tỷ suất ROE >= 15%, LNST >= 15%",
+            "2. Hệ số Nợ vay / VCSH <= 2.0",
+            "3. Khối lượng bùng nổ >= 1.5x MA20"
           ]
         }
       ]
@@ -95,26 +95,26 @@
       "nodes": [
         {
           "id": "composite_scorer",
-          "title": "Composite Score",
-          "badge": "0-100",
+          "title": "Đồng Thuận Định Lượng",
+          "badge": "ĐIỂM 0-100",
           "color": "amber",
           "width": 210,
           "items": [
-            "1. Đồng thuận TA + CANSLIM",
-            "2. Xếp hạng STRONG BUY/BUY",
-            "3. Quản trị R:R vàng 1:2"
+            "1. Đồng thuận đa nhân tố TA + FA",
+            "2. Phân loại STRONG BUY / BUY / HOLD",
+            "3. Quản trị rủi ro tỷ lệ vàng 1:2"
           ]
         },
         {
           "id": "backtest_engine",
-          "title": "Kiểm Định Lịch Sử",
+          "title": "Kiểm Định Hiệu Năng",
           "badge": "BACKTEST",
           "color": "rose",
           "width": 210,
           "items": [
-            "1. Khấu trừ 0.3% thuế & phí",
-            "2. Đo lường Win Rate %",
-            "3. Max Drawdown & Profit"
+            "1. Khấu trừ 0.3% thuế & phí môi giới",
+            "2. Đo lường tỷ lệ thắng Win Rate %",
+            "3. Mức sụt giảm Max Drawdown & PF"
           ]
         }
       ]
@@ -129,21 +129,21 @@
           "color": "sky",
           "width": 210,
           "items": [
-            "1. Async Controller v20+",
-            "2. Nhận diện mã tự nhiên",
-            "3. Watchlist Alerts tự động"
+            "1. Bộ điều khiển Async Bot v20+",
+            "2. Nhận diện lệnh tự nhiên /signal",
+            "3. Cảnh báo danh mục Watchlist tự động"
           ]
         },
         {
           "id": "chart_renderer",
-          "title": "Đồ Thị Nến Nhật",
+          "title": "Đồ Thị Nến Nhật RAM",
           "badge": "BYTESIO",
           "color": "emerald",
           "width": 210,
           "items": [
-            "1. Matplotlib Agg headless",
-            "2. Nén RAM io.BytesIO (0.35s)",
-            "3. Thẻ Card định dạng chuẩn"
+            "1. Vẽ trên bộ nhớ RAM io.BytesIO",
+            "2. Kết xuất đồ thị nén trong 0.35s",
+            "3. Thẻ khuyến nghị trực quan chuẩn hóa"
           ]
         }
       ]
@@ -152,32 +152,33 @@
   "connections": [
     {
       "from": "direct_dchart",
+      "to": "sqlite_cache",
+      "color": "sky",
+      "animated": true,
+      "glow": true
+    },
+    {
+      "from": "direct_dchart",
       "to": "cafef_scraper",
       "color": "amber",
       "animated": true
     },
     {
-      "from": "cafef_scraper",
-      "to": "ta_engine",
-      "color": "sky",
+      "from": "kbs_priceboard",
+      "to": "sqlite_cache",
+      "color": "emerald",
       "animated": true
     },
     {
-      "from": "ta_engine",
-      "to": "composite_scorer",
+      "from": "cafef_scraper",
+      "to": "ta_engine",
       "color": "amber",
       "animated": true
     },
     {
-      "from": "composite_scorer",
-      "to": "telegram_controller",
+      "from": "sqlite_cache",
+      "to": "ta_engine",
       "color": "sky",
-      "animated": true
-    },
-    {
-      "from": "kbs_priceboard",
-      "to": "sqlite_cache",
-      "color": "purple",
       "animated": true
     },
     {
@@ -187,34 +188,39 @@
       "animated": true
     },
     {
-      "from": "canslim_engine",
-      "to": "backtest_engine",
-      "color": "rose",
+      "from": "ta_engine",
+      "to": "composite_scorer",
+      "color": "sky",
       "animated": true
     },
     {
-      "from": "backtest_engine",
-      "to": "chart_renderer",
+      "from": "canslim_engine",
+      "to": "composite_scorer",
       "color": "emerald",
       "animated": true
     },
     {
-      "from": "direct_dchart",
-      "to": "sqlite_cache",
-      "color": "sky",
-      "animated": false,
-      "glow": true
+      "from": "ta_engine",
+      "to": "backtest_engine",
+      "color": "rose",
+      "animated": false
     },
     {
-      "from": "sqlite_cache",
-      "to": "ta_engine",
-      "color": "purple",
+      "from": "canslim_engine",
+      "to": "backtest_engine",
+      "color": "rose",
       "animated": false
     },
     {
       "from": "composite_scorer",
-      "to": "chart_renderer",
+      "to": "telegram_controller",
       "color": "amber",
+      "animated": true
+    },
+    {
+      "from": "composite_scorer",
+      "to": "chart_renderer",
+      "color": "sky",
       "animated": true
     },
     {
@@ -222,6 +228,12 @@
       "to": "telegram_controller",
       "color": "rose",
       "animated": true
+    },
+    {
+      "from": "backtest_engine",
+      "to": "chart_renderer",
+      "color": "emerald",
+      "animated": false
     }
   ]
 }

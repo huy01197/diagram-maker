@@ -1,11 +1,18 @@
 """
-diagram-maker: Institutional Vector Flowchart & Architecture Diagram Engine
-Auto-layouts declarative JSON specs into 100% vector SVG/HTML canvases with dynamic Bezier wiring.
+diagram-maker Package
+Thư viện sinh sơ đồ kiến trúc Vector SVG & HTML chuẩn Institutional Financial Terminal.
 """
 
-from .compiler import GraphCompiler, COLOR_PALETTE
-from .slide_compiler import SlideCompiler
-from .cli import compile_spec, compile_file
+from .engine import DiagramEngine, TOPOLOGY_REGISTRY
+from .topologies.streaming_topology import StreamingTopologyCompiler
+from .topologies.interactive_loop import InteractiveLoopCompiler
+from .topologies.medallion_lakehouse import MedallionLakehouseCompiler
 
-__version__ = "1.0.0"
-__all__ = ["GraphCompiler", "SlideCompiler", "compile_spec", "compile_file", "COLOR_PALETTE"]
+__version__ = "2.0.0"
+__all__ = [
+    "DiagramEngine",
+    "StreamingTopologyCompiler",
+    "InteractiveLoopCompiler",
+    "MedallionLakehouseCompiler",
+    "TOPOLOGY_REGISTRY"
+]
