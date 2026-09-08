@@ -1,5 +1,5 @@
 """
-Super AI Layout & Diagram Engine - Graph Compiler
+Diagram Maker Engine - Graph Compiler
 Chuyển đổi khai báo đồ thị (JSON AST) thành SVG Vector với thuật toán Auto-Layout & Bezier Routing.
 Tuân thủ chuẩn Institutional Dark Terminal.
 """
@@ -499,7 +499,7 @@ class GraphCompiler:
       {nodes_rendered}
 
       <!-- Footer Branding -->
-      <text x="{self.padding_x}" y="682" fill="#4b5563" font-size="11" font-family="monospace">Super AI Layout Engine • Dynamic Bezier Graph Routing • Zero-Wrap Vector Canvas</text>
+      <text x="{self.padding_x}" y="682" fill="#4b5563" font-size="11" font-family="monospace">Diagram Maker Engine • Dynamic Bezier Graph Routing • Zero-Wrap Vector Canvas</text>
     </svg>
   </div>
 
