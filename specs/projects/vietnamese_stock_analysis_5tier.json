@@ -1,0 +1,215 @@
+{
+  "title": "Kiến Trúc Toàn Trình Vietnamese Stock Analysis Terminal",
+  "category": "HỆ THỐNG ĐỊNH LƯỢNG VÀ PHÂN TÍCH KỸ THUẬT",
+  "subtitle": "Quy trình ETL tự động CafeF, lưu trữ Parquet Snappy, động cơ Heuristic 5 lớp và Chart Terminal",
+  "columns": [
+    {
+      "id": "col_ingestion",
+      "nodes": [
+        {
+          "id": "cafef_crawler",
+          "title": "CafeF Auto-ETL",
+          "badge": "15:30 EOD",
+          "color": "sky",
+          "width": 210,
+          "items": [
+            "1. Tự quét mốc sau 15:30",
+            "2. Tải ZIP 3 sàn & Index",
+            "3. Checkpoint history.json"
+          ]
+        },
+        {
+          "id": "unzip_parser",
+          "title": "Memory Unzipper",
+          "badge": "ZERO-IO",
+          "color": "emerald",
+          "width": 210,
+          "items": [
+            "1. Giải nén luồng bộ nhớ",
+            "2. Pandas Vectorized clean",
+            "3. Khử trùng lặp đa sàn"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "col_storage",
+      "nodes": [
+        {
+          "id": "parquet_store",
+          "title": "Apache Parquet",
+          "badge": "SNAPPY",
+          "color": "emerald",
+          "width": 210,
+          "items": [
+            "1. Lưu trữ cột Snappy",
+            "2. Phân vùng Ngày & Sàn",
+            "3. Tỷ lệ nén dữ liệu 85%"
+          ]
+        },
+        {
+          "id": "mmap_cache",
+          "title": "Bộ Nhớ MMap",
+          "badge": "< 250MS",
+          "color": "sky",
+          "width": 210,
+          "items": [
+            "1. Nạp sẵn 1,500+ mã CP",
+            "2. Zero-Copy RAM Caching",
+            "3. Cắt lát dữ liệu tức thì"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "col_quant",
+      "nodes": [
+        {
+          "id": "indicator_suite",
+          "title": "Chỉ Báo Kỹ Thuật",
+          "badge": "MULTI-TIER",
+          "color": "amber",
+          "width": 210,
+          "items": [
+            "1. Xu hướng: SMA, EMA",
+            "2. Biến động: Bollinger",
+            "3. Động lượng: MACD, RSI"
+          ]
+        },
+        {
+          "id": "heuristic_engine",
+          "title": "Heuristic Rating",
+          "badge": "EXPERT RULE",
+          "color": "purple",
+          "width": 210,
+          "items": [
+            "1. Quét Golden/Death Cross",
+            "2. Cảnh báo Volume > 1.5x",
+            "3. Xếp hạng Tích cực/Xấu"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "col_screener",
+      "nodes": [
+        {
+          "id": "market_pulse",
+          "title": "Độ Rộng Thị Trường",
+          "badge": "BREADTH",
+          "color": "indigo",
+          "width": 210,
+          "items": [
+            "1. Tỷ lệ Tăng / TC / Giảm",
+            "2. Đồng hồ đo Gauge Plotly",
+            "3. Bảng xếp hạng Top 10"
+          ]
+        },
+        {
+          "id": "peer_benchmarker",
+          "title": "Tương Quan Giá",
+          "badge": "% RETURN",
+          "color": "rose",
+          "width": 210,
+          "items": [
+            "1. Chuẩn hóa gốc 0.0%",
+            "2. Khung YTD / 1M / 1Y",
+            "3. Đối chuẩn VN-Index"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "col_ui",
+      "nodes": [
+        {
+          "id": "subprocess_runtime",
+          "title": "Streamlit Runtime",
+          "badge": "AUTO-RUN",
+          "color": "sky",
+          "width": 210,
+          "items": [
+            "1. Subprocess Auto Wrapper",
+            "2. Bố cục Wide Terminal",
+            "3. Quản lý Session State"
+          ]
+        },
+        {
+          "id": "plotly_terminal",
+          "title": "Đồ Thị Nến Plotly",
+          "badge": "TRADINGVIEW",
+          "color": "emerald",
+          "width": 210,
+          "items": [
+            "1. Bố cục 4 tầng độc lập",
+            "2. Tooltip OCHLV chi tiết",
+            "3. Đa khung thời gian D/W/M"
+          ]
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "cafef_crawler",
+      "to": "parquet_store",
+      "color": "sky",
+      "animated": true
+    },
+    {
+      "from": "unzip_parser",
+      "to": "mmap_cache",
+      "color": "emerald",
+      "animated": true
+    },
+    {
+      "from": "parquet_store",
+      "to": "indicator_suite",
+      "color": "amber",
+      "animated": true
+    },
+    {
+      "from": "mmap_cache",
+      "to": "heuristic_engine",
+      "color": "purple",
+      "animated": true
+    },
+    {
+      "from": "parquet_store",
+      "to": "mmap_cache",
+      "color": "sky",
+      "animated": false,
+      "glow": true
+    },
+    {
+      "from": "indicator_suite",
+      "to": "market_pulse",
+      "color": "indigo",
+      "animated": true
+    },
+    {
+      "from": "heuristic_engine",
+      "to": "peer_benchmarker",
+      "color": "rose",
+      "animated": true
+    },
+    {
+      "from": "market_pulse",
+      "to": "subprocess_runtime",
+      "color": "sky",
+      "animated": true
+    },
+    {
+      "from": "peer_benchmarker",
+      "to": "plotly_terminal",
+      "color": "emerald",
+      "animated": true
+    },
+    {
+      "from": "indicator_suite",
+      "to": "plotly_terminal",
+      "color": "amber",
+      "animated": true
+    }
+  ]
+}

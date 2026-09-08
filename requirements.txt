@@ -1,0 +1,4 @@
+# diagram-maker dependencies
+# Built entirely with standard library (Zero heavy external runtime dependencies)
+# Optional validation:
+# jsonschema>=4.20.0

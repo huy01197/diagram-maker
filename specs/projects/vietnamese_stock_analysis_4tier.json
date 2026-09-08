@@ -1,0 +1,142 @@
+{
+  "title": "Kiến Trúc Vietnamese Stock Analysis Terminal",
+  "category": "HỆ THỐNG PHÂN TÍCH CHỨNG KHOÁN",
+  "subtitle": "Quy trình ETL dữ liệu cột Apache Parquet và Động cơ định lượng đa tầng",
+  "columns": [
+    {
+      "id": "col_ingestion",
+      "nodes": [
+        {
+          "id": "cafef_source",
+          "title": "Dữ Liệu CafeF EOD",
+          "badge": "DAILY ETL",
+          "subtitle": "Tự động tải tệp nén ZIP / CSV",
+          "meta": "HOSE • HNX • UPCoM • Index",
+          "color": "sky",
+          "width": 210,
+          "height": 108
+        }
+      ]
+    },
+    {
+      "id": "col_storage",
+      "nodes": [
+        {
+          "id": "parquet_engine",
+          "title": "Lưu Trữ Cột Parquet",
+          "badge": "SNAPPY",
+          "color": "emerald",
+          "width": 270,
+          "items": [
+            "1. Pandas Vectorized Parser",
+            "2. Apache Parquet Columnar",
+            "3. Phân vùng theo ngày & sàn"
+          ]
+        },
+        {
+          "id": "cache_engine",
+          "title": "Streamlit Cache",
+          "badge": "< 250MS",
+          "color": "sky",
+          "width": 270,
+          "items": [
+            "1. Memory-Mapped I/O Zero-Copy",
+            "2. Nạp sẵn 1,500+ mã cổ phiếu",
+            "3. Cắt lát dữ liệu tức thời"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "col_quant",
+      "nodes": [
+        {
+          "id": "indicator_engine",
+          "title": "Chỉ Báo Kỹ Thuật",
+          "badge": "MULTI-TIER",
+          "color": "amber",
+          "width": 270,
+          "items": [
+            "1. Xu hướng: SMA, EMA",
+            "2. Biến động: Bollinger Bands",
+            "3. Động lượng: RSI 14, MACD"
+          ],
+          "bottom_box": "Quét Golden/Death Cross"
+        },
+        {
+          "id": "market_breadth",
+          "title": "Độ Rộng & Sàng Lọc",
+          "badge": "BREADTH",
+          "color": "indigo",
+          "width": 270,
+          "items": [
+            "1. Tỷ lệ Tăng / Giảm / Đứng giá",
+            "2. Bảng xếp hạng Top 10 ba sàn",
+            "3. Cảnh báo Volume >= 1.5x MA20"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "col_ui",
+      "nodes": [
+        {
+          "id": "chart_terminal",
+          "title": "Đồ Thị Nến Plotly",
+          "badge": "TRADINGVIEW",
+          "subtitle": "Bố cục 4 tầng tách biệt",
+          "meta": "Giá • Volume • MACD • RSI",
+          "color": "sky",
+          "width": 210,
+          "height": 108
+        },
+        {
+          "id": "relative_perf",
+          "title": "So Sánh Tương Quan",
+          "badge": "% RETURN",
+          "subtitle": "Chuẩn hóa mốc 0% đa mã",
+          "meta": "Đối chuẩn sức mạnh giá YTD",
+          "color": "rose",
+          "width": 210,
+          "height": 108
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "cafef_source",
+      "to": "parquet_engine",
+      "color": "emerald"
+    },
+    {
+      "from": "cafef_source",
+      "to": "cache_engine",
+      "color": "sky"
+    },
+    {
+      "from": "parquet_engine",
+      "to": "indicator_engine",
+      "color": "emerald",
+      "animated": true
+    },
+    {
+      "from": "cache_engine",
+      "to": "market_breadth",
+      "color": "sky",
+      "animated": true
+    },
+    {
+      "from": "indicator_engine",
+      "to": "chart_terminal",
+      "color": "amber",
+      "glow": true
+    },
+    {
+      "from": "market_breadth",
+      "to": "relative_perf",
+      "color": "indigo",
+      "glow": true
+    }
+  ]
+}

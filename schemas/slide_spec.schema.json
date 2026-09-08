@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SlideSpec",
+  "description": "Schema for Institutional Glassmorphic Presentation Slides in diagram-maker",
+  "type": "object",
+  "required": ["title", "branches"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Main title of the presentation slide"
+    },
+    "category": {
+      "type": "string",
+      "description": "Category badge pill placed above title"
+    },
+    "badge": {
+      "type": "string",
+      "description": "Top-right highlight badge"
+    },
+    "branches": {
+      "type": "array",
+      "description": "List of thematic comparison or category branch cards",
+      "items": {
+        "type": "object",
+        "required": ["name", "rules"],
+        "properties": {
+          "name": { "type": "string" },
+          "weight": { "type": "string" },
+          "color": {
+            "type": "string",
+            "enum": ["sky", "emerald", "amber", "rose", "purple", "indigo", "slate"]
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["title", "desc"],
+              "properties": {
+                "title": { "type": "string" },
+                "desc": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

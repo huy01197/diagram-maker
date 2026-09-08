@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kiến Trúc Vietnamese Stock Analysis Terminal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #0a0e17;
+      color: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      overflow: hidden;
+    }
+    .diagram-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      box-sizing: border-box;
+      background: radial-gradient(circle at 50% 40%, #111a2e 0%, #0a0e17 100%);
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+      max-width: 1280px;
+      max-height: 720px;
+      filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.8));
+    }
+    .glow-line {
+      stroke-dasharray: 8 4;
+      animation: dash 30s linear infinite;
+    }
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -1000;
+      }
+    }
+    #scale-indicator {
+      position: fixed;
+      bottom: 14px;
+      right: 16px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #38bdf8;
+      font-family: monospace;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="diagram-container">
+    <svg viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Gradients -->
+        <linearGradient id="bgGrad" x1="0" y1="0" x2="1280" y2="720" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#111827"/>
+          <stop offset="1" stop-color="#0b1120"/>
+        </linearGradient>
+        <linearGradient id="blueGlow" x1="0" y1="0" x2="1" y2="0">
+          <stop stop-color="#38bdf8"/>
+          <stop offset="1" stop-color="#818cf8"/>
+        </linearGradient>
+        <linearGradient id="emeraldGlow" x1="0" y1="0" x2="1" y2="0">
+          <stop stop-color="#10b981"/>
+          <stop offset="1" stop-color="#34d399"/>
+        </linearGradient>
+        <linearGradient id="amberGlow" x1="0" y1="0" x2="1" y2="0">
+          <stop stop-color="#f59e0b"/>
+          <stop offset="1" stop-color="#fbbf24"/>
+        </linearGradient>
+        <linearGradient id="roseGlow" x1="0" y1="0" x2="1" y2="0">
+          <stop stop-color="#f43f5e"/>
+          <stop offset="1" stop-color="#fb7185"/>
+        </linearGradient>
+        <linearGradient id="indigoGlow" x1="0" y1="0" x2="1" y2="0">
+          <stop stop-color="#6366f1"/>
+          <stop offset="1" stop-color="#818cf8"/>
+        </linearGradient>
+        <linearGradient id="purpleGlow" x1="0" y1="0" x2="1" y2="0">
+          <stop stop-color="#a855f7"/>
+          <stop offset="1" stop-color="#c084fc"/>
+        </linearGradient>
+        <linearGradient id="slateGlow" x1="0" y1="0" x2="1" y2="0">
+          <stop stop-color="#64748b"/>
+          <stop offset="1" stop-color="#94a3b8"/>
+        </linearGradient>
+
+        <!-- Drop Shadow Filters -->
+        <filter id="nodeShadow" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.6"/>
+        </filter>
+        <!-- Directional Arrowhead Markers -->
+        <marker id="arrow-sky" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38bdf8"/>
+        </marker>
+        <marker id="arrow-emerald" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#34d399"/>
+        </marker>
+        <marker id="arrow-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#fbbf24"/>
+        </marker>
+        <marker id="arrow-rose" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#fb7185"/>
+        </marker>
+        <marker id="arrow-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#c084fc"/>
+        </marker>
+        <marker id="arrow-indigo" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#818cf8"/>
+        </marker>
+        <marker id="arrow-slate" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#94a3b8"/>
+        </marker>
+      </defs>
+
+      <!-- Canvas Frame -->
+      <rect x="2" y="2" width="1276" height="716" rx="24" fill="url(#bgGrad)" stroke="#1f2937" stroke-width="1.5"/>
+
+      <!-- Header -->
+      <g transform="translate(60, 48)">
+        <rect width="274.0" height="24" rx="12" fill="#064e3b" fill-opacity="0.6" stroke="#059669" stroke-width="1"/>
+        <text x="137.0" y="16" fill="#34d399" font-size="11" font-weight="700" font-family="system-ui" letter-spacing="1" text-anchor="middle">HỆ THỐNG PHÂN TÍCH CHỨNG KHOÁN</text>
+        <text x="0" y="52" fill="#ffffff" font-size="26" font-weight="800" font-family="system-ui">Kiến Trúc Vietnamese Stock Analysis Terminal</text>
+        <text x="0" y="74" fill="#9ca3af" font-size="13" font-family="system-ui">Quy trình ETL dữ liệu cột Apache Parquet và Động cơ định lượng đa tầng</text>
+      </g>
+
+      <!-- BEZIER DYNAMIC WIRES -->
+<path d="M 270.0 395.0 C 302.1 395.0, 302.1 311.0, 334.2 311.0" stroke="#34d399" stroke-width="1.6" stroke-opacity="0.65" fill="none"   marker-end="url(#arrow-emerald)"/>
+<path d="M 270.0 395.0 C 302.1 395.0, 302.1 479.0, 334.2 479.0" stroke="#38bdf8" stroke-width="1.6" stroke-opacity="0.65" fill="none"   marker-end="url(#arrow-sky)"/>
+<path d="M 606.7 311.0 C 638.8 311.0, 638.8 311.0, 670.8 311.0" stroke="#34d399" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-emerald)"/>
+<path d="M 606.7 479.0 C 638.8 479.0, 638.8 498.0, 670.8 498.0" stroke="#38bdf8" stroke-width="2.2" stroke-opacity="0.9" fill="none" class="glow-line"  marker-end="url(#arrow-sky)"/>
+<path d="M 943.3 311.0 C 975.4 311.0, 975.4 332.0, 1007.5 332.0" stroke="#fbbf24" stroke-width="2.2" stroke-opacity="0.9" fill="none"  filter="url(#glowEffect)" marker-end="url(#arrow-amber)"/>
+<path d="M 943.3 498.0 C 975.4 498.0, 975.4 458.0, 1007.5 458.0" stroke="#818cf8" stroke-width="2.2" stroke-opacity="0.9" fill="none"  filter="url(#glowEffect)" marker-end="url(#arrow-indigo)"/>
+
+      <!-- Node: cafef_source -->
+<g transform="translate(60.0, 341.0)" filter="url(#nodeShadow)">
+  <rect width="210" height="108" rx="16" fill="#111827" stroke="#0284c7" stroke-width="1.5"/>
+  <rect x="1" y="1" width="208" height="28" rx="14" fill="#1f2937" fill-opacity="0.5"/>
+  <circle cx="16" cy="15" r="3" fill="#38bdf8"/>
+  <text x="24" y="18.5" fill="#38bdf8" font-size="9.5" font-weight="700" font-family="monospace">DAILY ETL</text>
+  <text x="16" y="52" fill="#ffffff" font-size="14.5" font-weight="700" font-family="system-ui">Dữ Liệu CafeF EOD</text>
+  <text x="16" y="73" fill="#9ca3af" font-size="11.5" font-family="system-ui">Tự động tải tệp nén ZIP / CSV</text>
+  <text x="16" y="92" fill="#38bdf8" font-size="10.5" font-weight="600" font-family="monospace">HOSE • HNX • UPCoM • Index</text>
+</g>
+<!-- Node: parquet_engine -->
+<g transform="translate(336.7, 236.0)" filter="url(#nodeShadow)">
+  <rect width="270" height="150" rx="16" fill="#111827" stroke="#059669" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#34d399" font-size="13.5" font-weight="700" font-family="system-ui">Lưu Trữ Cột Parquet</text>
+  <rect x="205.2" y="16" width="52.8" height="20" rx="6" fill="#064e3b" stroke="#059669" stroke-width="0.8"/>
+  <text x="231.6" y="30" fill="#34d399" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">SNAPPY</text>
+  <g transform="translate(12, 46)">
+    <rect width="246" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="10.5" font-weight="600" font-family="system-ui">1. Pandas Vectorized Parser</text>
+  </g>
+  <g transform="translate(12, 78)">
+    <rect width="246" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="10.5" font-weight="600" font-family="system-ui">2. Apache Parquet Columnar</text>
+  </g>
+  <g transform="translate(12, 110)">
+    <rect width="246" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="10.5" font-weight="600" font-family="system-ui">3. Phân vùng theo ngày &amp; sàn</text>
+  </g>
+</g>
+<!-- Node: cache_engine -->
+<g transform="translate(336.7, 404.0)" filter="url(#nodeShadow)">
+  <rect width="270" height="150" rx="16" fill="#111827" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#38bdf8" font-size="13.5" font-weight="700" font-family="system-ui">Streamlit Cache</text>
+  <rect x="178.0" y="16" width="80.0" height="20" rx="6" fill="#082f49" stroke="#0284c7" stroke-width="0.8"/>
+  <text x="218.0" y="30" fill="#38bdf8" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">&lt; 250MS</text>
+  <g transform="translate(12, 46)">
+    <rect width="246" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="10.5" font-weight="600" font-family="system-ui">1. Memory-Mapped I/O Zero-Copy</text>
+  </g>
+  <g transform="translate(12, 78)">
+    <rect width="246" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="10.5" font-weight="600" font-family="system-ui">2. Nạp sẵn 1,500+ mã cổ phiếu</text>
+  </g>
+  <g transform="translate(12, 110)">
+    <rect width="246" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="10.5" font-weight="600" font-family="system-ui">3. Cắt lát dữ liệu tức thời</text>
+  </g>
+</g>
+<!-- Node: indicator_engine -->
+<g transform="translate(673.3, 217.0)" filter="url(#nodeShadow)">
+  <rect width="270" height="188" rx="16" fill="#111827" stroke="#d97706" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#fbbf24" font-size="13.5" font-weight="700" font-family="system-ui">Chỉ Báo Kỹ Thuật</text>
+  <rect x="178.0" y="16" width="80.0" height="20" rx="6" fill="#451a03" stroke="#b45309" stroke-width="0.8"/>
+  <text x="218.0" y="30" fill="#fbbf24" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">MULTI-TIER</text>
+  <g transform="translate(12, 46)">
+    <rect width="246" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="10.5" font-weight="600" font-family="system-ui">1. Xu hướng: SMA, EMA</text>
+  </g>
+  <g transform="translate(12, 78)">
+    <rect width="246" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="10.5" font-weight="600" font-family="system-ui">2. Biến động: Bollinger Bands</text>
+  </g>
+  <g transform="translate(12, 110)">
+    <rect width="246" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="10.5" font-weight="600" font-family="system-ui">3. Động lượng: RSI 14, MACD</text>
+  </g>
+  <g transform="translate(14, 154)">
+    <rect width="242" height="26" rx="7" fill="#1f2937" stroke="#374151" stroke-width="1"/>
+    <text x="10" y="17" fill="#fbbf24" font-size="9.5" font-weight="700" font-family="monospace">Quét Golden/Death Cross</text>
+  </g>
+</g>
+<!-- Node: market_breadth -->
+<g transform="translate(673.3, 423.0)" filter="url(#nodeShadow)">
+  <rect width="270" height="150" rx="16" fill="#111827" stroke="#4f46e5" stroke-width="1.5"/>
+  <text x="14" y="31" fill="#818cf8" font-size="13.5" font-weight="700" font-family="system-ui">Độ Rộng &amp; Sàng Lọc</text>
+  <rect x="198.4" y="16" width="59.6" height="20" rx="6" fill="#1e1b4b" stroke="#4338ca" stroke-width="0.8"/>
+  <text x="228.2" y="30" fill="#818cf8" font-size="9" font-weight="700" font-family="monospace" text-anchor="middle">BREADTH</text>
+  <g transform="translate(12, 46)">
+    <rect width="246" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="10.5" font-weight="600" font-family="system-ui">1. Tỷ lệ Tăng / Giảm / Đứng giá</text>
+  </g>
+  <g transform="translate(12, 78)">
+    <rect width="246" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="10.5" font-weight="600" font-family="system-ui">2. Bảng xếp hạng Top 10 ba sàn</text>
+  </g>
+  <g transform="translate(12, 110)">
+    <rect width="246" height="26" rx="6" fill="#1f2937" fill-opacity="0.6"/>
+    <text x="8" y="17" fill="#e5e7eb" font-size="10.5" font-weight="600" font-family="system-ui">3. Cảnh báo Volume &gt;= 1.5x MA20</text>
+  </g>
+</g>
+<!-- Node: chart_terminal -->
+<g transform="translate(1010.0, 278.0)" filter="url(#nodeShadow)">
+  <rect width="210" height="108" rx="16" fill="#111827" stroke="#0284c7" stroke-width="1.5"/>
+  <rect x="1" y="1" width="208" height="28" rx="14" fill="#1f2937" fill-opacity="0.5"/>
+  <circle cx="16" cy="15" r="3" fill="#38bdf8"/>
+  <text x="24" y="18.5" fill="#38bdf8" font-size="9.5" font-weight="700" font-family="monospace">TRADINGVIEW</text>
+  <text x="16" y="52" fill="#ffffff" font-size="14.5" font-weight="700" font-family="system-ui">Đồ Thị Nến Plotly</text>
+  <text x="16" y="73" fill="#9ca3af" font-size="11.5" font-family="system-ui">Bố cục 4 tầng tách biệt</text>
+  <text x="16" y="92" fill="#38bdf8" font-size="10.5" font-weight="600" font-family="monospace">Giá • Volume • MACD • RSI</text>
+</g>
+<!-- Node: relative_perf -->
+<g transform="translate(1010.0, 404.0)" filter="url(#nodeShadow)">
+  <rect width="210" height="108" rx="16" fill="#111827" stroke="#e11d48" stroke-width="1.5"/>
+  <rect x="1" y="1" width="208" height="28" rx="14" fill="#1f2937" fill-opacity="0.5"/>
+  <circle cx="16" cy="15" r="3" fill="#fb7185"/>
+  <text x="24" y="18.5" fill="#fb7185" font-size="9.5" font-weight="700" font-family="monospace">% RETURN</text>
+  <text x="16" y="52" fill="#ffffff" font-size="14.5" font-weight="700" font-family="system-ui">So Sánh Tương Quan</text>
+  <text x="16" y="73" fill="#9ca3af" font-size="11.5" font-family="system-ui">Chuẩn hóa mốc 0% đa mã</text>
+  <text x="16" y="92" fill="#fb7185" font-size="10.5" font-weight="600" font-family="monospace">Đối chuẩn sức mạnh giá YTD</text>
+</g>
+
+      <!-- Footer Branding -->
+      <text x="60" y="682" fill="#4b5563" font-size="11" font-family="monospace">Super AI Layout Engine • Dynamic Bezier Graph Routing • Zero-Wrap Vector Canvas</text>
+    </svg>
+  </div>
+
+  <div id="scale-indicator">Auto-Scaling Vector Canvas</div>
+  <script>
+    function updateScale() {
+      const svg = document.querySelector('svg');
+      if (!svg) return;
+      const rect = svg.getBoundingClientRect();
+      const scale = Math.round((rect.width / 1280) * 100);
+      const ind = document.getElementById('scale-indicator');
+      if (ind) ind.textContent = `Scale: ${scale}% (${Math.round(rect.width)}x${Math.round(rect.height)})`;
+    }
+    window.addEventListener('resize', updateScale);
+    window.addEventListener('DOMContentLoaded', updateScale);
+    updateScale();
+  </script>
+</body>
+</html>

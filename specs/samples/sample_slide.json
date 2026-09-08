@@ -1,0 +1,45 @@
+{
+  "title": "Mô Hình Định Lượng Đa Nhân Tố",
+  "category": "ĐỘ SÂU TÀI CHÍNH",
+  "badge": "Không Dùng 1 Chỉ Báo Đơn Lẻ",
+  "branches": [
+    {
+      "name": "Phân Tích Kỹ Thuật (TA)",
+      "weight": "50% Trọng số",
+      "color": "sky",
+      "rules": [
+        {
+          "title": "1. Xu Hướng (Trend)",
+          "desc": "Golden Cross EMA 20 > EMA 50"
+        },
+        {
+          "title": "2. Xung Lực (Momentum)",
+          "desc": "RSI 14 trong vùng 50 ≤ RSI < 70"
+        },
+        {
+          "title": "3. Động Lượng (MACD)",
+          "desc": "MACD Histogram > 0 mở rộng"
+        }
+      ]
+    },
+    {
+      "name": "Cơ Bản & Dòng Tiền (CANSLIM)",
+      "weight": "50% Trọng số",
+      "color": "emerald",
+      "rules": [
+        {
+          "title": "1. Kinh Doanh",
+          "desc": "ROE ≥ 15% (Lợi thế con hào kinh tế)"
+        },
+        {
+          "title": "2. Tăng Trưởng",
+          "desc": "LNST YoY ≥ 15% (Nợ vay/VCSH ≤ 2.0)"
+        },
+        {
+          "title": "3. Dòng Tiền",
+          "desc": "Volume bùng nổ ≥ 1.5× SMA20"
+        }
+      ]
+    }
+  ]
+}

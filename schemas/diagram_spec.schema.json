@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SuperAILayoutSpec",
+  "description": "JSON DSL Schema for Institutional Financial Architecture Diagrams",
+  "type": "object",
+  "required": [
+    "title",
+    "category",
+    "columns",
+    "connections"
+  ],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Diagram title"
+    },
+    "category": {
+      "type": "string",
+      "description": "Pill category title in UPPERCASE"
+    },
+    "subtitle": {
+      "type": "string",
+      "description": "Secondary technical description"
+    },
+    "columns": {
+      "type": "array",
+      "description": "List of architecture tiers (4 or 5 columns)",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "nodes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "title",
+                "color"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "badge": {
+                  "type": "string"
+                },
+                "color": {
+                  "type": "string",
+                  "enum": [
+                    "sky",
+                    "emerald",
+                    "amber",
+                    "rose",
+                    "purple",
+                    "indigo",
+                    "slate"
+                  ]
+                },
+                "width": {
+                  "type": "integer"
+                },
+                "height": {
+                  "type": "integer"
+                },
+                "subtitle": {
+                  "type": "string"
+                },
+                "meta": {
+                  "type": "string"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "custom_badges": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "label",
+                      "color"
+                    ],
+                    "properties": {
+                      "label": {
+                        "type": "string"
+                      },
+                      "color": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "bottom_box": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "connections": {
+      "type": "array",
+      "description": "List of Bezier wire links between nodes",
+      "items": {
+        "type": "object",
+        "required": [
+          "from",
+          "to"
+        ],
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string",
+            "enum": [
+              "sky",
+              "emerald",
+              "amber",
+              "rose",
+              "purple",
+              "indigo",
+              "slate"
+            ]
+          },
+          "animated": {
+            "type": "boolean"
+          },
+          "glow": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}
