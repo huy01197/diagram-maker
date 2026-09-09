@@ -11,51 +11,67 @@ from .palette import (
     TEXT_MAIN, TEXT_DIM, BORDER_BASE
 )
 
-def render_mini_treemap(x, y, width=440, height=170, is_en=False):
-    """Mô phỏng bản đồ nhiệt trực quan ECharts Treemap Mini Canvas"""
+def render_mini_treemap(x, y, width=440, height=105, is_en=False):
+    """Mô phỏng bản đồ nhiệt trực quan ECharts Treemap Mini Canvas chuẩn Institutional"""
     s_banking = "BANKING" if is_en else "NGÂN HÀNG"
     s_realestate = "REAL ESTATE" if is_en else "BẤT ĐỘNG SẢN"
     s_steel = "STEEL" if is_en else "THÉP"
     s_securities = "SECURITIES" if is_en else "CHỨNG KHOÁN"
+
+    gap = 8
+    avail = width - 2 * gap
+    w1 = int(avail * 0.44)          # ~186px
+    w2 = int(avail * 0.31)          # ~131px
+    w3 = avail - w1 - w2            # ~107px
+
+    x1 = 0
+    x2 = x1 + w1 + gap
+    x3 = x2 + w2 + gap
+
+    h_main = height
+    h_sub = int((height - 6) / 2)
+
+    cell1_w = int((w1 - 18) / 2)
+    cell2_w = w2 - 14
+
     return f"""
       <g transform="translate({x}, {y})">
-        <!-- Main Treemap Box -->
-        <g transform="translate(0, 0)">
-          <!-- Sector 1: Ngân Hàng (Emerald) -->
-          <g transform="translate(10, 8)">
-            <rect width="180" height="90" rx="4" fill="#064e3b" stroke="{COLOR_EMERALD}" stroke-width="1.2" />
-            <text x="10" y="18" fill="#34d399" font-family="var(--font-mono)" font-size="8.5" font-weight="700">{s_banking}</text>
-            <rect x="10" y="26" width="75" height="52" rx="3" fill="#042f2e" />
-            <text x="47" y="48" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">VCB</text>
-            <text x="47" y="66" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">+3.2%</text>
+        <!-- Sector 1: Ngân Hàng (Emerald) -->
+        <g transform="translate({x1}, 0)">
+          <rect width="{w1}" height="{h_main}" rx="5" fill="#064e3b" stroke="{COLOR_EMERALD}" stroke-width="1.2" />
+          <text x="8" y="15" fill="#34d399" font-family="var(--font-mono)" font-size="8.5" font-weight="700">{s_banking}</text>
+          <rect x="7" y="22" width="{cell1_w}" height="{h_main - 29}" rx="3" fill="#042f2e" />
+          <text x="{7 + cell1_w // 2}" y="{22 + (h_main - 29) // 2 - 2}" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">VCB</text>
+          <text x="{7 + cell1_w // 2}" y="{22 + (h_main - 29) // 2 + 15}" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">+3.2%</text>
 
-            <rect x="95" y="26" width="75" height="52" rx="3" fill="#042f2e" />
-            <text x="132" y="48" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">BID</text>
-            <text x="132" y="66" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">+1.8%</text>
-          </g>
+          <rect x="{11 + cell1_w}" y="22" width="{cell1_w}" height="{h_main - 29}" rx="3" fill="#042f2e" />
+          <text x="{11 + cell1_w + cell1_w // 2}" y="{22 + (h_main - 29) // 2 - 2}" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">BID</text>
+          <text x="{11 + cell1_w + cell1_w // 2}" y="{22 + (h_main - 29) // 2 + 15}" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">+1.8%</text>
+        </g>
 
-          <!-- Sector 2: Bất Động Sản (Rose) -->
-          <g transform="translate(200, 8)">
-            <rect width="120" height="90" rx="4" fill="#4c0519" stroke="{COLOR_ROSE}" stroke-width="1.2" />
-            <text x="10" y="18" fill="#fb7185" font-family="var(--font-mono)" font-size="8.5" font-weight="700">{s_realestate}</text>
-            <rect x="10" y="26" width="100" height="52" rx="3" fill="#881337" />
-            <text x="60" y="48" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">VHM</text>
-            <text x="60" y="66" fill="#fecdd3" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">-2.4%</text>
-          </g>
+        <!-- Sector 2: Bất Động Sản (Rose) -->
+        <g transform="translate({x2}, 0)">
+          <rect width="{w2}" height="{h_main}" rx="5" fill="#4c0519" stroke="{COLOR_ROSE}" stroke-width="1.2" />
+          <text x="8" y="15" fill="#fb7185" font-family="var(--font-mono)" font-size="8.5" font-weight="700">{s_realestate}</text>
+          <rect x="7" y="22" width="{cell2_w}" height="{h_main - 29}" rx="3" fill="#881337" />
+          <text x="{7 + cell2_w // 2}" y="{22 + (h_main - 29) // 2 - 2}" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">VHM</text>
+          <text x="{7 + cell2_w // 2}" y="{22 + (h_main - 29) // 2 + 15}" fill="#fecdd3" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">-2.4%</text>
+        </g>
 
-          <!-- Sector 3: Thép (Cyan) -->
-          <g transform="translate(330, 8)">
-            <rect width="75" height="42" rx="4" fill="#082f49" stroke="{COLOR_CYAN}" stroke-width="1" />
-            <text x="37" y="22" fill="#fff" font-family="var(--font-mono)" font-size="10" font-weight="700" text-anchor="middle">HPG</text>
-            <text x="37" y="36" fill="#38bdf8" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">+2.1%</text>
-          </g>
+        <!-- Sector 3: Thép (Cyan) -->
+        <g transform="translate({x3}, 0)">
+          <rect width="{w3}" height="{h_sub}" rx="4" fill="#082f49" stroke="{COLOR_CYAN}" stroke-width="1" />
+          <text x="8" y="13" fill="#7dd3fc" font-family="var(--font-mono)" font-size="7.5" font-weight="700">{s_steel}</text>
+          <text x="{w3 - 8}" y="13" fill="#38bdf8" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="end">+2.1%</text>
+          <text x="{w3 // 2}" y="{h_sub - 8}" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">HPG</text>
+        </g>
 
-          <!-- Sector 4: Chứng Khoán (Purple) -->
-          <g transform="translate(330, 56)">
-            <rect width="75" height="42" rx="4" fill="#2e1065" stroke="{COLOR_PURPLE}" stroke-width="1" />
-            <text x="37" y="70" fill="#fff" font-family="var(--font-mono)" font-size="10" font-weight="700" text-anchor="middle">SSI</text>
-            <text x="37" y="84" fill="#c084fc" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">+4.5%</text>
-          </g>
+        <!-- Sector 4: Chứng Khoán (Purple) -->
+        <g transform="translate({x3}, {h_sub + 6})">
+          <rect width="{w3}" height="{h_sub}" rx="4" fill="#2e1065" stroke="{COLOR_PURPLE}" stroke-width="1" />
+          <text x="8" y="13" fill="#d8b4fe" font-family="var(--font-mono)" font-size="7.5" font-weight="700">{s_securities}</text>
+          <text x="{w3 - 8}" y="13" fill="#c084fc" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="end">+4.5%</text>
+          <text x="{w3 // 2}" y="{h_sub - 8}" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">SSI</text>
         </g>
       </g>
     """

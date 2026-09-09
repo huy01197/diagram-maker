@@ -2,8 +2,8 @@
   "title": "Vietnam Stock Heatmap - Kiến Trúc Luồng Streaming & Phân Bổ Thị Trường",
   "eyebrow": "STREAMING TOPOLOGY · DUAL-RAIL EVENT PIPELINE",
   "topology": "streaming",
-  "width": 1320,
-  "height": 915,
+  "width": 1440,
+  "height": 920,
   "metrics": [
     { "label": "Độ Trễ Tick Khớp", "value": "< 16 ms (60 FPS)", "color": "#34d399" },
     { "label": "Thông Lượng Stream", "value": "2.500+ Tick/Giây", "color": "#38bdf8" },
