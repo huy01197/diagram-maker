@@ -9,7 +9,7 @@ from ..core.palette import (
     COLOR_CYAN, COLOR_EMERALD, COLOR_AMBER, COLOR_PURPLE,
     TEXT_MAIN, TEXT_MUTED, CARD_BG, BORDER_BASE
 )
-from ..core.base import render_html_document
+from ..core.base import render_html_document, render_port_junction
 from ..core.mockups import render_mini_treemap
 
 class StreamingTopologyCompiler:
@@ -27,16 +27,6 @@ class StreamingTopologyCompiler:
 
         # Build SVG Body
         body = []
-
-        # Column Titles at Y=34
-        # Column Titles at Y=34
-        col1 = "1. INGRESS SOURCES &amp; RSA SECURITY" if self.is_en else "1. NGUỒN TIẾP NHẬN &amp; BẢO MẬT"
-        col2 = "2. FAN-IN CONVERGENCE &amp; RAM O(1) STORE" if self.is_en else "2. LÕI HỘI TỤ FAN-IN &amp; BỘ NHỚ RAM O(1)"
-        col3 = "3. CLIENT DISPATCH &amp; VISUAL CANVAS" if self.is_en else "3. TRẠM TRÌNH CHIẾU CLIENT &amp; TRỰC QUAN"
-
-        body.append(f'<text x="45" y="34" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">{col1}</text>')
-        body.append(f'<text x="410" y="34" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">{col2}</text>')
-        body.append(f'<text x="940" y="34" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">{col3}</text>')
 
         # ----------------------------------------------------
         # 1. CARDS RENDERING (SUBSTRATE LAYER)
@@ -64,117 +54,100 @@ class StreamingTopologyCompiler:
     def _render_connections(self):
         body = []
         # 1. RSA Auth -> SSI FastConnect (Upward token flow within Col 1)
-        body.append(f'<path d="M 180 295 L 180 237" stroke="{COLOR_PURPLE}" stroke-width="2" stroke-dasharray="4 2" marker-end="url(#arrow-purple)" />')
+        body.append(f'<path d="M 180 255 L 180 203" stroke="{COLOR_PURPLE}" stroke-width="2" stroke-dasharray="4 2" marker-end="url(#arrow-purple)" />')
 
-        # 2. SSI FastConnect -> Fan-In Worker (Direct horizontal streaming feed)
-        body.append(f'<path d="M 315 155 L 408 155" stroke="{COLOR_CYAN}" stroke-width="2.5" marker-end="url(#arrow-cyan)" />')
+        # 2. SSI FastConnect -> Fan-In Worker (Direct horizontal streaming feed at Y=115)
+        body.append(f'<path d="M 315 115 L 408 115" stroke="{COLOR_CYAN}" stroke-width="2.5" marker-end="url(#arrow-cyan)" />')
 
         # 3. Quét Lùi 10 Ngày -> RAM Store (Orthogonal bus in Corridor 1 at X=362.5)
-        body.append(f'<path d="M 315 620 L 354.5 620 Q 362.5 620 362.5 612 L 362.5 438 Q 362.5 430 370.5 430 L 408 430" fill="none" stroke="{COLOR_AMBER}" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow-amber)" />')
+        body.append(f'<path d="M 315 595 L 354.5 595 Q 362.5 595 362.5 587 L 362.5 398 Q 362.5 390 370.5 390 L 408 390" fill="none" stroke="{COLOR_AMBER}" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow-amber)" />')
 
-        # 4. Col 2 Internal: Fan-In Worker -> RAM Store O(1)
-        body.append(f'<path d="M 620 270 L 620 313" stroke="{COLOR_CYAN}" stroke-width="2.5" marker-end="url(#arrow-cyan)" />')
+        # 4. Col 2 Internal: Fan-In Worker -> RAM Store O(1) (Vertical straight down at X=620)
+        body.append(f'<path d="M 620 245 L 620 283" stroke="{COLOR_CYAN}" stroke-width="2.5" marker-end="url(#arrow-cyan)" />')
 
-        # 5. Col 2 Internal: RAM Store O(1) -> VS-Sector Classification
-        body.append(f'<path d="M 620 505 L 620 548" stroke="{COLOR_CYAN}" stroke-width="2.5" marker-end="url(#arrow-cyan)" />')
+        # 5. Col 2 Internal: RAM Store O(1) -> VS-Sector Classification (Vertical straight down at X=620)
+        body.append(f'<path d="M 620 495 L 620 533" stroke="{COLOR_CYAN}" stroke-width="2.5" marker-end="url(#arrow-cyan)" />')
 
-        # 6. Primary Real-Time Rail: RAM Store O(1) -> FastConnect Live Hub (Orthogonal bus in Corridor 2 at X=885)
-        body.append(f'<path d="M 830 370 L 877 370 Q 885 370 885 362 L 885 138 Q 885 130 893 130 L 938 130" fill="none" stroke="{COLOR_EMERALD}" stroke-width="2.5" marker-end="url(#arrow-emerald)" />')
+        # Corridor 2: Virtual Port Coupling (Decoupled Port A/B Pattern from Blueprint media_1788978341773.jpg)
+        # Port (A): WebSocket Live Stream (< 16ms Live) RAM Store O(1) -> FastConnect Live Hub
+        body.append(f'<path d="M 898 95 L 938 95" stroke="{COLOR_EMERALD}" stroke-width="2.5" marker-end="url(#arrow-emerald)" />')
+        body.append(render_port_junction(885, 95, "A", "LIVE WS /ws" if self.is_en else "CỔNG /ws", COLOR_EMERALD, is_source=False, text_pos="top"))
+        body.append(f'<path d="M 830 350 L 872 350" stroke="{COLOR_EMERALD}" stroke-width="2" />')
+        body.append(render_port_junction(885, 350, "A", "WS STREAM" if self.is_en else "LUỒNG WS", COLOR_EMERALD, is_source=True, text_pos="top"))
+
+        # Port (B): Failover Polling & REST State Snapshot (2.5s Cycle) RAM Store O(1) -> Polling Fallback
+        body.append(f'<path d="M 830 440 L 872 440" stroke="{COLOR_AMBER}" stroke-width="2" />')
+        body.append(render_port_junction(885, 440, "B", "REST SNAPSHOT" if self.is_en else "BỘ NHỚ REST", COLOR_AMBER, is_source=True, text_pos="bottom"))
+        body.append(f'<path d="M 898 635 L 938 635" stroke="{COLOR_AMBER}" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-amber)" />')
+        body.append(render_port_junction(885, 635, "B", "REST POLLING" if self.is_en else "DỰ PHÒNG REST", COLOR_AMBER, is_source=False, text_pos="bottom"))
 
         # 7. Live Hub -> ECharts Treemap Canvas (Direct downward 60 FPS delta broadcast)
-        body.append(f'<path d="M 1167 185 L 1167 238" stroke="{COLOR_EMERALD}" stroke-width="2.5" marker-end="url(#arrow-emerald)" />')
+        body.append(f'<path d="M 1167 155 L 1167 193" stroke="{COLOR_EMERALD}" stroke-width="2.5" marker-end="url(#arrow-emerald)" />')
 
-        # 8. Failover Polling Rail: RAM Store O(1) -> Polling Fallback & Inspector (Orthogonal bus in Corridor 2 at X=885)
-        body.append(f'<path d="M 830 465 L 877 465 Q 885 465 885 473 L 885 612 Q 885 620 893 620 L 938 620" fill="none" stroke="{COLOR_AMBER}" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-amber)" />')
-
-        # 9. Market Breadth Feed: VS-Sector -> Polling Fallback & Inspector (Direct horizontal at Y=680)
-        body.append(f'<path d="M 830 680 L 938 680" stroke="#64748b" stroke-width="1.8" stroke-dasharray="3 3" marker-end="url(#arrow-cyan)" />')
+        # 9. Market Breadth Feed: VS-Sector -> Polling Fallback & Inspector (Direct horizontal at Y=690)
+        body.append(f'<path d="M 830 690 L 938 690" stroke="#64748b" stroke-width="1.8" stroke-dasharray="3 3" marker-end="url(#arrow-cyan)" />')
         return "\n".join(body)
 
     def _render_badges(self):
         body = []
-        # Badge 1: Token Auth (on Line 1 at X=180, Y=256)
+        # Badge 1: Token Auth (on Line 1 at X=180, Y=229)
         b_auth = "JWT AUTH" if self.is_en else "TOKEN JWT"
         body.append(f"""
-          <g transform="translate(138, 256)">
+          <g transform="translate(138, 220)">
             <rect x="0" y="0" width="84" height="18" rx="3" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
             <text x="42" y="12.5" fill="#d8b4fe" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">{b_auth}</text>
           </g>
         """)
 
-        # Badge 2: Ingress Stream (on Line 2 at Y=155, centered in Corridor 1 at X=362.5)
+        # Badge 2: Ingress Stream (on Line 2 at Y=115, centered in Corridor 1 at X=362.5)
         b_stream = "STREAM TICK" if self.is_en else "LUỒNG TICK"
         body.append(f"""
-          <g transform="translate(324, 146)">
+          <g transform="translate(324, 106)">
             <rect x="0" y="0" width="77" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
             <text x="38.5" y="12.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">{b_stream}</text>
           </g>
         """)
 
-        # Badge 3: Snapshot Ref Price (on Line 3 bus at X=362.5, Y=515)
+        # Badge 3: Snapshot Ref Price (on Line 3 bus at X=362.5, Y=495)
         b_snap = "REF PRICE" if self.is_en else "GIÁ THAM CHIẾU"
         body.append(f"""
-          <g transform="translate(320.5, 515)">
+          <g transform="translate(320.5, 486)">
             <rect x="0" y="0" width="84" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
             <text x="42" y="12.5" fill="#fde68a" font-family="var(--font-mono)" font-size="7.5" font-weight="700" text-anchor="middle">{b_snap}</text>
           </g>
         """)
 
-        # Badge 4: Delta Ticks Decode (on Line 4 at X=620, Y=282.5)
+        # Badge 4: Delta Ticks Decode (on Line 4 at X=620, Y=264)
         b_delta = "DELTA TICKS" if self.is_en else "GÓI TIN DELTA"
         body.append(f"""
-          <g transform="translate(577, 282.5)">
+          <g transform="translate(577, 255)">
             <rect x="0" y="0" width="86" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
             <text x="43" y="12.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="7.5" font-weight="700" text-anchor="middle">{b_delta}</text>
           </g>
         """)
 
-        # Badge 5: Sector Matrix (on Line 5 at X=620, Y=517.5)
+        # Badge 5: Sector Matrix (on Line 5 at X=620, Y=514)
         b_sec = "SECTOR MAP" if self.is_en else "MA TRẬN NGÀNH"
         body.append(f"""
-          <g transform="translate(573, 517.5)">
+          <g transform="translate(573, 505)">
             <rect x="0" y="0" width="94" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
             <text x="47" y="12.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="7.5" font-weight="700" text-anchor="middle">{b_sec}</text>
           </g>
         """)
 
-        # Badge 6: Primary Stream < 16ms Live (on Highway 6 bus at X=885, Y=210)
-        b_prim_t = "PRIMARY STREAM" if self.is_en else "XA LỘ CHÍNH"
-        b_prim_s = "< 16MS LIVE"
-        body.append(f"""
-          <g transform="translate(835, 210)">
-            <rect x="0" y="0" width="100" height="32" rx="4" fill="#064e3b" stroke="{COLOR_EMERALD}" stroke-width="1.2" />
-            <text x="50" y="13" fill="#34d399" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">{b_prim_t}</text>
-            <circle cx="15" cy="23" r="3" fill="#34d399" />
-            <text x="25" y="26.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="9" font-weight="700">{b_prim_s}</text>
-          </g>
-        """)
-
-        # Badge 7: 60 FPS Delta Broadcast (on Line 7 at X=1167, Y=202.5)
+        # Badge 7: 60 FPS Delta Broadcast (on Line 7 at X=1167, Y=174)
         b_broadcast = "60 FPS BROADCAST" if self.is_en else "ĐẨY 60 FPS DELTA"
         body.append(f"""
-          <g transform="translate(1112, 202.5)">
+          <g transform="translate(1112, 165)">
             <rect x="0" y="0" width="110" height="18" rx="3" fill="#064e3b" stroke="{COLOR_EMERALD}" stroke-width="1" />
             <text x="55" y="12.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">{b_broadcast}</text>
           </g>
         """)
 
-        # Badge 8: Failover Polling 2.5s (on Highway 8 bus at X=885, Y=525)
-        b_fail_t = "FAILOVER POLLING" if self.is_en else "DỰ PHÒNG MẤT MẠNG"
-        b_fail_s = "REST 2.5S"
-        body.append(f"""
-          <g transform="translate(835, 525)">
-            <rect x="0" y="0" width="100" height="32" rx="4" fill="#451a03" stroke="{COLOR_AMBER}" stroke-width="1.2" />
-            <text x="50" y="13" fill="#fbbf24" font-family="var(--font-mono)" font-size="7.5" font-weight="700" text-anchor="middle">{b_fail_t}</text>
-            <circle cx="18" cy="23" r="3" fill="#fbbf24" />
-            <text x="28" y="26.5" fill="#fde68a" font-family="var(--font-mono)" font-size="9" font-weight="700">{b_fail_s}</text>
-          </g>
-        """)
-
-        # Badge 9: Market Breadth Feed (on Line 9 at Y=680, centered at X=885)
+        # Badge 9: Market Breadth Feed (on Line 9 at Y=690, centered at X=885)
         b_breadth = "BREADTH FEED" if self.is_en else "ĐỘ RỘNG TT"
         body.append(f"""
-          <g transform="translate(837, 671)">
+          <g transform="translate(837, 681)">
             <rect x="0" y="0" width="96" height="18" rx="3" fill="#0f172a" stroke="#475569" stroke-width="1" />
             <text x="48" y="12.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="7.5" font-weight="700" text-anchor="middle">{b_breadth}</text>
           </g>
@@ -219,49 +192,49 @@ class StreamingTopologyCompiler:
 
         return f"""
         <!-- Ingress Card 1: SignalR -->
-        <g transform="translate(45, 75)">
-          <rect width="270" height="160" rx="8" fill="{CARD_BG}" stroke="{COLOR_CYAN}" stroke-width="1.5" />
+        <g transform="translate(45, 35)">
+          <rect width="270" height="165" rx="8" fill="{CARD_BG}" stroke="{COLOR_CYAN}" stroke-width="1.5" />
           <rect x="14" y="14" width="86" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
           <text x="57" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SIGNALR HUB</text>
           <text x="14" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14" font-weight="700">{c1_t}</text>
           <text x="14" y="78" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="10">1.</text>
           <text x="28" y="78" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11.5">{c1_1}</text>
-          <text x="14" y="100" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="10">2.</text>
-          <text x="28" y="100" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11.5">{c1_2}</text>
-          <rect x="14" y="125" width="242" height="18" rx="3" fill="#082f49" />
-          <text x="135" y="137.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="9" font-weight="600" text-anchor="middle">{c1_b}</text>
+          <text x="14" y="102" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="28" y="102" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11.5">{c1_2}</text>
+          <rect x="14" y="128" width="242" height="20" rx="3" fill="#082f49" />
+          <text x="135" y="141.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="9" font-weight="600" text-anchor="middle">{c1_b}</text>
         </g>
 
         <!-- Ingress Card 2: RSA Auth -->
-        <g transform="translate(45, 295)">
-          <rect width="270" height="175" rx="8" fill="{CARD_BG}" stroke="{COLOR_PURPLE}" stroke-width="1.2" />
+        <g transform="translate(45, 255)">
+          <rect width="270" height="185" rx="8" fill="{CARD_BG}" stroke="{COLOR_PURPLE}" stroke-width="1.2" />
           <rect x="14" y="14" width="86" height="18" rx="3" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
           <text x="57" y="26.5" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{c2_b}</text>
           <text x="14" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14" font-weight="700">{c2_t}</text>
           <text x="14" y="78" fill="{COLOR_PURPLE}" font-family="var(--font-mono)" font-size="10">1.</text>
           <text x="28" y="78" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11.5">{c2_1}</text>
-          <text x="14" y="100" fill="{COLOR_PURPLE}" font-family="var(--font-mono)" font-size="10">2.</text>
-          <text x="28" y="100" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11.5">{c2_2}</text>
-          <text x="14" y="122" fill="{COLOR_PURPLE}" font-family="var(--font-mono)" font-size="10">3.</text>
-          <text x="28" y="122" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11.5">{c2_3}</text>
-          <rect x="14" y="144" width="242" height="16" rx="3" fill="#2e1065" />
-          <text x="135" y="155.5" fill="#d8b4fe" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">ASYNC RE-AUTH THREAD</text>
+          <text x="14" y="102" fill="{COLOR_PURPLE}" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="28" y="102" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11.5">{c2_2}</text>
+          <text x="14" y="126" fill="{COLOR_PURPLE}" font-family="var(--font-mono)" font-size="10">3.</text>
+          <text x="28" y="126" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11.5">{c2_3}</text>
+          <rect x="14" y="150" width="242" height="20" rx="3" fill="#2e1065" />
+          <text x="135" y="163" fill="#d8b4fe" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">ASYNC RE-AUTH THREAD</text>
         </g>
 
         <!-- Ingress Card 3: Cold Start -->
-        <g transform="translate(45, 530)">
-          <rect width="270" height="175" rx="8" fill="{CARD_BG}" stroke="{COLOR_AMBER}" stroke-width="1.2" />
+        <g transform="translate(45, 505)">
+          <rect width="270" height="185" rx="8" fill="{CARD_BG}" stroke="{COLOR_AMBER}" stroke-width="1.2" />
           <rect x="14" y="14" width="86" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
           <text x="57" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{c3_b}</text>
           <text x="14" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14" font-weight="700">{c3_t}</text>
           <text x="14" y="78" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10">1.</text>
           <text x="28" y="78" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11.5">{c3_1}</text>
-          <text x="14" y="100" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10">2.</text>
-          <text x="28" y="100" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11.5">{c3_2}</text>
-          <text x="14" y="122" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10">3.</text>
-          <text x="28" y="122" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11.5">{c3_3}</text>
-          <rect x="14" y="144" width="242" height="16" rx="3" fill="#451a03" />
-          <text x="135" y="155.5" fill="#fde68a" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">SNAPSHOT CACHE MD5</text>
+          <text x="14" y="102" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="28" y="102" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11.5">{c3_2}</text>
+          <text x="14" y="126" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10">3.</text>
+          <text x="28" y="126" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11.5">{c3_3}</text>
+          <rect x="14" y="150" width="242" height="20" rx="3" fill="#451a03" />
+          <text x="135" y="163" fill="#fde68a" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">SNAPSHOT CACHE MD5</text>
         </g>
         """
 
@@ -313,34 +286,34 @@ class StreamingTopologyCompiler:
 
         return f"""
         <!-- Core Card 1: Fan-in Worker -->
-        <g transform="translate(410, 75)">
-          <rect width="420" height="195" rx="8" fill="{CARD_BG}" stroke="{COLOR_CYAN}" stroke-width="1.5" />
+        <g transform="translate(410, 35)">
+          <rect width="420" height="210" rx="8" fill="{CARD_BG}" stroke="{COLOR_CYAN}" stroke-width="1.5" />
           <rect x="16" y="14" width="102" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
           <text x="67" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">FAN-IN WORKER</text>
           <text x="16" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="15" font-weight="700">{c1_t}</text>
           
           <!-- 3 mini boxes -->
           <g transform="translate(16, 68)">
-            <rect x="0" y="0" width="122" height="44" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
-            <text x="61" y="18" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{b1_title}</text>
-            <text x="61" y="33" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">{b1_sub}</text>
+            <rect x="0" y="0" width="122" height="46" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
+            <text x="61" y="19" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{b1_title}</text>
+            <text x="61" y="35" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">{b1_sub}</text>
 
-            <rect x="132" y="0" width="122" height="44" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
-            <text x="193" y="18" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{b2_title}</text>
-            <text x="193" y="33" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">{b2_sub}</text>
+            <rect x="132" y="0" width="122" height="46" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
+            <text x="193" y="19" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{b2_title}</text>
+            <text x="193" y="35" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">{b2_sub}</text>
 
-            <rect x="264" y="0" width="122" height="44" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
-            <text x="325" y="18" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{b3_title}</text>
-            <text x="325" y="33" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">{b3_sub}</text>
+            <rect x="264" y="0" width="122" height="46" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
+            <text x="325" y="19" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{b3_title}</text>
+            <text x="325" y="35" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">{b3_sub}</text>
           </g>
 
-          <rect x="16" y="128" width="388" height="20" rx="4" fill="#082f49" />
-          <text x="210" y="141.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="9.5" font-weight="600" text-anchor="middle">{c1_b}</text>
+          <rect x="16" y="132" width="388" height="22" rx="4" fill="#082f49" />
+          <text x="210" y="146.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="9.5" font-weight="600" text-anchor="middle">{c1_b}</text>
         </g>
 
         <!-- Core Card 2: In-Memory RAM Store -->
-        <g transform="translate(410, 315)">
-          <rect width="420" height="190" rx="8" fill="{CARD_BG}" stroke="{COLOR_CYAN}" stroke-width="1.5" />
+        <g transform="translate(410, 285)">
+          <rect width="420" height="210" rx="8" fill="{CARD_BG}" stroke="{COLOR_CYAN}" stroke-width="1.5" />
           <rect x="16" y="14" width="112" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
           <text x="72" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">IN-MEMORY STORE</text>
           <text x="16" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="15" font-weight="700">{c2_t}</text>
@@ -349,20 +322,20 @@ class StreamingTopologyCompiler:
             <text x="0" y="0" fill="#38bdf8" font-family="var(--font-mono)" font-size="10" font-weight="700">HASH-MAP O(1):</text>
             <text x="100" y="0" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_l1}</text>
 
-            <text x="0" y="25" fill="#38bdf8" font-family="var(--font-mono)" font-size="10" font-weight="700">MUTEX LOCK:</text>
-            <text x="88" y="25" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_l2}</text>
+            <text x="0" y="26" fill="#38bdf8" font-family="var(--font-mono)" font-size="10" font-weight="700">MUTEX LOCK:</text>
+            <text x="88" y="26" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_l2}</text>
 
-            <text x="0" y="50" fill="#38bdf8" font-family="var(--font-mono)" font-size="10" font-weight="700">ZERO DISK I/O:</text>
-            <text x="104" y="50" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_l3}</text>
+            <text x="0" y="52" fill="#38bdf8" font-family="var(--font-mono)" font-size="10" font-weight="700">ZERO DISK I/O:</text>
+            <text x="104" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_l3}</text>
           </g>
 
-          <rect x="16" y="152" width="388" height="18" rx="3" fill="#082f49" />
-          <text x="210" y="164.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c2_b}</text>
+          <rect x="16" y="162" width="388" height="22" rx="3" fill="#082f49" />
+          <text x="210" y="175.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c2_b}</text>
         </g>
 
         <!-- Core Card 3: Sector Classifier -->
-        <g transform="translate(410, 550)">
-          <rect width="420" height="205" rx="8" fill="{CARD_BG}" stroke="{BORDER_BASE}" stroke-width="1.2" />
+        <g transform="translate(410, 535)">
+          <rect width="420" height="215" rx="8" fill="{CARD_BG}" stroke="{BORDER_BASE}" stroke-width="1.2" />
           <rect x="16" y="14" width="102" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
           <text x="67" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">VS-SECTOR CORE</text>
           <text x="16" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="15" font-weight="700">{c3_t}</text>
@@ -388,11 +361,11 @@ class StreamingTopologyCompiler:
           <text x="16" y="142" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
           <text x="28" y="142" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l1}</text>
 
-          <text x="16" y="162" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-          <text x="28" y="162" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l2}</text>
+          <text x="16" y="164" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+          <text x="28" y="164" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l2}</text>
 
-          <text x="16" y="182" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-          <text x="28" y="182" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l3}</text>
+          <text x="16" y="186" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+          <text x="28" y="186" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l3}</text>
         </g>
         """
 
@@ -432,51 +405,54 @@ class StreamingTopologyCompiler:
 
         return f"""
         <!-- Presentation Card 1: WebSocket Hub -->
-        <g transform="translate(940, 75)">
-          <rect width="455" height="110" rx="8" fill="{CARD_BG}" stroke="{COLOR_EMERALD}" stroke-width="1.5" />
+        <g transform="translate(940, 35)">
+          <rect width="455" height="120" rx="8" fill="{CARD_BG}" stroke="{COLOR_EMERALD}" stroke-width="1.5" />
           <rect x="16" y="14" width="134" height="18" rx="3" fill="#064e3b" />
           <text x="83" y="26.5" fill="#34d399" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">FASTCONNECT LIVE HUB</text>
           <text x="16" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14" font-weight="700">{c1_t}</text>
-          <text x="16" y="74" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="9.5">1.</text>
-          <text x="30" y="74" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_1}</text>
-          <text x="16" y="94" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="9.5">2.</text>
-          <text x="30" y="94" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_2}</text>
+          <text x="16" y="76" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="9.5">1.</text>
+          <text x="30" y="76" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_1}</text>
+          <text x="16" y="98" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="9.5">2.</text>
+          <text x="30" y="98" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_2}</text>
         </g>
 
-        <!-- Presentation Card 2: ECharts Treemap Canvas (Y: 240 to 530, generous padding) -->
-        <g transform="translate(940, 240)">
-          <rect width="455" height="290" rx="8" fill="{CARD_BG}" stroke="{COLOR_CYAN}" stroke-width="1.5" />
+        <!-- Presentation Card 2: ECharts Treemap Canvas -->
+        <g transform="translate(940, 195)">
+          <rect width="455" height="350" rx="8" fill="{CARD_BG}" stroke="{COLOR_CYAN}" stroke-width="1.5" />
           <rect x="16" y="14" width="112" height="18" rx="3" fill="#082f49" />
           <text x="72" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">ECHARTS 5.4 CANVAS</text>
           <text x="16" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14" font-weight="700">{c2_t}</text>
 
           <!-- Embedded Mini Treemap Mockup (width=423 strictly within card width 455) -->
-          {render_mini_treemap(16, 62, 423, 110, is_en=self.is_en)}
+          {render_mini_treemap(16, 62, 423, 120, is_en=self.is_en)}
 
-          <g transform="translate(16, 190)">
+          <g transform="translate(16, 202)">
             <text x="0" y="16" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="9">&bull;</text>
             <text x="12" y="16" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_1}</text>
-            <text x="0" y="38" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="9">&bull;</text>
-            <text x="12" y="38" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_2}</text>
-            <text x="0" y="60" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="9">&bull;</text>
-            <text x="12" y="60" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_3}</text>
-            <text x="0" y="82" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="9">&bull;</text>
-            <text x="12" y="82" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_4}</text>
+            <text x="0" y="40" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="9">&bull;</text>
+            <text x="12" y="40" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_2}</text>
+            <text x="0" y="64" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="9">&bull;</text>
+            <text x="12" y="64" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_3}</text>
+            <text x="0" y="88" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="9">&bull;</text>
+            <text x="12" y="88" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_4}</text>
           </g>
+
+          <rect x="16" y="312" width="423" height="22" rx="3" fill="#082f49" />
+          <text x="227" y="326" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">60 FPS REALTIME HEATMAP ENGINE</text>
         </g>
 
-        <!-- Presentation Card 3: Polling Fallback (Y: 570 to 720) -->
-        <g transform="translate(940, 570)">
-          <rect width="455" height="150" rx="8" fill="{CARD_BG}" stroke="{COLOR_AMBER}" stroke-width="1.5" />
+        <!-- Presentation Card 3: Polling Fallback (Y: 585 to 750) -->
+        <g transform="translate(940, 585)">
+          <rect width="455" height="165" rx="8" fill="{CARD_BG}" stroke="{COLOR_AMBER}" stroke-width="1.5" />
           <rect x="16" y="14" width="134" height="18" rx="3" fill="#451a03" />
           <text x="83" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">{c3_b}</text>
           <text x="16" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14" font-weight="700">{c3_t}</text>
-          <text x="16" y="76" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="9.5">1.</text>
-          <text x="30" y="76" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_1}</text>
-          <text x="16" y="98" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="9.5">2.</text>
-          <text x="30" y="98" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_2}</text>
-          <rect x="16" y="120" width="423" height="18" rx="3" fill="#451a03" />
-          <text x="227" y="132.5" fill="#fde68a" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c3_bottom}</text>
+          <text x="16" y="78" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="9.5">1.</text>
+          <text x="30" y="78" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_1}</text>
+          <text x="16" y="102" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="9.5">2.</text>
+          <text x="30" y="102" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_2}</text>
+          <rect x="16" y="130" width="423" height="22" rx="3" fill="#451a03" />
+          <text x="227" y="144" fill="#fde68a" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c3_bottom}</text>
         </g>
         """
 

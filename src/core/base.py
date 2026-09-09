@@ -44,7 +44,41 @@ def render_svg_defs():
           <feGaussianBlur stdDeviation="2.5" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
+        <filter id="portGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3.5" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
       </defs>
+    """
+
+def render_port_junction(cx, cy, port_id, label, color, is_source=True, text_pos="bottom"):
+    """
+    Tạo cổng ghép nối ảo Virtual Port Junction Node (Decoupled Port Coupling Pattern A/B).
+    - cx, cy: Tọa độ tâm của nút cổng
+    - port_id: 'A', 'B', v.v.
+    - label: Nhãn mô tả luồng tín hiệu (ví dụ: 'WS STREAM', 'FEATURE BUS')
+    - color: Màu sắc đại diện (Hex)
+    - is_source: True nếu là cổng phát (transmitter), False nếu là cổng thu (receiver)
+    - text_pos: 'bottom', 'top', 'left', 'right'
+    """
+    label_svg = ""
+    if text_pos == "bottom":
+        label_svg = f'<text x="{cx}" y="{cy + 22}" fill="{color}" font-family="var(--font-mono)" font-size="8" font-weight="700" letter-spacing="0.05em" text-anchor="middle">{label}</text>'
+    elif text_pos == "top":
+        label_svg = f'<text x="{cx}" y="{cy - 16}" fill="{color}" font-family="var(--font-mono)" font-size="8" font-weight="700" letter-spacing="0.05em" text-anchor="middle">{label}</text>'
+    elif text_pos == "left":
+        label_svg = f'<text x="{cx - 17}" y="{cy + 3}" fill="{color}" font-family="var(--font-mono)" font-size="8" font-weight="700" letter-spacing="0.05em" text-anchor="end">{label}</text>'
+    elif text_pos == "right":
+        label_svg = f'<text x="{cx + 17}" y="{cy + 3}" fill="{color}" font-family="var(--font-mono)" font-size="8" font-weight="700" letter-spacing="0.05em" text-anchor="start">{label}</text>'
+
+    r = 12
+    return f"""
+      <g class="diagram-node port-node" data-port="{port_id}" data-node-id="port-{port_id}-{int(cx)}-{int(cy)}" style="--port-color: {color};">
+        <circle cx="{cx}" cy="{cy}" r="{r}" fill="#080e1a" stroke="{color}" stroke-width="1.8" />
+        <circle cx="{cx}" cy="{cy}" r="{r - 3.5}" fill="none" stroke="{color}" stroke-width="0.75" stroke-dasharray="2 1.5" opacity="0.6" />
+        <text x="{cx}" y="{cy + 4}" fill="{color}" font-family="var(--font-mono)" font-size="10" font-weight="800" text-anchor="middle">{port_id}</text>
+        {label_svg}
+      </g>
     """
 
 def render_html_document(title, eyebrow, metrics, svg_body, footer_notes, width=1320, height=915, default_theme="dark", locale="vi"):
@@ -150,7 +184,7 @@ def render_html_document(title, eyebrow, metrics, svg_body, footer_notes, width=
     }}
     .container {{
       width: 100%;
-      max-width: 1360px;
+      max-width: 1540px;
     }}
     .header {{
       margin-bottom: 16px;
@@ -279,6 +313,23 @@ def render_html_document(title, eyebrow, metrics, svg_body, footer_notes, width=
     .highlighted-wire {{
       opacity: 1 !important;
       stroke-width: 3.5px !important;
+    }}
+    .port-node {{
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }}
+    .port-node:hover, .port-node.port-pulse {{
+      filter: drop-shadow(0 0 10px var(--port-color, #38bdf8));
+    }}
+    @keyframes portPulseAnim {{
+      0% {{ transform: scale(1); filter: drop-shadow(0 0 2px var(--port-color, #38bdf8)); }}
+      50% {{ transform: scale(1.15); filter: drop-shadow(0 0 12px var(--port-color, #38bdf8)); }}
+      100% {{ transform: scale(1); filter: drop-shadow(0 0 2px var(--port-color, #38bdf8)); }}
+    }}
+    .port-pulse circle:first-child {{
+      animation: portPulseAnim 1.2s infinite ease-in-out;
+      transform-origin: center;
+      transform-box: fill-box;
     }}
     .footer-notes {{
       margin-top: 18px;
@@ -610,7 +661,22 @@ def render_html_document(title, eyebrow, metrics, svg_body, footer_notes, width=
 
     helpBtn.addEventListener('click', () => toggleHelp(true));
     closeModalBtn.addEventListener('click', () => toggleHelp(false));
-    helpModal.addEventListener('click', (e) => {{ if (e.target === helpModal) toggleHelp(false); }});
+    // 6. Interactive Port A/B Highlighting Pulse
+    const portNodes = svgEl.querySelectorAll('.port-node');
+    portNodes.forEach(pn => {{
+      const portId = pn.getAttribute('data-port');
+      if (!portId) return;
+      pn.addEventListener('mouseenter', () => {{
+        svgEl.querySelectorAll(`.port-node[data-port="${{portId}}"]`).forEach(node => {{
+          node.classList.add('port-pulse');
+        }});
+      }});
+      pn.addEventListener('mouseleave', () => {{
+        svgEl.querySelectorAll(`.port-node[data-port="${{portId}}"]`).forEach(node => {{
+          node.classList.remove('port-pulse');
+        }});
+      }});
+    }});
 
     window.addEventListener('keydown', (e) => {{
       const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';

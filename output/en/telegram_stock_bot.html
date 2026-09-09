@@ -64,7 +64,7 @@
     }
     .container {
       width: 100%;
-      max-width: 1360px;
+      max-width: 1540px;
     }
     .header {
       margin-bottom: 16px;
@@ -193,6 +193,23 @@
     .highlighted-wire {
       opacity: 1 !important;
       stroke-width: 3.5px !important;
+    }
+    .port-node {
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .port-node:hover, .port-node.port-pulse {
+      filter: drop-shadow(0 0 10px var(--port-color, #38bdf8));
+    }
+    @keyframes portPulseAnim {
+      0% { transform: scale(1); filter: drop-shadow(0 0 2px var(--port-color, #38bdf8)); }
+      50% { transform: scale(1.15); filter: drop-shadow(0 0 12px var(--port-color, #38bdf8)); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 2px var(--port-color, #38bdf8)); }
+    }
+    .port-pulse circle:first-child {
+      animation: portPulseAnim 1.2s infinite ease-in-out;
+      transform-origin: center;
+      transform-box: fill-box;
     }
     .footer-notes {
       margin-top: 18px;
@@ -363,6 +380,10 @@
         </filter>
         <filter id="emeraldGlow" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+        <filter id="portGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3.5" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
       </defs>
@@ -918,7 +939,22 @@
 
     helpBtn.addEventListener('click', () => toggleHelp(true));
     closeModalBtn.addEventListener('click', () => toggleHelp(false));
-    helpModal.addEventListener('click', (e) => { if (e.target === helpModal) toggleHelp(false); });
+    // 6. Interactive Port A/B Highlighting Pulse
+    const portNodes = svgEl.querySelectorAll('.port-node');
+    portNodes.forEach(pn => {
+      const portId = pn.getAttribute('data-port');
+      if (!portId) return;
+      pn.addEventListener('mouseenter', () => {
+        svgEl.querySelectorAll(`.port-node[data-port="${portId}"]`).forEach(node => {
+          node.classList.add('port-pulse');
+        });
+      });
+      pn.addEventListener('mouseleave', () => {
+        svgEl.querySelectorAll(`.port-node[data-port="${portId}"]`).forEach(node => {
+          node.classList.remove('port-pulse');
+        });
+      });
+    });
 
     window.addEventListener('keydown', (e) => {
       const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';

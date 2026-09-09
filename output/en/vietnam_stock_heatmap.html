@@ -64,7 +64,7 @@
     }
     .container {
       width: 100%;
-      max-width: 1360px;
+      max-width: 1540px;
     }
     .header {
       margin-bottom: 16px;
@@ -193,6 +193,23 @@
     .highlighted-wire {
       opacity: 1 !important;
       stroke-width: 3.5px !important;
+    }
+    .port-node {
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .port-node:hover, .port-node.port-pulse {
+      filter: drop-shadow(0 0 10px var(--port-color, #38bdf8));
+    }
+    @keyframes portPulseAnim {
+      0% { transform: scale(1); filter: drop-shadow(0 0 2px var(--port-color, #38bdf8)); }
+      50% { transform: scale(1.15); filter: drop-shadow(0 0 12px var(--port-color, #38bdf8)); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 2px var(--port-color, #38bdf8)); }
+    }
+    .port-pulse circle:first-child {
+      animation: portPulseAnim 1.2s infinite ease-in-out;
+      transform-origin: center;
+      transform-box: fill-box;
     }
     .footer-notes {
       margin-top: 18px;
@@ -365,6 +382,10 @@
           <feGaussianBlur stdDeviation="2.5" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
+        <filter id="portGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3.5" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
       </defs>
     
       
@@ -372,86 +393,83 @@
       <rect width="1440" height="920" fill="var(--canvas-bg)" />
       <rect width="1440" height="920" fill="url(#dotGrid)" />
 
-      <text x="45" y="34" fill="#06b6d4" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">1. INGRESS SOURCES &amp; RSA SECURITY</text>
-<text x="410" y="34" fill="#06b6d4" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">2. FAN-IN CONVERGENCE &amp; RAM O(1) STORE</text>
-<text x="940" y="34" fill="#089981" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">3. CLIENT DISPATCH &amp; VISUAL CANVAS</text>
-
+      
         <!-- Ingress Card 1: SignalR -->
-        <g transform="translate(45, 75)">
-          <rect width="270" height="160" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
+        <g transform="translate(45, 35)">
+          <rect width="270" height="165" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
           <rect x="14" y="14" width="86" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
           <text x="57" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SIGNALR HUB</text>
           <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">SSI FastConnect</text>
           <text x="14" y="78" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">1.</text>
           <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Listen to X:ALL, MI:ALL channels</text>
-          <text x="14" y="100" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">2.</text>
-          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Throughput &gt; 2,500 ticks / second</text>
-          <rect x="14" y="125" width="242" height="18" rx="3" fill="#082f49" />
-          <text x="135" y="137.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="9" font-weight="600" text-anchor="middle">ACTIVE STREAMING INGRESS</text>
+          <text x="14" y="102" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="28" y="102" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Throughput &gt; 2,500 ticks / second</text>
+          <rect x="14" y="128" width="242" height="20" rx="3" fill="#082f49" />
+          <text x="135" y="141.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="9" font-weight="600" text-anchor="middle">ACTIVE STREAMING INGRESS</text>
         </g>
 
         <!-- Ingress Card 2: RSA Auth -->
-        <g transform="translate(45, 295)">
-          <rect width="270" height="175" rx="8" fill="#0b101b" stroke="#a855f7" stroke-width="1.2" />
+        <g transform="translate(45, 255)">
+          <rect width="270" height="185" rx="8" fill="#0b101b" stroke="#a855f7" stroke-width="1.2" />
           <rect x="14" y="14" width="86" height="18" rx="3" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
           <text x="57" y="26.5" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">RSA SECURITY</text>
           <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">Digital Signature &amp; JWT</text>
           <text x="14" y="78" fill="#a855f7" font-family="var(--font-mono)" font-size="10">1.</text>
           <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Load config.json &amp; PrivateKey</text>
-          <text x="14" y="100" fill="#a855f7" font-family="var(--font-mono)" font-size="10">2.</text>
-          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Standardized SHA-256 signing</text>
-          <text x="14" y="122" fill="#a855f7" font-family="var(--font-mono)" font-size="10">3.</text>
-          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Auto token minting &amp; rotation</text>
-          <rect x="14" y="144" width="242" height="16" rx="3" fill="#2e1065" />
-          <text x="135" y="155.5" fill="#d8b4fe" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">ASYNC RE-AUTH THREAD</text>
+          <text x="14" y="102" fill="#a855f7" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="28" y="102" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Standardized SHA-256 signing</text>
+          <text x="14" y="126" fill="#a855f7" font-family="var(--font-mono)" font-size="10">3.</text>
+          <text x="28" y="126" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Auto token minting &amp; rotation</text>
+          <rect x="14" y="150" width="242" height="20" rx="3" fill="#2e1065" />
+          <text x="135" y="163" fill="#d8b4fe" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">ASYNC RE-AUTH THREAD</text>
         </g>
 
         <!-- Ingress Card 3: Cold Start -->
-        <g transform="translate(45, 530)">
-          <rect width="270" height="175" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.2" />
+        <g transform="translate(45, 505)">
+          <rect width="270" height="185" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.2" />
           <rect x="14" y="14" width="86" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
           <text x="57" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">0MS COLD START</text>
           <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">10-Day Historical Backfill</text>
           <text x="14" y="78" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">1.</text>
           <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Lookback skips holidays/weekends</text>
-          <text x="14" y="100" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">2.</text>
-          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Load reference price snapshot</text>
-          <text x="14" y="122" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">3.</text>
-          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Failover VNDirect finfo API</text>
-          <rect x="14" y="144" width="242" height="16" rx="3" fill="#451a03" />
-          <text x="135" y="155.5" fill="#fde68a" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">SNAPSHOT CACHE MD5</text>
+          <text x="14" y="102" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="28" y="102" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Load reference price snapshot</text>
+          <text x="14" y="126" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">3.</text>
+          <text x="28" y="126" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Failover VNDirect finfo API</text>
+          <rect x="14" y="150" width="242" height="20" rx="3" fill="#451a03" />
+          <text x="135" y="163" fill="#fde68a" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">SNAPSHOT CACHE MD5</text>
         </g>
         
 
         <!-- Core Card 1: Fan-in Worker -->
-        <g transform="translate(410, 75)">
-          <rect width="420" height="195" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
+        <g transform="translate(410, 35)">
+          <rect width="420" height="210" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
           <rect x="16" y="14" width="102" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
           <text x="67" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">FAN-IN WORKER</text>
           <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">High-Speed Ingestion &amp; Tick Decoder</text>
           
           <!-- 3 mini boxes -->
           <g transform="translate(16, 68)">
-            <rect x="0" y="0" width="122" height="44" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
-            <text x="61" y="18" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PACKET X (MATCH)</text>
-            <text x="61" y="33" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Match price, Vol, Side</text>
+            <rect x="0" y="0" width="122" height="46" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
+            <text x="61" y="19" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PACKET X (MATCH)</text>
+            <text x="61" y="35" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Match price, Vol, Side</text>
 
-            <rect x="132" y="0" width="122" height="44" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
-            <text x="193" y="18" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PACKET MI (INDEX)</text>
-            <text x="193" y="33" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">VN-Index, VN30, HNX30</text>
+            <rect x="132" y="0" width="122" height="46" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
+            <text x="193" y="19" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PACKET MI (INDEX)</text>
+            <text x="193" y="35" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">VN-Index, VN30, HNX30</text>
 
-            <rect x="264" y="0" width="122" height="44" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
-            <text x="325" y="18" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">% CHANGE CALC</text>
-            <text x="325" y="33" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Compare vs Ref Snapshot</text>
+            <rect x="264" y="0" width="122" height="46" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
+            <text x="325" y="19" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">% CHANGE CALC</text>
+            <text x="325" y="35" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Compare vs Ref Snapshot</text>
           </g>
 
-          <rect x="16" y="128" width="388" height="20" rx="4" fill="#082f49" />
-          <text x="210" y="141.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="9.5" font-weight="600" text-anchor="middle">REAL-TIME ASYNC DECODING IN THREAD &lt; 0.05MS</text>
+          <rect x="16" y="132" width="388" height="22" rx="4" fill="#082f49" />
+          <text x="210" y="146.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="9.5" font-weight="600" text-anchor="middle">REAL-TIME ASYNC DECODING IN THREAD &lt; 0.05MS</text>
         </g>
 
         <!-- Core Card 2: In-Memory RAM Store -->
-        <g transform="translate(410, 315)">
-          <rect width="420" height="190" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
+        <g transform="translate(410, 285)">
+          <rect width="420" height="210" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
           <rect x="16" y="14" width="112" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
           <text x="72" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">IN-MEMORY STORE</text>
           <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">O(1) RAM Data Store &amp; Mutex Safety</text>
@@ -460,20 +478,20 @@
             <text x="0" y="0" fill="#38bdf8" font-family="var(--font-mono)" font-size="10" font-weight="700">HASH-MAP O(1):</text>
             <text x="100" y="0" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Fast state for 700+ tickers across 3 exchanges</text>
 
-            <text x="0" y="25" fill="#38bdf8" font-family="var(--font-mono)" font-size="10" font-weight="700">MUTEX LOCK:</text>
-            <text x="88" y="25" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Thread-safe mutex lock prevents race conditions</text>
+            <text x="0" y="26" fill="#38bdf8" font-family="var(--font-mono)" font-size="10" font-weight="700">MUTEX LOCK:</text>
+            <text x="88" y="26" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Thread-safe mutex lock prevents race conditions</text>
 
-            <text x="0" y="50" fill="#38bdf8" font-family="var(--font-mono)" font-size="10" font-weight="700">ZERO DISK I/O:</text>
-            <text x="104" y="50" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">No session disk writes to eliminate I/O lag</text>
+            <text x="0" y="52" fill="#38bdf8" font-family="var(--font-mono)" font-size="10" font-weight="700">ZERO DISK I/O:</text>
+            <text x="104" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">No session disk writes to eliminate I/O lag</text>
           </g>
 
-          <rect x="16" y="152" width="388" height="18" rx="3" fill="#082f49" />
-          <text x="210" y="164.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">SUB-MILLISECOND IN-MEMORY LATENCY &lt; 0.12MS</text>
+          <rect x="16" y="162" width="388" height="22" rx="3" fill="#082f49" />
+          <text x="210" y="175.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">SUB-MILLISECOND IN-MEMORY LATENCY &lt; 0.12MS</text>
         </g>
 
         <!-- Core Card 3: Sector Classifier -->
-        <g transform="translate(410, 550)">
-          <rect width="420" height="205" rx="8" fill="#0b101b" stroke="#1b253b" stroke-width="1.2" />
+        <g transform="translate(410, 535)">
+          <rect width="420" height="215" rx="8" fill="#0b101b" stroke="#1b253b" stroke-width="1.2" />
           <rect x="16" y="14" width="102" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
           <text x="67" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">VS-SECTOR CORE</text>
           <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">15-Sector Classification &amp; Breadth Matrix</text>
@@ -499,29 +517,29 @@
           <text x="16" y="142" fill="#8b9bb4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
           <text x="28" y="142" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Dynamic area weighting based on Turnover Value</text>
 
-          <text x="16" y="162" fill="#8b9bb4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-          <text x="28" y="162" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Capital breadth: Count Ceiling / Gain / Ref / Loss / Floor</text>
+          <text x="16" y="164" fill="#8b9bb4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+          <text x="28" y="164" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Capital breadth: Count Ceiling / Gain / Ref / Loss / Floor</text>
 
-          <text x="16" y="182" fill="#8b9bb4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-          <text x="28" y="182" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Auto-sort top liquidity sectors across the market</text>
+          <text x="16" y="186" fill="#8b9bb4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+          <text x="28" y="186" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Auto-sort top liquidity sectors across the market</text>
         </g>
         
 
         <!-- Presentation Card 1: WebSocket Hub -->
-        <g transform="translate(940, 75)">
-          <rect width="455" height="110" rx="8" fill="#0b101b" stroke="#089981" stroke-width="1.5" />
+        <g transform="translate(940, 35)">
+          <rect width="455" height="120" rx="8" fill="#0b101b" stroke="#089981" stroke-width="1.5" />
           <rect x="16" y="14" width="134" height="18" rx="3" fill="#064e3b" />
           <text x="83" y="26.5" fill="#34d399" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">FASTCONNECT LIVE HUB</text>
           <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">aiohttp Server &amp; WebSocket /ws</text>
-          <text x="16" y="74" fill="#089981" font-family="var(--font-mono)" font-size="9.5">1.</text>
-          <text x="30" y="74" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Port 8050: Auto port reclamation (1-Click Play)</text>
-          <text x="16" y="94" fill="#089981" font-family="var(--font-mono)" font-size="9.5">2.</text>
-          <text x="30" y="94" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Broadcast delta packets at 60 FPS to all clients</text>
+          <text x="16" y="76" fill="#089981" font-family="var(--font-mono)" font-size="9.5">1.</text>
+          <text x="30" y="76" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Port 8050: Auto port reclamation (1-Click Play)</text>
+          <text x="16" y="98" fill="#089981" font-family="var(--font-mono)" font-size="9.5">2.</text>
+          <text x="30" y="98" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Broadcast delta packets at 60 FPS to all clients</text>
         </g>
 
-        <!-- Presentation Card 2: ECharts Treemap Canvas (Y: 240 to 530, generous padding) -->
-        <g transform="translate(940, 240)">
-          <rect width="455" height="290" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
+        <!-- Presentation Card 2: ECharts Treemap Canvas -->
+        <g transform="translate(940, 195)">
+          <rect width="455" height="350" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
           <rect x="16" y="14" width="112" height="18" rx="3" fill="#082f49" />
           <text x="72" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">ECHARTS 5.4 CANVAS</text>
           <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">Interactive Market Heatmap (Treemap)</text>
@@ -531,133 +549,154 @@
       <g transform="translate(16, 62)">
         <!-- Sector 1: Ngân Hàng (Emerald) -->
         <g transform="translate(0, 0)">
-          <rect width="179" height="110" rx="5" fill="#064e3b" stroke="#089981" stroke-width="1.2" />
+          <rect width="179" height="120" rx="5" fill="#064e3b" stroke="#089981" stroke-width="1.2" />
           <text x="8" y="15" fill="#34d399" font-family="var(--font-mono)" font-size="8.5" font-weight="700">BANKING</text>
-          <rect x="7" y="22" width="80" height="81" rx="3" fill="#042f2e" />
-          <text x="47" y="60" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">VCB</text>
-          <text x="47" y="77" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">+3.2%</text>
+          <rect x="7" y="22" width="80" height="91" rx="3" fill="#042f2e" />
+          <text x="47" y="65" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">VCB</text>
+          <text x="47" y="82" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">+3.2%</text>
 
-          <rect x="91" y="22" width="80" height="81" rx="3" fill="#042f2e" />
-          <text x="131" y="60" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">BID</text>
-          <text x="131" y="77" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">+1.8%</text>
+          <rect x="91" y="22" width="80" height="91" rx="3" fill="#042f2e" />
+          <text x="131" y="65" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">BID</text>
+          <text x="131" y="82" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">+1.8%</text>
         </g>
 
         <!-- Sector 2: Bất Động Sản (Rose) -->
         <g transform="translate(187, 0)">
-          <rect width="126" height="110" rx="5" fill="#4c0519" stroke="#f23645" stroke-width="1.2" />
+          <rect width="126" height="120" rx="5" fill="#4c0519" stroke="#f23645" stroke-width="1.2" />
           <text x="8" y="15" fill="#fb7185" font-family="var(--font-mono)" font-size="8.5" font-weight="700">REAL ESTATE</text>
-          <rect x="7" y="22" width="112" height="81" rx="3" fill="#881337" />
-          <text x="63" y="60" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">VHM</text>
-          <text x="63" y="77" fill="#fecdd3" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">-2.4%</text>
+          <rect x="7" y="22" width="112" height="91" rx="3" fill="#881337" />
+          <text x="63" y="65" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">VHM</text>
+          <text x="63" y="82" fill="#fecdd3" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">-2.4%</text>
         </g>
 
         <!-- Sector 3: Thép (Cyan) -->
         <g transform="translate(321, 0)">
-          <rect width="102" height="52" rx="4" fill="#082f49" stroke="#06b6d4" stroke-width="1" />
+          <rect width="102" height="57" rx="4" fill="#082f49" stroke="#06b6d4" stroke-width="1" />
           <text x="8" y="13" fill="#7dd3fc" font-family="var(--font-mono)" font-size="7.5" font-weight="700">STEEL</text>
           <text x="94" y="13" fill="#38bdf8" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="end">+2.1%</text>
-          <text x="51" y="44" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">HPG</text>
+          <text x="51" y="49" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">HPG</text>
         </g>
 
         <!-- Sector 4: Chứng Khoán (Purple) -->
-        <g transform="translate(321, 58)">
-          <rect width="102" height="52" rx="4" fill="#2e1065" stroke="#a855f7" stroke-width="1" />
+        <g transform="translate(321, 63)">
+          <rect width="102" height="57" rx="4" fill="#2e1065" stroke="#a855f7" stroke-width="1" />
           <text x="8" y="13" fill="#d8b4fe" font-family="var(--font-mono)" font-size="7.5" font-weight="700">SECURITIES</text>
           <text x="94" y="13" fill="#c084fc" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="end">+4.5%</text>
-          <text x="51" y="44" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">SSI</text>
+          <text x="51" y="49" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">SSI</text>
         </g>
       </g>
     
 
-          <g transform="translate(16, 190)">
+          <g transform="translate(16, 202)">
             <text x="0" y="16" fill="#06b6d4" font-family="var(--font-mono)" font-size="9">&bull;</text>
             <text x="12" y="16" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">ZRender Centroid Hook: Centered ticker labels inside cells</text>
-            <text x="0" y="38" fill="#06b6d4" font-family="var(--font-mono)" font-size="9">&bull;</text>
-            <text x="12" y="38" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Auto-hide text when cell &lt; 38px to prevent overflow</text>
-            <text x="0" y="60" fill="#06b6d4" font-family="var(--font-mono)" font-size="9">&bull;</text>
-            <text x="12" y="60" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Flash Update visual pulse upon new tick arrival (&lt; 16ms)</text>
-            <text x="0" y="82" fill="#06b6d4" font-family="var(--font-mono)" font-size="9">&bull;</text>
-            <text x="12" y="82" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">3-color market breadth meter: Gain, Ref, Loss</text>
+            <text x="0" y="40" fill="#06b6d4" font-family="var(--font-mono)" font-size="9">&bull;</text>
+            <text x="12" y="40" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Auto-hide text when cell &lt; 38px to prevent overflow</text>
+            <text x="0" y="64" fill="#06b6d4" font-family="var(--font-mono)" font-size="9">&bull;</text>
+            <text x="12" y="64" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Flash Update visual pulse upon new tick arrival (&lt; 16ms)</text>
+            <text x="0" y="88" fill="#06b6d4" font-family="var(--font-mono)" font-size="9">&bull;</text>
+            <text x="12" y="88" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">3-color market breadth meter: Gain, Ref, Loss</text>
           </g>
+
+          <rect x="16" y="312" width="423" height="22" rx="3" fill="#082f49" />
+          <text x="227" y="326" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">60 FPS REALTIME HEATMAP ENGINE</text>
         </g>
 
-        <!-- Presentation Card 3: Polling Fallback (Y: 570 to 720) -->
-        <g transform="translate(940, 570)">
-          <rect width="455" height="150" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.5" />
+        <!-- Presentation Card 3: Polling Fallback (Y: 585 to 750) -->
+        <g transform="translate(940, 585)">
+          <rect width="455" height="165" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.5" />
           <rect x="16" y="14" width="134" height="18" rx="3" fill="#451a03" />
           <text x="83" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">FAILOVER &amp; INSPECTOR</text>
           <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">Polling Live Mode &amp; Inspector Drawer</text>
-          <text x="16" y="76" fill="#f59e0b" font-family="var(--font-mono)" font-size="9.5">1.</text>
-          <text x="30" y="76" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Auto-switch to POLLING LIVE (2.5s cycle) on disconnect</text>
-          <text x="16" y="98" fill="#f59e0b" font-family="var(--font-mono)" font-size="9.5">2.</text>
-          <text x="30" y="98" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Auxiliary drawer: Top 6 liquidity sectors &amp; market breadth</text>
-          <rect x="16" y="120" width="423" height="18" rx="3" fill="#451a03" />
-          <text x="227" y="132.5" fill="#fde68a" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">AUTOMATIC RECONNECT (AUTO-RECONNECT) EVERY 3S</text>
+          <text x="16" y="78" fill="#f59e0b" font-family="var(--font-mono)" font-size="9.5">1.</text>
+          <text x="30" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Auto-switch to POLLING LIVE (2.5s cycle) on disconnect</text>
+          <text x="16" y="102" fill="#f59e0b" font-family="var(--font-mono)" font-size="9.5">2.</text>
+          <text x="30" y="102" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Auxiliary drawer: Top 6 liquidity sectors &amp; market breadth</text>
+          <rect x="16" y="130" width="423" height="22" rx="3" fill="#451a03" />
+          <text x="227" y="144" fill="#fde68a" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">AUTOMATIC RECONNECT (AUTO-RECONNECT) EVERY 3S</text>
         </g>
         
-<path d="M 180 295 L 180 237" stroke="#a855f7" stroke-width="2" stroke-dasharray="4 2" marker-end="url(#arrow-purple)" />
-<path d="M 315 155 L 408 155" stroke="#06b6d4" stroke-width="2.5" marker-end="url(#arrow-cyan)" />
-<path d="M 315 620 L 354.5 620 Q 362.5 620 362.5 612 L 362.5 438 Q 362.5 430 370.5 430 L 408 430" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow-amber)" />
-<path d="M 620 270 L 620 313" stroke="#06b6d4" stroke-width="2.5" marker-end="url(#arrow-cyan)" />
-<path d="M 620 505 L 620 548" stroke="#06b6d4" stroke-width="2.5" marker-end="url(#arrow-cyan)" />
-<path d="M 830 370 L 877 370 Q 885 370 885 362 L 885 138 Q 885 130 893 130 L 938 130" fill="none" stroke="#089981" stroke-width="2.5" marker-end="url(#arrow-emerald)" />
-<path d="M 1167 185 L 1167 238" stroke="#089981" stroke-width="2.5" marker-end="url(#arrow-emerald)" />
-<path d="M 830 465 L 877 465 Q 885 465 885 473 L 885 612 Q 885 620 893 620 L 938 620" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-amber)" />
-<path d="M 830 680 L 938 680" stroke="#64748b" stroke-width="1.8" stroke-dasharray="3 3" marker-end="url(#arrow-cyan)" />
+<path d="M 180 255 L 180 203" stroke="#a855f7" stroke-width="2" stroke-dasharray="4 2" marker-end="url(#arrow-purple)" />
+<path d="M 315 115 L 408 115" stroke="#06b6d4" stroke-width="2.5" marker-end="url(#arrow-cyan)" />
+<path d="M 315 595 L 354.5 595 Q 362.5 595 362.5 587 L 362.5 398 Q 362.5 390 370.5 390 L 408 390" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow-amber)" />
+<path d="M 620 245 L 620 283" stroke="#06b6d4" stroke-width="2.5" marker-end="url(#arrow-cyan)" />
+<path d="M 620 495 L 620 533" stroke="#06b6d4" stroke-width="2.5" marker-end="url(#arrow-cyan)" />
+<path d="M 898 95 L 938 95" stroke="#089981" stroke-width="2.5" marker-end="url(#arrow-emerald)" />
 
-          <g transform="translate(138, 256)">
+      <g class="diagram-node port-node" data-port="A" data-node-id="port-A-885-95" style="--port-color: #089981;">
+        <circle cx="885" cy="95" r="12" fill="#080e1a" stroke="#089981" stroke-width="1.8" />
+        <circle cx="885" cy="95" r="8.5" fill="none" stroke="#089981" stroke-width="0.75" stroke-dasharray="2 1.5" opacity="0.6" />
+        <text x="885" y="99" fill="#089981" font-family="var(--font-mono)" font-size="10" font-weight="800" text-anchor="middle">A</text>
+        <text x="885" y="79" fill="#089981" font-family="var(--font-mono)" font-size="8" font-weight="700" letter-spacing="0.05em" text-anchor="middle">LIVE WS /ws</text>
+      </g>
+    
+<path d="M 830 350 L 872 350" stroke="#089981" stroke-width="2" />
+
+      <g class="diagram-node port-node" data-port="A" data-node-id="port-A-885-350" style="--port-color: #089981;">
+        <circle cx="885" cy="350" r="12" fill="#080e1a" stroke="#089981" stroke-width="1.8" />
+        <circle cx="885" cy="350" r="8.5" fill="none" stroke="#089981" stroke-width="0.75" stroke-dasharray="2 1.5" opacity="0.6" />
+        <text x="885" y="354" fill="#089981" font-family="var(--font-mono)" font-size="10" font-weight="800" text-anchor="middle">A</text>
+        <text x="885" y="334" fill="#089981" font-family="var(--font-mono)" font-size="8" font-weight="700" letter-spacing="0.05em" text-anchor="middle">WS STREAM</text>
+      </g>
+    
+<path d="M 830 440 L 872 440" stroke="#f59e0b" stroke-width="2" />
+
+      <g class="diagram-node port-node" data-port="B" data-node-id="port-B-885-440" style="--port-color: #f59e0b;">
+        <circle cx="885" cy="440" r="12" fill="#080e1a" stroke="#f59e0b" stroke-width="1.8" />
+        <circle cx="885" cy="440" r="8.5" fill="none" stroke="#f59e0b" stroke-width="0.75" stroke-dasharray="2 1.5" opacity="0.6" />
+        <text x="885" y="444" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="800" text-anchor="middle">B</text>
+        <text x="885" y="462" fill="#f59e0b" font-family="var(--font-mono)" font-size="8" font-weight="700" letter-spacing="0.05em" text-anchor="middle">REST SNAPSHOT</text>
+      </g>
+    
+<path d="M 898 635 L 938 635" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-amber)" />
+
+      <g class="diagram-node port-node" data-port="B" data-node-id="port-B-885-635" style="--port-color: #f59e0b;">
+        <circle cx="885" cy="635" r="12" fill="#080e1a" stroke="#f59e0b" stroke-width="1.8" />
+        <circle cx="885" cy="635" r="8.5" fill="none" stroke="#f59e0b" stroke-width="0.75" stroke-dasharray="2 1.5" opacity="0.6" />
+        <text x="885" y="639" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="800" text-anchor="middle">B</text>
+        <text x="885" y="657" fill="#f59e0b" font-family="var(--font-mono)" font-size="8" font-weight="700" letter-spacing="0.05em" text-anchor="middle">REST POLLING</text>
+      </g>
+    
+<path d="M 1167 155 L 1167 193" stroke="#089981" stroke-width="2.5" marker-end="url(#arrow-emerald)" />
+<path d="M 830 690 L 938 690" stroke="#64748b" stroke-width="1.8" stroke-dasharray="3 3" marker-end="url(#arrow-cyan)" />
+
+          <g transform="translate(138, 220)">
             <rect x="0" y="0" width="84" height="18" rx="3" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
             <text x="42" y="12.5" fill="#d8b4fe" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">JWT AUTH</text>
           </g>
         
 
-          <g transform="translate(324, 146)">
+          <g transform="translate(324, 106)">
             <rect x="0" y="0" width="77" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
             <text x="38.5" y="12.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">STREAM TICK</text>
           </g>
         
 
-          <g transform="translate(320.5, 515)">
+          <g transform="translate(320.5, 486)">
             <rect x="0" y="0" width="84" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
             <text x="42" y="12.5" fill="#fde68a" font-family="var(--font-mono)" font-size="7.5" font-weight="700" text-anchor="middle">REF PRICE</text>
           </g>
         
 
-          <g transform="translate(577, 282.5)">
+          <g transform="translate(577, 255)">
             <rect x="0" y="0" width="86" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
             <text x="43" y="12.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="7.5" font-weight="700" text-anchor="middle">DELTA TICKS</text>
           </g>
         
 
-          <g transform="translate(573, 517.5)">
+          <g transform="translate(573, 505)">
             <rect x="0" y="0" width="94" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
             <text x="47" y="12.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="7.5" font-weight="700" text-anchor="middle">SECTOR MAP</text>
           </g>
         
 
-          <g transform="translate(835, 210)">
-            <rect x="0" y="0" width="100" height="32" rx="4" fill="#064e3b" stroke="#089981" stroke-width="1.2" />
-            <text x="50" y="13" fill="#34d399" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">PRIMARY STREAM</text>
-            <circle cx="15" cy="23" r="3" fill="#34d399" />
-            <text x="25" y="26.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="9" font-weight="700">< 16MS LIVE</text>
-          </g>
-        
-
-          <g transform="translate(1112, 202.5)">
+          <g transform="translate(1112, 165)">
             <rect x="0" y="0" width="110" height="18" rx="3" fill="#064e3b" stroke="#089981" stroke-width="1" />
             <text x="55" y="12.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">60 FPS BROADCAST</text>
           </g>
         
 
-          <g transform="translate(835, 525)">
-            <rect x="0" y="0" width="100" height="32" rx="4" fill="#451a03" stroke="#f59e0b" stroke-width="1.2" />
-            <text x="50" y="13" fill="#fbbf24" font-family="var(--font-mono)" font-size="7.5" font-weight="700" text-anchor="middle">FAILOVER POLLING</text>
-            <circle cx="18" cy="23" r="3" fill="#fbbf24" />
-            <text x="28" y="26.5" fill="#fde68a" font-family="var(--font-mono)" font-size="9" font-weight="700">REST 2.5S</text>
-          </g>
-        
-
-          <g transform="translate(837, 671)">
+          <g transform="translate(837, 681)">
             <rect x="0" y="0" width="96" height="18" rx="3" fill="#0f172a" stroke="#475569" stroke-width="1" />
             <text x="48" y="12.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="7.5" font-weight="700" text-anchor="middle">BREADTH FEED</text>
           </g>
@@ -879,7 +918,22 @@
 
     helpBtn.addEventListener('click', () => toggleHelp(true));
     closeModalBtn.addEventListener('click', () => toggleHelp(false));
-    helpModal.addEventListener('click', (e) => { if (e.target === helpModal) toggleHelp(false); });
+    // 6. Interactive Port A/B Highlighting Pulse
+    const portNodes = svgEl.querySelectorAll('.port-node');
+    portNodes.forEach(pn => {
+      const portId = pn.getAttribute('data-port');
+      if (!portId) return;
+      pn.addEventListener('mouseenter', () => {
+        svgEl.querySelectorAll(`.port-node[data-port="${portId}"]`).forEach(node => {
+          node.classList.add('port-pulse');
+        });
+      });
+      pn.addEventListener('mouseleave', () => {
+        svgEl.querySelectorAll(`.port-node[data-port="${portId}"]`).forEach(node => {
+          node.classList.remove('port-pulse');
+        });
+      });
+    });
 
     window.addEventListener('keydown', (e) => {
       const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';

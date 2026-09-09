@@ -64,7 +64,7 @@
     }
     .container {
       width: 100%;
-      max-width: 1360px;
+      max-width: 1540px;
     }
     .header {
       margin-bottom: 16px;
@@ -193,6 +193,23 @@
     .highlighted-wire {
       opacity: 1 !important;
       stroke-width: 3.5px !important;
+    }
+    .port-node {
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .port-node:hover, .port-node.port-pulse {
+      filter: drop-shadow(0 0 10px var(--port-color, #38bdf8));
+    }
+    @keyframes portPulseAnim {
+      0% { transform: scale(1); filter: drop-shadow(0 0 2px var(--port-color, #38bdf8)); }
+      50% { transform: scale(1.15); filter: drop-shadow(0 0 12px var(--port-color, #38bdf8)); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 2px var(--port-color, #38bdf8)); }
+    }
+    .port-pulse circle:first-child {
+      animation: portPulseAnim 1.2s infinite ease-in-out;
+      transform-origin: center;
+      transform-box: fill-box;
     }
     .footer-notes {
       margin-top: 18px;
@@ -365,6 +382,10 @@
           <feGaussianBlur stdDeviation="2.5" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
+        <filter id="portGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3.5" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
       </defs>
     
       
@@ -372,180 +393,177 @@
       <rect width="1440" height="920" fill="var(--canvas-bg)" />
       <rect width="1440" height="920" fill="url(#dotGrid)" />
 
-      <text x="45" y="36" fill="#f59e0b" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">1. TẦNG BRONZE: TIẾP NHẬN THÔ &amp; LỊCH SỬ</text>
-<text x="435" y="36" fill="#06b6d4" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">2. TẦNG SILVER &amp; GOLD: HỒ CỘT PARQUET &amp; ĐỊNH LƯỢNG</text>
-<text x="930" y="36" fill="#089981" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">3. TẦNG PLATINUM: STREAMLIT MULTI-PANE TERMINAL</text>
-
-        <!-- Card 1: CafeF Ingestion Scanner -->
-        <g transform="translate(45, 75)">
-          <rect width="310" height="250" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.5" />
+      
+        <!-- Card 1: Raw CafeF ZIP Ingestion -->
+        <g transform="translate(45, 35)">
+          <rect width="310" height="260" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.5" />
           <rect width="310" height="3" rx="1.5" fill="#f59e0b" />
           <rect x="16" y="14" width="106" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
           <text x="69" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">BRONZE LAYER 01</text>
           <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">Hồ Dữ Liệu Thô CafeF ZIP</text>
           
-          <text x="16" y="78" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">1.</text>
-          <text x="30" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tải tệp nén hàng ngày: CafeF Upto ZIP</text>
+          <text x="16" y="80" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">1.</text>
+          <text x="30" y="80" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tải tệp nén hàng ngày: CafeF Upto ZIP</text>
           
-          <text x="16" y="100" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">2.</text>
-          <text x="30" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bao phủ 10+ năm lịch sử toàn thị trường</text>
+          <text x="16" y="104" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">2.</text>
+          <text x="30" y="104" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bao phủ 10+ năm lịch sử toàn thị trường</text>
           
-          <text x="16" y="122" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">3.</text>
-          <text x="30" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">1.500+ mã niêm yết: HSX, HNX, UPCoM</text>
+          <text x="16" y="128" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">3.</text>
+          <text x="30" y="128" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">1.500+ mã niêm yết: HSX, HNX, UPCoM</text>
           
-          <text x="16" y="144" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">4.</text>
-          <text x="30" y="144" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Ghi nhận nhật ký tải vào:</text>
-          <rect x="30" y="150" width="144" height="16" rx="3" fill="#1e293b" stroke="#334155" stroke-width="0.8" />
-          <text x="102" y="161.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">download_history.json</text>
+          <text x="16" y="152" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">4.</text>
+          <text x="30" y="152" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Ghi nhận nhật ký tải vào:</text>
+          <rect x="30" y="158" width="144" height="16" rx="3" fill="#1e293b" stroke="#334155" stroke-width="0.8" />
+          <text x="102" y="169.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">download_history.json</text>
           
-          <text x="16" y="186" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">5.</text>
-          <text x="30" y="186" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Kiểm tra tính toàn vẹn gói tin bằng MD5</text>
+          <text x="16" y="196" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">5.</text>
+          <text x="30" y="196" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Kiểm tra tính toàn vẹn gói tin bằng MD5</text>
           
-          <rect x="16" y="214" width="278" height="20" rx="3" fill="#451a03" />
-          <text x="155" y="227.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">RAW STORAGE &gt; 15GB CSV LỊCH SỬ</text>
+          <rect x="16" y="224" width="278" height="22" rx="3" fill="#451a03" />
+          <text x="155" y="238" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">RAW STORAGE &gt; 15GB CSV LỊCH SỬ</text>
         </g>
 
         <!-- Card 2: Unpacker Worker -->
-        <g transform="translate(45, 425)">
-          <rect width="310" height="370" rx="8" fill="#0b101b" stroke="#1b253b" stroke-width="1.2" />
+        <g transform="translate(45, 385)">
+          <rect width="310" height="410" rx="8" fill="#0b101b" stroke="#1b253b" stroke-width="1.2" />
           <rect x="16" y="14" width="116" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
           <text x="74" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">ETL EXTRACTOR</text>
           <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">Giải Nén &amp; Làm Sạch Schema</text>
           
-          <text x="16" y="78" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">1.</text>
-          <text x="30" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Giải nén ZIP đa luồng song song</text>
+          <text x="16" y="80" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">1.</text>
+          <text x="30" y="80" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Giải nén ZIP đa luồng song song</text>
           
-          <text x="16" y="100" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">2.</text>
-          <text x="30" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Lọc bỏ dòng trống, định dạng sai số</text>
+          <text x="16" y="104" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="30" y="104" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Lọc bỏ dòng trống, định dạng sai số</text>
           
-          <text x="16" y="122" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">3.</text>
-          <text x="30" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Chuẩn hóa cột: Ticker, Date, O, H, L, C, V</text>
+          <text x="16" y="128" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">3.</text>
+          <text x="30" y="128" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Chuẩn hóa cột: Ticker, Date, O, H, L, C, V</text>
           
-          <text x="16" y="144" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">4.</text>
-          <text x="30" y="144" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hiệu chỉnh giá chia tách cổ tức &amp; quyền mua</text>
+          <text x="16" y="152" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">4.</text>
+          <text x="30" y="152" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hiệu chỉnh giá chia tách cổ tức &amp; quyền mua</text>
           
-          <text x="16" y="166" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">5.</text>
-          <text x="30" y="166" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Khử trùng lặp (Deduplication) theo Ngày/Mã</text>
+          <text x="16" y="176" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">5.</text>
+          <text x="30" y="176" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Khử trùng lặp (Deduplication) theo Ngày/Mã</text>
 
-          <g transform="translate(16, 192)">
-            <rect width="278" height="118" rx="6" fill="#0e1524" stroke="#1b253b" stroke-width="1" />
-            <text x="12" y="22" fill="#06b6d4" font-family="var(--font-mono)" font-size="9" font-weight="700">DATA CLEANING RULES:</text>
-            <text x="12" y="42" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5">&bull; Date format: YYYY-MM-DD</text>
-            <text x="12" y="62" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5">&bull; Close &gt; 0, Volume &gt;= 0</text>
-            <text x="12" y="82" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5">&bull; High &gt;= Low, High &gt;= Open</text>
-            <text x="12" y="102" fill="#089981" font-family="var(--font-mono)" font-size="8.5">&bull; Đạt chuẩn toàn vẹn 99.98%</text>
+          <g transform="translate(16, 204)">
+            <rect width="278" height="136" rx="6" fill="#0e1524" stroke="#1b253b" stroke-width="1" />
+            <text x="12" y="24" fill="#06b6d4" font-family="var(--font-mono)" font-size="9" font-weight="700">DATA CLEANING RULES:</text>
+            <text x="12" y="48" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5">&bull; Date format: YYYY-MM-DD</text>
+            <text x="12" y="70" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5">&bull; Close &gt; 0, Volume &gt;= 0</text>
+            <text x="12" y="92" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5">&bull; High &gt;= Low, High &gt;= Open</text>
+            <text x="12" y="114" fill="#089981" font-family="var(--font-mono)" font-size="8.5">&bull; Đạt chuẩn toàn vẹn 99.98%</text>
           </g>
 
-          <rect x="16" y="332" width="278" height="20" rx="3" fill="#111827" />
-          <text x="155" y="345.5" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">XỬ LÝ 10 TRIỆU BẢN GHI &lt; 4.2 GIÂY</text>
+          <rect x="16" y="370" width="278" height="22" rx="3" fill="#111827" />
+          <text x="155" y="384.5" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">XỬ LÝ 10 TRIỆU BẢN GHI &lt; 4.2 GIÂY</text>
         </g>
         
 
         <!-- Card 3: Silver Parquet Lakehouse -->
-        <g transform="translate(435, 75)">
-          <rect width="410" height="300" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
+        <g transform="translate(435, 35)">
+          <rect width="410" height="310" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
           <rect x="16" y="14" width="112" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
           <text x="72" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SILVER LAYER 02</text>
           <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Hồ Lưu Trữ Cột Apache Parquet</text>
 
           <g transform="translate(16, 68)">
-            <rect x="0" y="0" width="118" height="34" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-            <text x="59" y="15" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SNAPPY NÉN</text>
-            <text x="59" y="28" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">-85% Dung Lượng</text>
+            <rect x="0" y="0" width="118" height="36" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+            <text x="59" y="16" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SNAPPY NÉN</text>
+            <text x="59" y="29" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">-85% Dung Lượng</text>
 
-            <rect x="130" y="0" width="118" height="34" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-            <text x="189" y="15" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">LƯU TRỮ CỘT</text>
-            <text x="189" y="28" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Tốc Độ Đọc 10x</text>
+            <rect x="130" y="0" width="118" height="36" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+            <text x="189" y="16" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">LƯU TRỮ CỘT</text>
+            <text x="189" y="29" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Tốc Độ Đọc 10x</text>
 
-            <rect x="260" y="0" width="118" height="34" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-            <text x="319" y="15" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">MMAP ACCESS</text>
-            <text x="319" y="28" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Không Tải Hết RAM</text>
+            <rect x="260" y="0" width="118" height="36" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+            <text x="319" y="16" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">MMAP ACCESS</text>
+            <text x="319" y="29" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Không Tải Hết RAM</text>
           </g>
 
-          <text x="16" y="128" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="128" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Phân vùng lưu trữ Parquet theo Ticker / Niên độ</text>
-          <text x="16" y="150" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="150" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tích hợp DuckDB / PyArrow: Truy vấn cột siêu tốc</text>
-          <text x="16" y="172" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="172" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Độ trễ truy vấn lọc dữ liệu lịch sử &lt; 250ms</text>
-          <text x="16" y="194" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="194" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Loại bỏ hoàn toàn nghẽn cổ chai I/O tệp CSV lớn</text>
-          <text x="16" y="216" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="216" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hỗ trợ cập nhật nạp nối thêm (Append-only daily sync)</text>
+          <text x="16" y="132" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="132" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Phân vùng lưu trữ Parquet theo Ticker / Niên độ</text>
+          <text x="16" y="156" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="156" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tích hợp DuckDB / PyArrow: Truy vấn cột siêu tốc</text>
+          <text x="16" y="180" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="180" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Độ trễ truy vấn lọc dữ liệu lịch sử &lt; 250ms</text>
+          <text x="16" y="204" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="204" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Loại bỏ hoàn toàn nghẽn cổ chai I/O tệp CSV lớn</text>
+          <text x="16" y="228" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="228" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hỗ trợ cập nhật nạp nối thêm (Append-only daily sync)</text>
 
-          <rect x="16" y="252" width="378" height="20" rx="3" fill="#082f49" />
-          <text x="205" y="265.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">TRUY VẤN CỘT 1.500+ MÃ CỔ PHIẾU TRONG &lt; 250MS</text>
+          <rect x="16" y="266" width="378" height="22" rx="3" fill="#082f49" />
+          <text x="205" y="280" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">TRUY VẤN CỘT 1.500+ MÃ CỔ PHIẾU TRONG &lt; 250MS</text>
         </g>
 
         <!-- Card 4: Gold Feature Store -->
-        <g transform="translate(435, 445)">
-          <rect width="410" height="350" rx="8" fill="#0b101b" stroke="#a855f7" stroke-width="1.5" />
+        <g transform="translate(435, 405)">
+          <rect width="410" height="390" rx="8" fill="#0b101b" stroke="#a855f7" stroke-width="1.5" />
           <rect x="16" y="14" width="108" height="18" rx="3" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
           <text x="70" y="26.5" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">GOLD LAYER 03</text>
           <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Lõi Định Lượng &amp; Độ Rộng Thị Trường</text>
 
           <g transform="translate(16, 68)">
-            <rect width="378" height="106" rx="6" fill="#0e1524" stroke="#1b253b" stroke-width="1" />
+            <rect width="378" height="114" rx="6" fill="#0e1524" stroke="#1b253b" stroke-width="1" />
             <text x="12" y="22" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700">TÍNH TOÁN CHỈ BÁO KỸ THUẬT ĐỒNG THỜI:</text>
-            <text x="12" y="42" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; <tspan fill="#06b6d4" font-family="var(--font-mono)">Xu Hướng:</tspan> SMA 20, 50, 200, EMA 10, 20</text>
-            <text x="12" y="62" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; <tspan fill="#f59e0b" font-family="var(--font-mono)">Động Lượng:</tspan> RSI(14), MACD(12,26,9) Histogram</text>
-            <text x="12" y="82" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; <tspan fill="#089981" font-family="var(--font-mono)">Biến Động &amp; Khối Lượng:</tspan> Bollinger Bands, ATR, VWAP</text>
-            <text x="12" y="98" fill="#8b9bb4" font-family="var(--font-sans)" font-size="9">Tối ưu hóa vector hóa (Vectorized NumPy / Pandas)</text>
+            <text x="12" y="44" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; <tspan fill="#06b6d4" font-family="var(--font-mono)">Xu Hướng:</tspan> SMA 20, 50, 200, EMA 10, 20</text>
+            <text x="12" y="66" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; <tspan fill="#f59e0b" font-family="var(--font-mono)">Động Lượng:</tspan> RSI(14), MACD(12,26,9) Histogram</text>
+            <text x="12" y="88" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; <tspan fill="#089981" font-family="var(--font-mono)">Biến Động &amp; Khối Lượng:</tspan> Bollinger Bands, ATR, VWAP</text>
+            <text x="12" y="105" fill="#8b9bb4" font-family="var(--font-sans)" font-size="9">Tối ưu hóa vector hóa (Vectorized NumPy / Pandas)</text>
           </g>
 
-          <g transform="translate(16, 186)">
-            <rect width="378" height="106" rx="6" fill="#0e1524" stroke="#a855f7" stroke-width="1" />
+          <g transform="translate(16, 196)">
+            <rect width="378" height="114" rx="6" fill="#0e1524" stroke="#a855f7" stroke-width="1" />
             <text x="12" y="22" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700">MA TRẬN ĐỘ RỘNG DÒNG TIỀN 15 NGÀNH:</text>
-            <text x="12" y="42" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; Phân bổ tỷ trọng dòng tiền (Turnover Weight)</text>
-            <text x="12" y="62" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; Tỷ lệ mã Tăng / Giảm / Vượt đỉnh 52 tuần</text>
-            <text x="12" y="82" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; Tự động phát hiện ngành dẫn sóng thị trường</text>
-            <text x="12" y="98" fill="#a855f7" font-family="var(--font-mono)" font-size="9">Cập nhật động theo phiên giao dịch</text>
+            <text x="12" y="44" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; Phân bổ tỷ trọng dòng tiền (Turnover Weight)</text>
+            <text x="12" y="66" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; Tỷ lệ mã Tăng / Giảm / Vượt đỉnh 52 tuần</text>
+            <text x="12" y="88" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; Tự động phát hiện ngành dẫn sóng thị trường</text>
+            <text x="12" y="105" fill="#a855f7" font-family="var(--font-mono)" font-size="9">Cập nhật động theo phiên giao dịch</text>
           </g>
 
-          <rect x="16" y="308" width="378" height="20" rx="3" fill="#2e1065" />
-          <text x="205" y="321.5" fill="#e9d5ff" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">FEATURE STORE SẴN SÀNG CHO MÔ HÌNH QUANT</text>
+          <rect x="16" y="345" width="378" height="22" rx="3" fill="#2e1065" />
+          <text x="205" y="359" fill="#e9d5ff" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">FEATURE STORE SẴN SÀNG CHO MÔ HÌNH QUANT</text>
         </g>
         
 
         <!-- Card 5: Streamlit Financial Terminal -->
-        <g transform="translate(930, 75)">
-          <rect width="465" height="245" rx="8" fill="#0b101b" stroke="#2962ff" stroke-width="1.5" />
+        <g transform="translate(930, 35)">
+          <rect width="465" height="265" rx="8" fill="#0b101b" stroke="#2962ff" stroke-width="1.5" />
           <rect x="16" y="14" width="134" height="18" rx="3" fill="#1e1b4b" stroke="#4338ca" stroke-width="1" />
           <text x="83" y="26.5" fill="#818cf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PLATINUM LAYER 04</text>
           <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Streamlit Financial Terminal &amp; Screener</text>
 
           <g transform="translate(16, 68)">
-            <rect x="0" y="0" width="102" height="34" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
-            <text x="51" y="15" fill="#06b6d4" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">BỘ LỌC MÃ</text>
-            <text x="51" y="28" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">1.500+ CP Niêm Yết</text>
+            <rect x="0" y="0" width="102" height="36" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
+            <text x="51" y="16" fill="#06b6d4" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">BỘ LỌC MÃ</text>
+            <text x="51" y="29" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">1.500+ CP Niêm Yết</text>
 
-            <rect x="111" y="0" width="102" height="34" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
-            <text x="162" y="15" fill="#f59e0b" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">LỌC KỸ THUẬT</text>
-            <text x="162" y="28" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Golden Cross, RSI</text>
+            <rect x="111" y="0" width="102" height="36" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
+            <text x="162" y="16" fill="#f59e0b" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">LỌC KỸ THUẬT</text>
+            <text x="162" y="29" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Golden Cross, RSI</text>
 
-            <rect x="222" y="0" width="102" height="34" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
-            <text x="273" y="15" fill="#089981" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">XUẤT DỮ LIỆU</text>
-            <text x="273" y="28" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Excel / CSV / Parquet</text>
+            <rect x="222" y="0" width="102" height="36" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
+            <text x="273" y="16" fill="#089981" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">XUẤT DỮ LIỆU</text>
+            <text x="273" y="29" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Excel / CSV / Parquet</text>
 
-            <rect x="333" y="0" width="100" height="34" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
-            <text x="383" y="15" fill="#a855f7" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">DARK THEME</text>
-            <text x="383" y="28" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Bloomberg Chuẩn</text>
+            <rect x="333" y="0" width="100" height="36" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
+            <text x="383" y="16" fill="#a855f7" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">DARK THEME</text>
+            <text x="383" y="29" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Bloomberg Chuẩn</text>
           </g>
 
-          <text x="16" y="130" fill="#2962ff" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="130" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tra cứu cổ phiếu theo thời gian thực kết hợp bộ nhớ đệm Streamlit Cache</text>
-          <text x="16" y="152" fill="#2962ff" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="152" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bảng soi Top thanh khoản, Top tăng/giảm và dòng tiền theo ngành</text>
-          <text x="16" y="174" fill="#2962ff" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="174" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tùy biến tham số chỉ báo kỹ thuật linh hoạt ngay trên giao diện web</text>
+          <text x="16" y="132" fill="#2962ff" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="132" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tra cứu cổ phiếu theo thời gian thực kết hợp bộ nhớ đệm Streamlit Cache</text>
+          <text x="16" y="156" fill="#2962ff" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="156" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bảng soi Top thanh khoản, Top tăng/giảm và dòng tiền theo ngành</text>
+          <text x="16" y="180" fill="#2962ff" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="180" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tùy biến tham số chỉ báo kỹ thuật linh hoạt ngay trên giao diện web</text>
 
-          <rect x="16" y="206" width="433" height="20" rx="3" fill="#1e1b4b" />
-          <text x="232" y="219.5" fill="#c7d2fe" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">STREAMLIT ASYNC DASHBOARD &middot; ĐỘ TRỄ TƯƠNG TÁC &lt; 150MS</text>
+          <rect x="16" y="222" width="433" height="22" rx="3" fill="#1e1b4b" />
+          <text x="232" y="235.5" fill="#c7d2fe" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">STREAMLIT ASYNC DASHBOARD &middot; ĐỘ TRỄ TƯƠNG TÁC &lt; 150MS</text>
         </g>
 
         <!-- Card 6: Multi-Pane Chart Canvas -->
-        <g transform="translate(930, 350)">
-          <rect width="465" height="445" rx="8" fill="#0b101b" stroke="#089981" stroke-width="1.5" />
+        <g transform="translate(930, 330)">
+          <rect width="465" height="465" rx="8" fill="#0b101b" stroke="#089981" stroke-width="1.5" />
           <rect x="16" y="14" width="168" height="18" rx="3" fill="#064e3b" stroke="#059669" stroke-width="1" />
           <text x="100" y="26.5" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PLOTLY MULTI-PANE ENGINE</text>
           <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Đồ Thị Kỹ Thuật Đa Tầng 4 Panes Đồng Bộ</text>
@@ -658,51 +676,73 @@
       </g>
     
 
-          <text x="16" y="332" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="332" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Đồng bộ trục thời gian X giữa 4 Panes đồ thị khi phóng to (Zoom) / Cuộn (Pan)</text>
-          <text x="16" y="354" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="354" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hiển thị Tooltip đa thông số chi tiết khi rê chuột (Hover Inspector)</text>
-          <text x="16" y="376" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="376" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Render mượt mà 2.000+ phiên nến lịch sử bằng Plotly WebGL Engine</text>
+          <text x="16" y="335" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="335" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Đồng bộ trục thời gian X giữa 4 Panes đồ thị khi phóng to (Zoom) / Cuộn (Pan)</text>
+          <text x="16" y="360" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="360" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hiển thị Tooltip đa thông số chi tiết khi rê chuột (Hover Inspector)</text>
+          <text x="16" y="385" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="385" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Render mượt mà 2.000+ phiên nến lịch sử bằng Plotly WebGL Engine</text>
 
-          <rect x="16" y="406" width="433" height="20" rx="3" fill="#064e3b" />
-          <text x="232" y="419.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">PLOTLY WEBGL RENDER 4 PANES ĐỒNG BỘ TRONG &lt; 90MS</text>
+          <rect x="16" y="425" width="433" height="22" rx="3" fill="#064e3b" />
+          <text x="232" y="438.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">PLOTLY WEBGL RENDER 4 PANES ĐỒNG BỘ TRONG &lt; 90MS</text>
         </g>
         
-<path d="M 200 325 L 200 423" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)" />
-<path d="M 355 515 H 387 Q 395 515, 395 507 V 203 Q 395 195, 403 195 H 433" fill="none" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-cyan)" />
-<path d="M 640 375 L 640 443" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
-<path d="M 845 530 H 867 Q 875 530, 875 522 V 183 Q 875 175, 883 175 H 928" fill="none" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
-<path d="M 845 235 H 892 Q 900 235, 900 243 V 492 Q 900 500, 908 500 H 928" fill="none" stroke="#089981" stroke-width="2.2" stroke-dasharray="6 4" marker-end="url(#arrow-emerald)" />
+<path d="M 200 295 L 200 383" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)" />
+<path d="M 355 480 H 387 Q 395 480, 395 472 V 178 Q 395 170, 403 170 H 433" fill="none" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-cyan)" />
+<path d="M 640 345 L 640 403" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
+<path d="M 898 140 L 928 140" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
 
-          <!-- Pill 1: Centered on Line 1 (X=200, Y=374) -->
-          <g transform="translate(142, 363)">
+      <g class="diagram-node port-node" data-port="A" data-node-id="port-A-885-140" style="--port-color: #a855f7;">
+        <circle cx="885" cy="140" r="12" fill="#080e1a" stroke="#a855f7" stroke-width="1.8" />
+        <circle cx="885" cy="140" r="8.5" fill="none" stroke="#a855f7" stroke-width="0.75" stroke-dasharray="2 1.5" opacity="0.6" />
+        <text x="885" y="144" fill="#a855f7" font-family="var(--font-mono)" font-size="10" font-weight="800" text-anchor="middle">A</text>
+        <text x="885" y="124" fill="#a855f7" font-family="var(--font-mono)" font-size="8" font-weight="700" letter-spacing="0.05em" text-anchor="middle">SO LỌC</text>
+      </g>
+    
+<path d="M 845 480 L 872 480" stroke="#a855f7" stroke-width="2" />
+
+      <g class="diagram-node port-node" data-port="A" data-node-id="port-A-885-480" style="--port-color: #a855f7;">
+        <circle cx="885" cy="480" r="12" fill="#080e1a" stroke="#a855f7" stroke-width="1.8" />
+        <circle cx="885" cy="480" r="8.5" fill="none" stroke="#a855f7" stroke-width="0.75" stroke-dasharray="2 1.5" opacity="0.6" />
+        <text x="885" y="484" fill="#a855f7" font-family="var(--font-mono)" font-size="10" font-weight="800" text-anchor="middle">A</text>
+        <text x="885" y="464" fill="#a855f7" font-family="var(--font-mono)" font-size="8" font-weight="700" letter-spacing="0.05em" text-anchor="middle">LÕI QUANT</text>
+      </g>
+    
+<path d="M 845 205 L 872 205" stroke="#089981" stroke-width="2" />
+
+      <g class="diagram-node port-node" data-port="B" data-node-id="port-B-885-205" style="--port-color: #089981;">
+        <circle cx="885" cy="205" r="12" fill="#080e1a" stroke="#089981" stroke-width="1.8" />
+        <circle cx="885" cy="205" r="8.5" fill="none" stroke="#089981" stroke-width="0.75" stroke-dasharray="2 1.5" opacity="0.6" />
+        <text x="885" y="209" fill="#089981" font-family="var(--font-mono)" font-size="10" font-weight="800" text-anchor="middle">B</text>
+        <text x="885" y="227" fill="#089981" font-family="var(--font-mono)" font-size="8" font-weight="700" letter-spacing="0.05em" text-anchor="middle">HỒ PARQUET</text>
+      </g>
+    
+<path d="M 898 545 L 928 545" stroke="#089981" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow-emerald)" />
+
+      <g class="diagram-node port-node" data-port="B" data-node-id="port-B-885-545" style="--port-color: #089981;">
+        <circle cx="885" cy="545" r="12" fill="#080e1a" stroke="#089981" stroke-width="1.8" />
+        <circle cx="885" cy="545" r="8.5" fill="none" stroke="#089981" stroke-width="0.75" stroke-dasharray="2 1.5" opacity="0.6" />
+        <text x="885" y="549" fill="#089981" font-family="var(--font-mono)" font-size="10" font-weight="800" text-anchor="middle">B</text>
+        <text x="885" y="567" fill="#089981" font-family="var(--font-mono)" font-size="8" font-weight="700" letter-spacing="0.05em" text-anchor="middle">4 PANES SYNC</text>
+      </g>
+    
+
+          <!-- Pill 1: Centered on Line 1 (X=200, Y=339) -->
+          <g transform="translate(142, 328)">
             <rect x="0" y="0" width="116" height="22" rx="4" fill="#451a03" stroke="#b45309" stroke-width="1" />
             <text x="58" y="15" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">GIẢI NÉN ĐA LUỒNG</text>
           </g>
 
-          <!-- Pill 2: Mounted on Corridor 1 Bus (X=395, Y=355) -->
-          <g transform="translate(357, 344)">
+          <!-- Pill 2: Mounted on Corridor 1 Bus (X=395, Y=314) -->
+          <g transform="translate(357, 303)">
             <rect x="0" y="0" width="76" height="22" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
             <text x="38" y="15" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PARQUET</text>
           </g>
 
-          <!-- Pill 3: Centered on Line 3 (X=640, Y=410) -->
-          <g transform="translate(575, 399)">
+          <!-- Pill 3: Centered on Line 3 (X=640, Y=374) -->
+          <g transform="translate(575, 363)">
             <rect x="0" y="0" width="130" height="22" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
             <text x="65" y="15" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">CHUỖI THỜI GIAN O(1)</text>
-          </g>
-
-          <!-- Pill 4: Mounted on Track A Bus (X=875, Y=355) -->
-          <g transform="translate(837, 344)">
-            <rect x="0" y="0" width="76" height="22" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
-            <text x="38" y="15" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SCREENER</text>
-          </g>
-
-          <!-- Pill 5: Mounted on Track B Dashed Bus (X=900, Y=430) -->
-          <g transform="translate(854, 419)">
-            <rect x="0" y="0" width="92" height="22" rx="4" fill="#064e3b" stroke="#059669" stroke-width="1" />
-            <text x="46" y="15" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SYNC 4 PANES</text>
           </g>
         
     </svg>
@@ -922,7 +962,22 @@
 
     helpBtn.addEventListener('click', () => toggleHelp(true));
     closeModalBtn.addEventListener('click', () => toggleHelp(false));
-    helpModal.addEventListener('click', (e) => { if (e.target === helpModal) toggleHelp(false); });
+    // 6. Interactive Port A/B Highlighting Pulse
+    const portNodes = svgEl.querySelectorAll('.port-node');
+    portNodes.forEach(pn => {
+      const portId = pn.getAttribute('data-port');
+      if (!portId) return;
+      pn.addEventListener('mouseenter', () => {
+        svgEl.querySelectorAll(`.port-node[data-port="${portId}"]`).forEach(node => {
+          node.classList.add('port-pulse');
+        });
+      });
+      pn.addEventListener('mouseleave', () => {
+        svgEl.querySelectorAll(`.port-node[data-port="${portId}"]`).forEach(node => {
+          node.classList.remove('port-pulse');
+        });
+      });
+    });
 
     window.addEventListener('keydown', (e) => {
       const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
