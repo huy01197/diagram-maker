@@ -77,3 +77,20 @@ THEME_PALETTE = {
         "text": "#cbd5e1"
     }
 }
+
+# Standard Virtual Port Coupling Palette (A, B, C, D, E, F, G, H...)
+PORT_PALETTE = {
+    "A": COLOR_PURPLE,   # 01. High-frequency Logic / Quant Engine / Primary Bus
+    "B": COLOR_EMERALD,  # 02. Real-time Stream / Lakehouse Sync / Verified Output
+    "C": COLOR_CYAN,     # 03. Fast Ingestion / In-Memory Store / Direct Stream
+    "D": COLOR_AMBER,    # 04. Failover Fallback / Polling Drawer / Cold Cache
+    "E": COLOR_BLUE,     # 05. Gateway Router / Dispatcher / User Control
+    "F": COLOR_ROSE,     # 06. Circuit Breaker / Anomaly / Risk Engine
+    "G": "#ec4899",      # 07. Analytics Extension Bus (Pink)
+    "H": "#6366f1",      # 08. Cross-Region Bridge Bus (Indigo)
+}
+
+def get_port_color(port_id: str, default: str = COLOR_CYAN) -> str:
+    """Tra cứu màu sắc chuẩn hóa cho Virtual Port Junction theo mã định danh (A, B, C, D, E, F...)."""
+    return PORT_PALETTE.get(str(port_id).strip().upper(), default)
+

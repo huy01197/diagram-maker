@@ -6,7 +6,8 @@ truy vết luồng dữ liệu (Reach Tracing) và xuất bản ảnh trực ti�
 """
 
 from .palette import (
-    BG_DARK, COLOR_CYAN, COLOR_EMERALD, COLOR_AMBER, COLOR_PURPLE, COLOR_BLUE
+    BG_DARK, COLOR_CYAN, COLOR_EMERALD, COLOR_AMBER, COLOR_PURPLE, COLOR_BLUE, COLOR_ROSE,
+    PORT_PALETTE, get_port_color
 )
 
 def render_svg_defs():
@@ -34,33 +35,39 @@ def render_svg_defs():
         <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="{COLOR_BLUE}" />
         </marker>
+        <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="{COLOR_ROSE}" />
+        </marker>
         
         <!-- Glow Filters -->
         <filter id="blueGlow" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="3" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
-        <filter id="emeraldGlow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="2.5" result="blur" />
+        <filter id="cyanGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
         <filter id="portGlow" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="3.5" result="blur" />
+          <feGaussianBlur stdDeviation="4" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
       </defs>
     """
 
-def render_port_junction(cx, cy, port_id, label, color, is_source=True, text_pos="bottom"):
+def render_port_junction(cx, cy, port_id, label, color=None, is_source=True, text_pos="bottom"):
     """
-    Tạo cổng ghép nối ảo Virtual Port Junction Node (Decoupled Port Coupling Pattern A/B).
+    Tạo cổng ghép nối ảo Virtual Port Junction Node (Decoupled Port Coupling Pattern A, B, C, D, E, F...).
     - cx, cy: Tọa độ tâm của nút cổng
-    - port_id: 'A', 'B', v.v.
+    - port_id: 'A', 'B', 'C', 'D', 'E', 'F', v.v.
     - label: Nhãn mô tả luồng tín hiệu (ví dụ: 'WS STREAM', 'FEATURE BUS')
-    - color: Màu sắc đại diện (Hex)
+    - color: Màu sắc đại diện (Hex). Nếu None, tự động tra cứu từ get_port_color(port_id)
     - is_source: True nếu là cổng phát (transmitter), False nếu là cổng thu (receiver)
     - text_pos: 'bottom', 'top', 'left', 'right'
     """
+    if color is None:
+        color = get_port_color(port_id)
+
     label_svg = ""
     if text_pos == "bottom":
         label_svg = f'<text x="{cx}" y="{cy + 22}" fill="{color}" font-family="var(--font-mono)" font-size="8" font-weight="700" letter-spacing="0.05em" text-anchor="middle">{label}</text>'
