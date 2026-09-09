@@ -4,7 +4,7 @@
   "locale": "en",
   "topology": "streaming",
   "width": 1440,
-  "height": 920,
+  "height": 810,
   "metrics": [
     { "label": "Tick Execution Latency", "value": "< 16 ms (60 FPS)", "color": "#34d399" },
     { "label": "Stream Throughput", "value": "2,500+ Ticks/Sec", "color": "#38bdf8" },

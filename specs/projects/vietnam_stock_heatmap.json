@@ -3,7 +3,7 @@
   "eyebrow": "STREAMING TOPOLOGY · DUAL-RAIL PIPELINE",
   "topology": "streaming",
   "width": 1440,
-  "height": 920,
+  "height": 810,
   "metrics": [
     { "label": "Độ Trễ Tick Khớp", "value": "< 16 ms (60 FPS)", "color": "#34d399" },
     { "label": "Thông Lượng Stream", "value": "2.500+ Tick/Giây", "color": "#38bdf8" },

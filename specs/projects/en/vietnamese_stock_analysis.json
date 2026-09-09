@@ -4,7 +4,7 @@
   "locale": "en",
   "topology": "medallion",
   "width": 1440,
-  "height": 920,
+  "height": 795,
   "metrics": [
     { "label": "Parquet Column Queries", "value": "< 250 ms (1,500+ Tickers)", "color": "#38bdf8" },
     { "label": "Snappy Compression", "value": "-85% Disk Storage", "color": "#34d399" },

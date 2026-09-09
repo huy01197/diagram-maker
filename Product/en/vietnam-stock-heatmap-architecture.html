@@ -348,7 +348,7 @@
   </div>
 
   <div class="svg-wrapper">
-    <svg id="diagramSvg" viewBox="0 0 1440 920" xmlns="http://www.w3.org/2000/svg">
+    <svg id="diagramSvg" viewBox="0 0 1440 810" xmlns="http://www.w3.org/2000/svg">
       
       <defs>
         <!-- Background Dot Grid Pattern -->
@@ -393,8 +393,8 @@
     
       
       <!-- Background with Dot Grid -->
-      <rect width="1440" height="920" fill="var(--canvas-bg)" />
-      <rect width="1440" height="920" fill="url(#dotGrid)" />
+      <rect width="1440" height="810" fill="var(--canvas-bg)" />
+      <rect width="1440" height="810" fill="url(#dotGrid)" />
 
       
         <!-- Ingress Card 1: SignalR -->
@@ -878,7 +878,7 @@
       let source = serializer.serializeToString(svgEl);
       const vb = svgEl.viewBox.baseVal;
       const w = (vb && vb.width) ? vb.width : 1440;
-      const h = (vb && vb.height) ? vb.height : 920;
+      const h = (vb && vb.height) ? vb.height : 810;
 
       const canvas = document.createElement('canvas');
       const scale = 2; // 2x Retina quality

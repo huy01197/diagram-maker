@@ -16,7 +16,7 @@ class StreamingTopologyCompiler:
     def __init__(self, spec):
         self.spec = spec
         self.width = spec.get("width", 1440)
-        self.height = spec.get("height", 920)
+        self.height = spec.get("height", 810)
         self.is_en = spec.get("locale") == "en" or spec.get("lang") == "en"
 
     def compile(self):

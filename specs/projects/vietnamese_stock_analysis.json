@@ -3,7 +3,7 @@
   "eyebrow": "MEDALLION LAKEHOUSE · QUANT ENGINE",
   "topology": "medallion",
   "width": 1440,
-  "height": 920,
+  "height": 795,
   "metrics": [
     { "label": "Truy Vấn Cột Parquet", "value": "< 250 ms (1.500+ Mã)", "color": "#38bdf8" },
     { "label": "Chuẩn Nén Snappy", "value": "-85% Disk Storage", "color": "#34d399" },
