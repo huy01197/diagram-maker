@@ -17,9 +17,9 @@
 > Hệ thống mang đến năng lực thiết kế: **Chi tiết, đẹp mắt, gọn gàng và phù hợp với từng bản chất kiến trúc**, hỗ trợ xuất bản linh hoạt dưới dạng **Trang web động tương tác (Dynamic Interactive Web)** hoặc **Hình ảnh tĩnh độ phân giải cao (Retina / 4K PNG & Vector SVG)** phục vụ tài liệu kỹ thuật, slide thuyết trình và báo cáo chuyên sâu.
 
 * **Kho lưu trữ mã nguồn:** [github.com/huy01197/diagram-maker](https://github.com/huy01197/diagram-maker)
-* **Trạm Điều Phối Kiến Trúc Trực Tuyến:** [**Product/index.html**](Product/index.html)
+* **Trạm Điều Phối Kiến Trúc Trực Tuyến:** [**Product/index.html**](Product/index.html) · [**Product/en/index.html**](Product/en/index.html)
 * **Phụ thuộc môi trường:** **Zero External Dependencies** (100% Python Standard Library, không cần cài đặt pip)
-* **Tốc độ biên dịch:** Dưới 0.04 giây cho mỗi sơ đồ (biên dịch toàn bộ 10 specs < 0.25 giây)
+* **Tốc độ biên dịch:** Dưới 0.04 giây cho mỗi sơ đồ (biên dịch toàn bộ 15 specs < 0.35 giây)
 
 ---
 
@@ -320,10 +320,15 @@ diagram-maker/
 ├── README_EN.md                   # Tài liệu kỹ thuật tiếng Anh (Chuẩn Quốc Tế)
 │
 ├── Product/                       # Trạm điều phối sơ đồ kiến trúc thành phẩm
-│   ├── index.html                 # Trạm điều khiển tập trung (Dashboard Hub có chuyển Tab & Theme)
+│   ├── index.html                 # Trạm điều khiển tập trung tiếng Việt (Dashboard Hub)
 │   ├── telegram-stock-bot-architecture.html
 │   ├── vietnam-stock-heatmap-architecture.html
-│   └── vietnamese-stock-analysis-architecture.html
+│   ├── vietnamese-stock-analysis-architecture.html
+│   └── en/                        # Trạm điều phối kiến trúc chuẩn tiếng Anh quốc tế
+│       ├── index.html
+│       ├── telegram-stock-bot-architecture.html
+│       ├── vietnam-stock-heatmap-architecture.html
+│       └── vietnamese-stock-analysis-architecture.html
 │
 ├── src/                           # Mã nguồn động cơ lõi (Core Engine)
 │   ├── __init__.py                # Xuất các lớp và hàm biên dịch chính
@@ -347,10 +352,11 @@ diagram-maker/
 │       └── medallion_lakehouse.py # Trình biên dịch hồ dữ liệu cột Medallion Lakehouse
 │
 ├── specs/                         # Thư mục đặc tả cấu trúc JSON (AST Specs)
-│   ├── samples/                   # File mẫu kiểm thử đơn giản
+│   ├── samples/                   # File mẫu kiểm thử đơn giản (VI & EN)
 │   │   ├── sample_diagram.json
-│   │   └── sample_slide.json
-│   └── projects/                  # Bộ đặc tả thực tế của các hệ thống chứng khoán
+│   │   ├── sample_slide.json
+│   │   └── en/                    # Mẫu kiểm thử tiếng Anh
+│   └── projects/                  # Bộ đặc tả thực tế của các hệ thống chứng khoán (VI & EN)
 │       ├── vietnam_stock_heatmap.json      # Topology Streaming
 │       ├── telegram_stock_bot.json         # Topology Closed-Loop
 │       ├── vietnamese_stock_analysis.json  # Topology Medallion
@@ -358,13 +364,12 @@ diagram-maker/
 │       ├── vietnam_stock_heatmap_5tier.json
 │       ├── telegram_stock_bot_5tier.json
 │       ├── vietnamese_stock_analysis_4tier.json
-│       └── vietnamese_stock_analysis_5tier.json
+│       ├── vietnamese_stock_analysis_5tier.json
+│       └── en/                             # Bộ đặc tả tiếng Anh
 │
 ├── output/                        # Tệp HTML vector độc lập sau khi biên dịch
-│   ├── telegram_stock_bot.html
-│   ├── vietnam_stock_heatmap.html
-│   ├── vietnamese_stock_analysis.html
-│   └── ...
+│   ├── *.html                     # Bản tiếng Việt
+│   └── en/                        # Bản tiếng Anh
 │
 └── assets/                        # Ảnh chụp độ phân giải cao đã qua kiểm định DevTools
     ├── product_portal_overview.png         # Ảnh chụp Trạm điều phối toàn cảnh
@@ -372,7 +377,14 @@ diagram-maker/
     ├── vietnam_stock_heatmap.png           # Sơ đồ Streaming đường ray kép
     ├── vietnamese_stock_analysis.png       # Sơ đồ Medallion Parquet Lakehouse
     ├── column_architecture_showcase.png    # Sơ đồ phân tầng cột trực giao
-    └── presentation_slide_showcase.png     # Slide thuyết trình kính mờ 16:9
+    ├── presentation_slide_showcase.png     # Slide thuyết trình kính mờ 16:9
+    └── en/                                 # Bộ ảnh chụp Retina 2x tiếng Anh
+        ├── product_portal_overview.png
+        ├── telegram_stock_bot.png
+        ├── vietnam_stock_heatmap.png
+        ├── vietnamese_stock_analysis.png
+        ├── column_architecture_showcase.png
+        └── presentation_slide_showcase.png
 ```
 
 ---

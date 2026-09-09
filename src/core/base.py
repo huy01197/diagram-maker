@@ -47,9 +47,25 @@ def render_svg_defs():
       </defs>
     """
 
-def render_html_document(title, eyebrow, metrics, svg_body, footer_notes, width=1320, height=915, default_theme="dark"):
+def render_html_document(title, eyebrow, metrics, svg_body, footer_notes, width=1320, height=915, default_theme="dark", locale="vi"):
     """Bao bọc toàn bộ SVG trong khung HTML độc lập với bộ điều khiển Institutional Interactive Viewer"""
-    
+    is_en = locale == "en" or not any(c in (str(title) + str(eyebrow)).lower() for c in ['kiến trúc', 'hệ thống', 'dữ liệu', 'sơ đồ', 'tầng', 'khung'])
+    html_lang = "en" if is_en else "vi"
+
+    search_ph = "Search components... (/)" if is_en else "Tìm thành phần... (/)"
+    theme_tt = "Toggle Light/Dark Theme (Key T)" if is_en else "Chuyển đổi Sáng/Tối (Phím T)"
+    svg_tt = "Export SVG Source Code" if is_en else "Xuất mã nguồn SVG"
+    png_tt = "Export 2x Retina PNG" if is_en else "Xuất ảnh PNG Retina 2x"
+    help_tt = "Keyboard Shortcuts (?)" if is_en else "Phím tắt (?)"
+
+    modal_title = "VIEWER KEYBOARD SHORTCUTS" if is_en else "PHÍM TẮT ĐIỀU KHIỂN (VIEWER SHORTCUTS)"
+    sc_search = "Search components" if is_en else "Tìm kiếm thành phần"
+    sc_theme = "Toggle Light / Dark theme" if is_en else "Chuyển đổi giao diện Sáng / Tối"
+    sc_reset = "Deselect / Reset active filters" if is_en else "Hủy chọn / Đặt lại bộ lọc"
+    sc_svg = "Export Vector SVG" if is_en else "Xuất ảnh Vector SVG"
+    sc_png = "Export Raster PNG 2x" if is_en else "Xuất ảnh Raster PNG 2x"
+    sc_help = "Open this shortcut modal" if is_en else "Mở bảng trợ giúp này"
+
     metrics_html = ""
     for m in metrics:
         color = m.get("color", "#38bdf8")
@@ -69,7 +85,7 @@ def render_html_document(title, eyebrow, metrics, svg_body, footer_notes, width=
     </div>"""
 
     return f"""<!DOCTYPE html>
-<html lang="vi" data-theme="{default_theme}">
+<html lang="{html_lang}" data-theme="{default_theme}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -371,12 +387,12 @@ def render_html_document(title, eyebrow, metrics, svg_body, footer_notes, width=
     </div>
     <div class="controls-bar">
       <div class="search-box">
-        <input type="text" id="nodeSearch" placeholder="Tìm thành phần... (/)" />
+        <input type="text" id="nodeSearch" placeholder="{search_ph}" />
       </div>
-      <button class="btn" id="themeToggleBtn" title="Chuyển đổi Sáng/Tối (Phím T)">THEME: DARK</button>
-      <button class="btn" id="exportSvgBtn" title="Xuất mã nguồn SVG">SVG</button>
-      <button class="btn" id="exportPngBtn" title="Xuất ảnh PNG Retina 2x">PNG</button>
-      <button class="btn" id="helpBtn" title="Phím tắt (?)">?</button>
+      <button class="btn" id="themeToggleBtn" title="{theme_tt}">THEME: DARK</button>
+      <button class="btn" id="exportSvgBtn" title="{svg_tt}">SVG</button>
+      <button class="btn" id="exportPngBtn" title="{png_tt}">PNG</button>
+      <button class="btn" id="helpBtn" title="{help_tt}">?</button>
     </div>
   </div>
 
@@ -405,16 +421,16 @@ def render_html_document(title, eyebrow, metrics, svg_body, footer_notes, width=
 <div class="modal-overlay" id="helpModal">
   <div class="modal-card">
     <div class="modal-header">
-      <span class="modal-title">PHÍM TẮT ĐIỀU KHIỂN (VIEWER SHORTCUTS)</span>
+      <span class="modal-title">{modal_title}</span>
       <button class="modal-close" id="closeModalBtn">ESC</button>
     </div>
     <div class="shortcuts-list">
-      <div class="shortcut-row"><span>Tìm kiếm thành phần</span> <kbd>/</kbd></div>
-      <div class="shortcut-row"><span>Chuyển đổi giao diện Sáng / Tối</span> <kbd>T</kbd></div>
-      <div class="shortcut-row"><span>Hủy chọn / Đặt lại bộ lọc</span> <kbd>ESC</kbd></div>
-      <div class="shortcut-row"><span>Xuất ảnh Vector SVG</span> <kbd>Alt + S</kbd></div>
-      <div class="shortcut-row"><span>Xuất ảnh Raster PNG 2x</span> <kbd>Alt + P</kbd></div>
-      <div class="shortcut-row"><span>Mở bảng trợ giúp này</span> <kbd>?</kbd></div>
+      <div class="shortcut-row"><span>{sc_search}</span> <kbd>/</kbd></div>
+      <div class="shortcut-row"><span>{sc_theme}</span> <kbd>T</kbd></div>
+      <div class="shortcut-row"><span>{sc_reset}</span> <kbd>ESC</kbd></div>
+      <div class="shortcut-row"><span>{sc_svg}</span> <kbd>Alt + S</kbd></div>
+      <div class="shortcut-row"><span>{sc_png}</span> <kbd>Alt + P</kbd></div>
+      <div class="shortcut-row"><span>{sc_help}</span> <kbd>?</kbd></div>
     </div>
   </div>
 </div>

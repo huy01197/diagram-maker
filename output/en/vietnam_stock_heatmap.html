@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vietnam Stock Heatmap - Real-Time Streaming & Market Distribution Pipeline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root, [data-theme="dark"] {
+      --bg: #070a12;
+      --card-bg: #0c121e;
+      --border-base: #1b253b;
+      --text-main: #e2e8f0;
+      --text-muted: #8b9bb4;
+      --canvas-bg: #080c16;
+      --canvas-border: #1b253b;
+      --toolbar-bg: #0d1424;
+      --btn-bg: #131b2e;
+      --btn-border: #23314f;
+      --btn-hover: #1e2a47;
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #089981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #a855f7;
+      --accent-rose: #f23645;
+      --accent-blue: #2962ff;
+      --dot-grid-color: #ffffff;
+      --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Geist Mono', Menlo, Consolas, monospace;
+    }
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border-base: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --canvas-bg: #ffffff;
+      --canvas-border: #cbd5e1;
+      --toolbar-bg: #f1f5f9;
+      --btn-bg: #ffffff;
+      --btn-border: #cbd5e1;
+      --btn-hover: #e2e8f0;
+      --accent-cyan: #0284c7;
+      --accent-emerald: #059669;
+      --accent-amber: #d97706;
+      --accent-purple: #7c3aed;
+      --accent-rose: #e11d48;
+      --accent-blue: #1d4ed8;
+      --dot-grid-color: #000000;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 24px 16px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .container {
+      width: 100%;
+      max-width: 1360px;
+    }
+    .header {
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid var(--border-base);
+      padding-bottom: 14px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+    }
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-box input {
+      background: var(--toolbar-bg);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 7px 12px;
+      width: 160px;
+      outline: none;
+      transition: width 0.2s ease, border-color 0.2s ease;
+    }
+    .search-box input:focus {
+      width: 210px;
+      border-color: var(--accent-cyan);
+    }
+    .btn {
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 7px 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .btn:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent-cyan);
+    }
+    .metrics-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .metric-pill {
+      background: var(--toolbar-bg);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      padding: 6px 14px;
+      text-align: right;
+    }
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .metric-value {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .svg-wrapper {
+      background: var(--canvas-bg);
+      border: 1px solid var(--canvas-border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      position: relative;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      color: var(--dot-grid-color);
+    }
+    .diagram-node {
+      cursor: pointer;
+      transition: opacity 0.2s ease, filter 0.2s ease;
+    }
+    .diagram-wire {
+      transition: opacity 0.2s ease, stroke-width 0.2s ease;
+    }
+    .dimmed {
+      opacity: 0.15 !important;
+    }
+    .highlighted {
+      opacity: 1 !important;
+      filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.7));
+    }
+    .highlighted-wire {
+      opacity: 1 !important;
+      stroke-width: 3.5px !important;
+    }
+    .footer-notes {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .note-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      padding: 12px 14px;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .note-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .note-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    /* Modal Shortcuts Dialog */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-base);
+      border-radius: 10px;
+      padding: 24px;
+      max-width: 440px;
+      width: 90%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-base);
+      padding-bottom: 10px;
+    }
+    .modal-title {
+      font-size: 14px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text-main);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 14px;
+    }
+    .shortcuts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .shortcut-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    kbd {
+      background: var(--toolbar-bg);
+      border: 1px solid var(--border-base);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div>
+      <div class="eyebrow">STREAMING TOPOLOGY · DUAL-RAIL EVENT PIPELINE</div>
+      <h1 class="title">Vietnam Stock Heatmap - Real-Time Streaming & Market Distribution Pipeline</h1>
+    </div>
+    <div class="controls-bar">
+      <div class="search-box">
+        <input type="text" id="nodeSearch" placeholder="Search components... (/)" />
+      </div>
+      <button class="btn" id="themeToggleBtn" title="Toggle Light/Dark Theme (Key T)">THEME: DARK</button>
+      <button class="btn" id="exportSvgBtn" title="Export SVG Source Code">SVG</button>
+      <button class="btn" id="exportPngBtn" title="Export 2x Retina PNG">PNG</button>
+      <button class="btn" id="helpBtn" title="Keyboard Shortcuts (?)">?</button>
+    </div>
+  </div>
+
+  <div class="metrics-bar">
+    
+      <div class="metric-pill">
+        <div class="metric-label">Tick Execution Latency</div>
+        <div class="metric-value" style="color: #34d399;">< 16 ms (60 FPS)</div>
+      </div>
+      <div class="metric-pill">
+        <div class="metric-label">Stream Throughput</div>
+        <div class="metric-value" style="color: #38bdf8;">2,500+ Ticks/Sec</div>
+      </div>
+      <div class="metric-pill">
+        <div class="metric-label">RAM Store Queries</div>
+        <div class="metric-value" style="color: #38bdf8;">O(1) < 0.12 ms</div>
+      </div>
+      <div class="metric-pill">
+        <div class="metric-label">Dual-Rail Transport</div>
+        <div class="metric-value" style="color: #fbbf24;">WebSocket + REST</div>
+      </div>
+  </div>
+
+  <div class="svg-wrapper">
+    <svg id="diagramSvg" viewBox="0 0 1320 915" xmlns="http://www.w3.org/2000/svg">
+      
+      <defs>
+        <!-- Background Dot Grid Pattern -->
+        <pattern id="dotGrid" width="24" height="24" patternUnits="userSpaceOnUse">
+          <circle cx="12" cy="12" r="1.1" fill="currentColor" opacity="0.08" />
+        </pattern>
+
+        <!-- Arrow Markers -->
+        <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#06b6d4" />
+        </marker>
+        <marker id="arrow-emerald" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#089981" />
+        </marker>
+        <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f59e0b" />
+        </marker>
+        <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#a855f7" />
+        </marker>
+        <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2962ff" />
+        </marker>
+        
+        <!-- Glow Filters -->
+        <filter id="blueGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+        <filter id="emeraldGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+      </defs>
+    
+      
+      <!-- Background with Dot Grid -->
+      <rect width="1320" height="915" fill="var(--canvas-bg)" />
+      <rect width="1320" height="915" fill="url(#dotGrid)" />
+
+      <text x="50" y="32" fill="#06b6d4" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">1. INGRESS SOURCES &amp; RSA SECURITY</text>
+<text x="390" y="32" fill="#06b6d4" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">2. FAN-IN CONVERGENCE &amp; RAM O(1) STORE</text>
+<text x="940" y="32" fill="#089981" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">3. CLIENT DISPATCH &amp; VISUAL CANVAS</text>
+<path d="M 320 185 L 372 185" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-cyan)" />
+<path d="M 320 400 C 355 400, 355 240, 372 240" fill="none" stroke="#a855f7" stroke-width="2" stroke-dasharray="4 2" marker-end="url(#arrow-purple)" />
+<path d="M 320 625 C 360 625, 360 640, 372 640" fill="none" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)" />
+<path d="M 590 280 L 590 322" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-cyan)" />
+<path d="M 590 515 L 590 557" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-cyan)" />
+<path d="M 800 370 C 865 370, 885 105, 932 105" fill="none" stroke="#089981" stroke-width="2.5" marker-end="url(#arrow-emerald)" />
+<path d="M 800 480 C 865 480, 885 710, 932 710" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-amber)" />
+<path d="M 1120 165 L 1120 222" stroke="#089981" stroke-width="2" marker-end="url(#arrow-emerald)" />
+<path d="M 1120 500 L 1120 557" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 2" marker-end="url(#arrow-amber)" />
+
+          <g transform="translate(820, 140)">
+            <rect x="0" y="0" width="100" height="22" rx="4" fill="#064e3b" stroke="#089981" stroke-width="1" />
+            <circle cx="12" cy="11" r="3.5" fill="#34d399" />
+            <text x="24" y="15" fill="#a7f3d0" font-family="var(--font-mono)" font-size="9" font-weight="700">&lt; 16MS LIVE</text>
+            <text x="50" y="-6" fill="#34d399" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">PRIMARY STREAM</text>
+          </g>
+          <g transform="translate(820, 455)">
+            <rect x="0" y="0" width="100" height="22" rx="4" fill="#451a03" stroke="#f59e0b" stroke-width="1" />
+            <circle cx="12" cy="11" r="3.5" fill="#fbbf24" />
+            <text x="24" y="15" fill="#fde68a" font-family="var(--font-mono)" font-size="9" font-weight="700">REST 2.5S</text>
+            <text x="50" y="-6" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">FAILOVER POLLING</text>
+          </g>
+        
+
+        <!-- Ingress Card 1: SignalR -->
+        <g transform="translate(50, 75)">
+          <rect width="270" height="155" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
+          <rect x="14" y="14" width="86" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+          <text x="57" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SIGNALR HUB</text>
+          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">SSI FastConnect</text>
+          <text x="14" y="78" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">1.</text>
+          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Listen to X:ALL, MI:ALL channels</text>
+          <text x="14" y="100" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Throughput &gt; 2,500 ticks / second</text>
+          <rect x="14" y="122" width="242" height="18" rx="3" fill="#082f49" />
+          <text x="135" y="134.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="9" font-weight="600" text-anchor="middle">ACTIVE STREAMING INGRESS</text>
+        </g>
+
+        <!-- Ingress Card 2: RSA Auth -->
+        <g transform="translate(50, 290)">
+          <rect width="270" height="165" rx="8" fill="#0b101b" stroke="#a855f7" stroke-width="1.2" />
+          <rect x="14" y="14" width="86" height="18" rx="3" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
+          <text x="57" y="26.5" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">RSA SECURITY</text>
+          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">Digital Signature &amp; JWT</text>
+          <text x="14" y="78" fill="#a855f7" font-family="var(--font-mono)" font-size="10">1.</text>
+          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Load config.json &amp; PrivateKey</text>
+          <text x="14" y="100" fill="#a855f7" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Standardized SHA-256 signing</text>
+          <text x="14" y="122" fill="#a855f7" font-family="var(--font-mono)" font-size="10">3.</text>
+          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Auto token minting &amp; rotation</text>
+          <rect x="14" y="137" width="242" height="16" rx="3" fill="#2e1065" />
+        </g>
+
+        <!-- Ingress Card 3: Cold Start -->
+        <g transform="translate(50, 520)">
+          <rect width="270" height="165" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.2" />
+          <rect x="14" y="14" width="86" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
+          <text x="57" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">0MS COLD START</text>
+          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">10-Day Historical Backfill</text>
+          <text x="14" y="78" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">1.</text>
+          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Lookback skips holidays/weekends</text>
+          <text x="14" y="100" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Load reference price snapshot</text>
+          <text x="14" y="122" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">3.</text>
+          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Failover VNDirect finfo API</text>
+          <rect x="14" y="137" width="242" height="16" rx="3" fill="#451a03" />
+        </g>
+        
+
+        <!-- Core Card 1: Fan-in Worker -->
+        <g transform="translate(380, 75)">
+          <rect width="420" height="195" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
+          <rect x="16" y="14" width="102" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+          <text x="67" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">FAN-IN WORKER</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">High-Speed Ingestion &amp; Tick Decoder</text>
+          
+          <!-- 3 mini boxes -->
+          <g transform="translate(16, 68)">
+            <rect x="0" y="0" width="120" height="42" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
+            <text x="60" y="17" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PACKET X (MATCH)</text>
+            <text x="60" y="31" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Match price, Vol, Side</text>
+
+            <rect x="134" y="0" width="120" height="42" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
+            <text x="194" y="17" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PACKET MI (INDEX)</text>
+            <text x="194" y="31" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">VN-Index, VN30, HNX30</text>
+
+            <rect x="268" y="0" width="120" height="42" rx="4" fill="#061826" stroke="#0c4a6e" stroke-width="1" />
+            <text x="328" y="17" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">% CHANGE CALC</text>
+            <text x="328" y="31" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Compare vs Ref Snapshot</text>
+          </g>
+
+          <rect x="16" y="125" width="388" height="20" rx="4" fill="#082f49" />
+          <text x="210" y="138.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="9.5" font-weight="600" text-anchor="middle">REAL-TIME ASYNC DECODING IN THREAD &lt; 0.05MS</text>
+        </g>
+
+        <!-- Core Card 2: In-Memory RAM Store -->
+        <g transform="translate(380, 325)">
+          <rect width="420" height="185" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
+          <rect x="16" y="14" width="112" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+          <text x="72" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">IN-MEMORY STORE</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">O(1) RAM Data Store &amp; Mutex Safety</text>
+          
+          <text x="16" y="80" fill="#38bdf8" font-family="var(--font-mono)" font-size="10.5" font-weight="700">HASH-MAP O(1):</text>
+          <text x="120" y="80" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Instant state management for 700+ tickers across 3 exchanges</text>
+
+          <text x="16" y="108" fill="#38bdf8" font-family="var(--font-mono)" font-size="10.5" font-weight="700">MUTEX LOCK:</text>
+          <text x="105" y="108" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Thread-safe concurrency lock preventing race conditions</text>
+
+          <text x="16" y="136" fill="#38bdf8" font-family="var(--font-mono)" font-size="10.5" font-weight="700">ZERO DISK I/O:</text>
+          <text x="125" y="136" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11.5">Zero disk writes during trading hours to eliminate I/O bottleneck</text>
+
+          <rect x="16" y="152" width="388" height="14" rx="3" fill="#0c4a6e" />
+        </g>
+
+        <!-- Core Card 3: Sector Classifier -->
+        <g transform="translate(380, 560)">
+          <rect width="420" height="205" rx="8" fill="#0b101b" stroke="#1b253b" stroke-width="1.2" />
+          <rect x="16" y="14" width="102" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
+          <text x="67" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">VS-SECTOR CORE</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">15-Sector Classification &amp; Breadth Matrix</text>
+          
+          <!-- Sector Tag Pills -->
+          <g transform="translate(16, 68)">
+            <rect x="0" y="0" width="70" height="20" rx="3" fill="#1e293b" /><text x="35" y="13.5" fill="#8b9bb4" font-family="var(--font-sans)" font-size="9" text-anchor="middle">Banking</text>
+            <rect x="76" y="0" width="75" height="20" rx="3" fill="#1e293b" /><text x="113.5" y="13.5" fill="#8b9bb4" font-family="var(--font-sans)" font-size="9" text-anchor="middle">Real Estate</text>
+            <rect x="157" y="0" width="70" height="20" rx="3" fill="#1e293b" /><text x="192" y="13.5" fill="#8b9bb4" font-family="var(--font-sans)" font-size="9" text-anchor="middle">Steel &amp; Mat.</text>
+            <rect x="233" y="0" width="75" height="20" rx="3" fill="#1e293b" /><text x="270.5" y="13.5" fill="#8b9bb4" font-family="var(--font-sans)" font-size="9" text-anchor="middle">Securities</text>
+            <rect x="314" y="0" width="74" height="20" rx="3" fill="#1e293b" /><text x="351" y="13.5" fill="#8b9bb4" font-family="var(--font-sans)" font-size="9" text-anchor="middle">+11 Sectors</text>
+          </g>
+
+          <!-- 5-Color Spectrum Bar -->
+          <g transform="translate(16, 96)">
+            <rect x="0" y="0" width="74" height="22" rx="3" fill="#7c3aed" /><text x="37" y="14.5" fill="#fff" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">CEILING (+6.9%)</text>
+            <rect x="78" y="0" width="74" height="22" rx="3" fill="#059669" /><text x="115" y="14.5" fill="#fff" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">GAIN</text>
+            <rect x="156" y="0" width="74" height="22" rx="3" fill="#d97706" /><text x="193" y="14.5" fill="#fff" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">REFERENCE</text>
+            <rect x="234" y="0" width="74" height="22" rx="3" fill="#dc2626" /><text x="271" y="14.5" fill="#fff" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">LOSS</text>
+            <rect x="312" y="0" width="76" height="22" rx="3" fill="#0284c7" /><text x="350" y="14.5" fill="#fff" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">FLOOR (-6.9%)</text>
+          </g>
+
+          <text x="16" y="142" fill="#8b9bb4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+          <text x="28" y="142" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Area weighting calculated dynamically by Turnover Value</text>
+
+          <text x="16" y="162" fill="#8b9bb4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+          <text x="28" y="162" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Market breadth capital flow stats: Count of Ceiling/Gain/Ref/Loss/Floor</text>
+
+          <text x="16" y="182" fill="#8b9bb4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+          <text x="28" y="182" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Auto-ranking top liquidity sectors across the entire market</text>
+        </g>
+        
+
+        <!-- Presentation Card 1: WebSocket Hub -->
+        <g transform="translate(940, 75)">
+          <rect width="330" height="90" rx="8" fill="#0b101b" stroke="#089981" stroke-width="1.5" />
+          <rect x="14" y="12" width="134" height="16" rx="3" fill="#064e3b" />
+          <text x="81" y="23.5" fill="#34d399" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">FASTCONNECT LIVE HUB</text>
+          <text x="14" y="44" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13" font-weight="700">aiohttp Server &amp; WebSocket /ws</text>
+          <text x="14" y="62" fill="#089981" font-family="var(--font-mono)" font-size="9.5">1.</text>
+          <text x="26" y="62" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Port 8050: Auto port reclamation (1-Click Play)</text>
+          <text x="14" y="78" fill="#089981" font-family="var(--font-mono)" font-size="9.5">2.</text>
+          <text x="26" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Broadcast delta packets at 60 FPS to all clients</text>
+        </g>
+
+        <!-- Presentation Card 2: ECharts Treemap Canvas (Y: 230 to 500, generous 65px gaps) -->
+        <g transform="translate(940, 230)">
+          <rect width="330" height="270" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
+          <rect x="14" y="12" width="112" height="16" rx="3" fill="#082f49" />
+          <text x="70" y="23.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">ECHARTS 5.4 CANVAS</text>
+          <text x="14" y="44" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13.5" font-weight="700">Interactive Market Heatmap (Treemap)</text>
+
+          <!-- Embedded Mini Treemap Mockup -->
+          
+      <g transform="translate(10, 48)">
+        <!-- Main Treemap Box -->
+        <g transform="translate(0, 0)">
+          <!-- Sector 1: Ngân Hàng (Emerald) -->
+          <g transform="translate(10, 8)">
+            <rect width="180" height="90" rx="4" fill="#064e3b" stroke="#089981" stroke-width="1.2" />
+            <text x="10" y="18" fill="#34d399" font-family="var(--font-mono)" font-size="8.5" font-weight="700">BANKING</text>
+            <rect x="10" y="26" width="75" height="52" rx="3" fill="#042f2e" />
+            <text x="47" y="48" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">VCB</text>
+            <text x="47" y="66" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">+3.2%</text>
+
+            <rect x="95" y="26" width="75" height="52" rx="3" fill="#042f2e" />
+            <text x="132" y="48" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">BID</text>
+            <text x="132" y="66" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">+1.8%</text>
+          </g>
+
+          <!-- Sector 2: Bất Động Sản (Rose) -->
+          <g transform="translate(200, 8)">
+            <rect width="120" height="90" rx="4" fill="#4c0519" stroke="#f23645" stroke-width="1.2" />
+            <text x="10" y="18" fill="#fb7185" font-family="var(--font-mono)" font-size="8.5" font-weight="700">REAL ESTATE</text>
+            <rect x="10" y="26" width="100" height="52" rx="3" fill="#881337" />
+            <text x="60" y="48" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">VHM</text>
+            <text x="60" y="66" fill="#fecdd3" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">-2.4%</text>
+          </g>
+
+          <!-- Sector 3: Thép (Cyan) -->
+          <g transform="translate(330, 8)">
+            <rect width="75" height="42" rx="4" fill="#082f49" stroke="#06b6d4" stroke-width="1" />
+            <text x="37" y="22" fill="#fff" font-family="var(--font-mono)" font-size="10" font-weight="700" text-anchor="middle">HPG</text>
+            <text x="37" y="36" fill="#38bdf8" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">+2.1%</text>
+          </g>
+
+          <!-- Sector 4: Chứng Khoán (Purple) -->
+          <g transform="translate(330, 56)">
+            <rect width="75" height="42" rx="4" fill="#2e1065" stroke="#a855f7" stroke-width="1" />
+            <text x="37" y="70" fill="#fff" font-family="var(--font-mono)" font-size="10" font-weight="700" text-anchor="middle">SSI</text>
+            <text x="37" y="84" fill="#c084fc" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">+4.5%</text>
+          </g>
+        </g>
+      </g>
+    
+
+          <g transform="translate(14, 160)">
+            <text x="0" y="16" fill="#06b6d4" font-family="var(--font-mono)" font-size="9">&bull;</text>
+            <text x="10" y="16" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">ZRender Centroid Hook: Centered ticker labels inside cells</text>
+            <text x="0" y="34" fill="#06b6d4" font-family="var(--font-mono)" font-size="9">&bull;</text>
+            <text x="10" y="34" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Auto-hide text when cell &lt; 38px to prevent overflow</text>
+            <text x="0" y="52" fill="#06b6d4" font-family="var(--font-mono)" font-size="9">&bull;</text>
+            <text x="10" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Flash Update visual pulse upon new tick arrival (&lt; 16ms)</text>
+            <text x="0" y="70" fill="#06b6d4" font-family="var(--font-mono)" font-size="9">&bull;</text>
+            <text x="10" y="70" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">3-color market breadth meter: Gain, Ref, Loss</text>
+          </g>
+        </g>
+
+        <!-- Presentation Card 3: Polling Fallback (Y: 565 to 695, generous 65px gap) -->
+        <g transform="translate(940, 565)">
+          <rect width="330" height="130" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.5" />
+          <rect x="14" y="12" width="134" height="16" rx="3" fill="#451a03" />
+          <text x="81" y="23.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">FAILOVER &amp; INSPECTOR</text>
+          <text x="14" y="44" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13" font-weight="700">Polling Live Mode &amp; Inspector Drawer</text>
+          <text x="14" y="65" fill="#f59e0b" font-family="var(--font-mono)" font-size="9.5">1.</text>
+          <text x="26" y="65" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Auto-switch to POLLING LIVE (2.5s cycle) on disconnect</text>
+          <text x="14" y="85" fill="#f59e0b" font-family="var(--font-mono)" font-size="9.5">2.</text>
+          <text x="26" y="85" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Auxiliary drawer: Top 6 liquidity sectors &amp; market breadth</text>
+          <rect x="14" y="102" width="302" height="16" rx="3" fill="#451a03" />
+          <text x="165" y="113.5" fill="#fde68a" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">AUTOMATIC RECONNECT (AUTO-RECONNECT) EVERY 3S</text>
+        </g>
+        
+    </svg>
+  </div>
+
+  <div class="footer-notes">
+    
+    <div class="note-card">
+      <div class="note-title"><span style="color: #38bdf8; font-size: 14px;">&bull;</span> SIGNALR SSI INGRESS</div>
+      <div class="note-desc">Subscribes to live order-matching feeds exceeding 2,500 ticks/sec from exchanges with enterprise RSA/JWT auth.</div>
+    </div>
+    <div class="note-card">
+      <div class="note-title"><span style="color: #34d399; font-size: 14px;">&bull;</span> O(1) IN-MEMORY RAM STORE</div>
+      <div class="note-desc">Thread-safe Mutex lock eliminates race conditions, instantly managing 700+ tickers with zero disk overhead.</div>
+    </div>
+    <div class="note-card">
+      <div class="note-title"><span style="color: #fbbf24; font-size: 14px;">&bull;</span> 15 VS-SECTOR CLASSIFICATION</div>
+      <div class="note-desc">5-tier amplitude color spectrum combined with sector taxonomy and holistic market breadth analytics.</div>
+    </div>
+    <div class="note-card">
+      <div class="note-title"><span style="color: #34d399; font-size: 14px;">&bull;</span> ECHARTS CANVAS & REST FAILOVER</div>
+      <div class="note-desc">Primary rail broadcasts deltas via WebSocket /ws at 60 FPS, with 2.5s Polling Live ensuring uninterrupted continuity.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Trợ Giúp Phím Tắt -->
+<div class="modal-overlay" id="helpModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <span class="modal-title">VIEWER KEYBOARD SHORTCUTS</span>
+      <button class="modal-close" id="closeModalBtn">ESC</button>
+    </div>
+    <div class="shortcuts-list">
+      <div class="shortcut-row"><span>Search components</span> <kbd>/</kbd></div>
+      <div class="shortcut-row"><span>Toggle Light / Dark theme</span> <kbd>T</kbd></div>
+      <div class="shortcut-row"><span>Deselect / Reset active filters</span> <kbd>ESC</kbd></div>
+      <div class="shortcut-row"><span>Export Vector SVG</span> <kbd>Alt + S</kbd></div>
+      <div class="shortcut-row"><span>Export Raster PNG 2x</span> <kbd>Alt + P</kbd></div>
+      <div class="shortcut-row"><span>Open this shortcut modal</span> <kbd>?</kbd></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Institutional Interactive Engine (Zero External Dependencies)
+  (function() {
+    const htmlEl = document.documentElement;
+    const svgEl = document.getElementById('diagramSvg');
+    const searchInput = document.getElementById('nodeSearch');
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const exportSvgBtn = document.getElementById('exportSvgBtn');
+    const exportPngBtn = document.getElementById('exportPngBtn');
+    const helpBtn = document.getElementById('helpBtn');
+    const helpModal = document.getElementById('helpModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // 1. Theme Management
+    function setTheme(theme) {
+      htmlEl.setAttribute('data-theme', theme);
+      themeBtn.textContent = 'THEME: ' + theme.toUpperCase();
+      try { localStorage.setItem('dm_theme', theme); } catch(e) {}
+    }
+
+    const savedTheme = (function() {
+      try { return localStorage.getItem('dm_theme') || 'dark'; } catch(e) { return 'dark'; }
+    })();
+    setTheme(savedTheme);
+
+    themeBtn.addEventListener('click', () => {
+      const cur = htmlEl.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      setTheme(cur);
+    });
+
+    // 2. Search & Filter
+    searchInput.addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      const nodes = svgEl.querySelectorAll('.diagram-node, g[filter="url(#nodeShadow)"]');
+      const wires = svgEl.querySelectorAll('.diagram-wire, path[stroke]');
+
+      if (!q) {
+        nodes.forEach(n => n.classList.remove('dimmed', 'highlighted'));
+        wires.forEach(w => w.classList.remove('dimmed', 'highlighted-wire'));
+        return;
+      }
+
+      nodes.forEach(n => {
+        const text = n.textContent.toLowerCase();
+        if (text.includes(q)) {
+          n.classList.remove('dimmed');
+          n.classList.add('highlighted');
+        } else {
+          n.classList.add('dimmed');
+          n.classList.remove('highlighted');
+        }
+      });
+
+      wires.forEach(w => w.classList.add('dimmed'));
+    });
+
+    // 3. Upstream & Downstream Reach Tracing
+    let selectedNodeId = null;
+    svgEl.addEventListener('click', (e) => {
+      const nodeG = e.target.closest('.diagram-node');
+      if (!nodeG) {
+        // Reset selection when clicking outside
+        selectedNodeId = null;
+        svgEl.querySelectorAll('.diagram-node, g[filter]').forEach(n => n.classList.remove('dimmed', 'highlighted'));
+        svgEl.querySelectorAll('.diagram-wire, path[stroke]').forEach(w => w.classList.remove('dimmed', 'highlighted-wire'));
+        return;
+      }
+
+      const nodeId = nodeG.getAttribute('data-node-id');
+      if (selectedNodeId === nodeId) {
+        selectedNodeId = null;
+        svgEl.querySelectorAll('.diagram-node, g[filter]').forEach(n => n.classList.remove('dimmed', 'highlighted'));
+        svgEl.querySelectorAll('.diagram-wire, path[stroke]').forEach(w => w.classList.remove('dimmed', 'highlighted-wire'));
+        return;
+      }
+
+      selectedNodeId = nodeId;
+      const allNodes = svgEl.querySelectorAll('.diagram-node');
+      const allWires = svgEl.querySelectorAll('.diagram-wire');
+
+      if (allWires.length > 0) {
+        const connectedNodes = new Set([nodeId]);
+        allWires.forEach(w => {
+          const fromId = w.getAttribute('data-from');
+          const toId = w.getAttribute('data-to');
+          if (fromId === nodeId || toId === nodeId) {
+            w.classList.remove('dimmed');
+            w.classList.add('highlighted-wire');
+            if (fromId) connectedNodes.add(fromId);
+            if (toId) connectedNodes.add(toId);
+          } else {
+            w.classList.add('dimmed');
+            w.classList.remove('highlighted-wire');
+          }
+        });
+
+        allNodes.forEach(n => {
+          const nid = n.getAttribute('data-node-id');
+          if (connectedNodes.has(nid)) {
+            n.classList.remove('dimmed');
+            n.classList.add('highlighted');
+          } else {
+            n.classList.add('dimmed');
+            n.classList.remove('highlighted');
+          }
+        });
+      }
+    });
+
+    // 4. Client-side SVG & PNG Export
+    function exportSvg() {
+      const serializer = new XMLSerializer();
+      let source = serializer.serializeToString(svgEl);
+      if (!source.includes('xmlns="http://www.w3.org/2000/svg"')) {
+        source = source.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+      }
+      const blob = new Blob(['<?xml version="1.0" standalone="no"?>\r\n', source], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Vietnam Stock Heatmap - Real-Time Streaming & Market Distribution Pipeline'.replace(/[^a-zA-Z0-9_-]/g, '_') + '.svg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function exportPng() {
+      const serializer = new XMLSerializer();
+      let source = serializer.serializeToString(svgEl);
+      const vb = svgEl.viewBox.baseVal;
+      const w = (vb && vb.width) ? vb.width : 1320;
+      const h = (vb && vb.height) ? vb.height : 915;
+
+      const canvas = document.createElement('canvas');
+      const scale = 2; // 2x Retina quality
+      canvas.width = w * scale;
+      canvas.height = h * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(scale, scale);
+
+      const img = new Image();
+      const svgBlob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+
+      img.onload = function() {
+        ctx.fillStyle = htmlEl.getAttribute('data-theme') === 'light' ? '#ffffff' : '#070a12';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+
+        canvas.toBlob(function(blob) {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'Vietnam Stock Heatmap - Real-Time Streaming & Market Distribution Pipeline'.replace(/[^a-zA-Z0-9_-]/g, '_') + '_retina.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, 'image/png');
+      };
+      img.src = url;
+    }
+
+    exportSvgBtn.addEventListener('click', exportSvg);
+    exportPngBtn.addEventListener('click', exportPng);
+
+    // 5. Modal & Keyboard Shortcuts
+    function toggleHelp(show) {
+      if (show === undefined) helpModal.classList.toggle('active');
+      else if (show) helpModal.classList.add('active');
+      else helpModal.classList.remove('active');
+    }
+
+    helpBtn.addEventListener('click', () => toggleHelp(true));
+    closeModalBtn.addEventListener('click', () => toggleHelp(false));
+    helpModal.addEventListener('click', (e) => { if (e.target === helpModal) toggleHelp(false); });
+
+    window.addEventListener('keydown', (e) => {
+      const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
+      if (e.key === 'Escape') {
+        toggleHelp(false);
+        searchInput.value = '';
+        searchInput.blur();
+        searchInput.dispatchEvent(new Event('input'));
+        selectedNodeId = null;
+        svgEl.querySelectorAll('.diagram-node, g[filter]').forEach(n => n.classList.remove('dimmed', 'highlighted'));
+        svgEl.querySelectorAll('.diagram-wire, path[stroke]').forEach(w => w.classList.remove('dimmed', 'highlighted-wire'));
+      } else if (!isInput) {
+        if (e.key === '/') {
+          e.preventDefault();
+          searchInput.focus();
+        } else if (e.key === 't' || e.key === 'T') {
+          e.preventDefault();
+          themeBtn.click();
+        } else if (e.key === '?') {
+          e.preventDefault();
+          toggleHelp();
+        }
+      }
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{
+  "title": "Telegram Stock Bot - Event-Driven Closed-Loop Quantitative Pipeline",
+  "eyebrow": "EVENT-DRIVEN CLOSED-LOOP PIPELINE · QUANTITATIVE BOT ENGINE",
+  "locale": "en",
+  "topology": "interactive_loop",
+  "width": 1320,
+  "height": 915,
+  "metrics": [
+    { "label": "Round-Trip Latency", "value": "< 850 ms", "color": "#38bdf8" },
+    { "label": "Persistent Cache", "value": "SQLite WAL Mode", "color": "#34d399" },
+    { "label": "Quant Strategy", "value": "CANSLIM + 4-Panel TA", "color": "#fbbf24" },
+    { "label": "Interaction Loop", "value": "Closed-Loop Feedback", "color": "#c084fc" }
+  ],
+  "footer_notes": [
+    {
+      "color": "#06b6d4",
+      "title": "TELEGRAM INGRESS GATEWAY",
+      "desc": "Async Webhook/Polling decodes command parameters in < 5ms with Token Bucket per User ID anti-spam enforcement."
+    },
+    {
+      "color": "#a855f7",
+      "title": "DUAL SQLITE CACHE",
+      "desc": "Local OHLCV storage at data_cache/stock.db with smart TTL reduces outbound API requests by more than 80%."
+    },
+    {
+      "color": "#f59e0b",
+      "title": "CANSLIM QUANT ENGINE",
+      "desc": "4-dimensional indicator suite (Trend, Momentum, Volatility, Vol Breakout) calculates Buy/Sell and Pocket Pivot in < 35ms."
+    },
+    {
+      "color": "#089981",
+      "title": "4-PANEL CANDLESTICK RENDERER",
+      "desc": "High-fidelity candlestick charting via mplfinance, dispatched directly to Telegram Users in < 120ms."
+    }
+  ]
+}

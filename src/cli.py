@@ -98,10 +98,14 @@ def compile_all(repo_root=None, theme="dark"):
         else:
             out_filename = f"diagram_{spec_stem}.html"
 
-        out_path = output_dir / out_filename
+        is_en = "en" in spec_file.parts
+        target_dir = (output_dir / "en") if is_en else output_dir
+        target_dir.mkdir(parents=True, exist_ok=True)
+        out_path = target_dir / out_filename
         try:
             spec_type, final_path = compile_file(spec_file, out_path, theme=theme)
-            print(f"  [OK] [{spec_type.upper()}] {rel_spec} -> output/{out_filename}")
+            rel_out = out_path.relative_to(output_dir)
+            print(f"  [OK] [{spec_type.upper()}] {rel_spec} -> output/{rel_out}")
             results.append((spec_file, final_path, True, ""))
         except Exception as e:
             print(f"  [ERROR] {rel_spec}: {str(e)}")

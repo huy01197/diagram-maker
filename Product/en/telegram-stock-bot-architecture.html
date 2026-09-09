@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="dark">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telegram Stock Bot - Kiến Trúc Luồng Sự Kiện Tương Tác & Phân Tích Định Lượng</title>
+  <title>Telegram Stock Bot - Event-Driven Closed-Loop Quantitative Pipeline</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -297,36 +297,36 @@
   <div class="header">
     <div>
       <div class="eyebrow">EVENT-DRIVEN CLOSED-LOOP PIPELINE · QUANTITATIVE BOT ENGINE</div>
-      <h1 class="title">Telegram Stock Bot - Kiến Trúc Luồng Sự Kiện Tương Tác & Phân Tích Định Lượng</h1>
+      <h1 class="title">Telegram Stock Bot - Event-Driven Closed-Loop Quantitative Pipeline</h1>
     </div>
     <div class="controls-bar">
       <div class="search-box">
-        <input type="text" id="nodeSearch" placeholder="Tìm thành phần... (/)" />
+        <input type="text" id="nodeSearch" placeholder="Search components... (/)" />
       </div>
-      <button class="btn" id="themeToggleBtn" title="Chuyển đổi Sáng/Tối (Phím T)">THEME: DARK</button>
-      <button class="btn" id="exportSvgBtn" title="Xuất mã nguồn SVG">SVG</button>
-      <button class="btn" id="exportPngBtn" title="Xuất ảnh PNG Retina 2x">PNG</button>
-      <button class="btn" id="helpBtn" title="Phím tắt (?)">?</button>
+      <button class="btn" id="themeToggleBtn" title="Toggle Light/Dark Theme (Key T)">THEME: DARK</button>
+      <button class="btn" id="exportSvgBtn" title="Export SVG Source Code">SVG</button>
+      <button class="btn" id="exportPngBtn" title="Export 2x Retina PNG">PNG</button>
+      <button class="btn" id="helpBtn" title="Keyboard Shortcuts (?)">?</button>
     </div>
   </div>
 
   <div class="metrics-bar">
     
       <div class="metric-pill">
-        <div class="metric-label">Độ Trễ Phản Hồi</div>
+        <div class="metric-label">Round-Trip Latency</div>
         <div class="metric-value" style="color: #38bdf8;">< 850 ms</div>
       </div>
       <div class="metric-pill">
-        <div class="metric-label">Bộ Nhớ Đệm</div>
+        <div class="metric-label">Persistent Cache</div>
         <div class="metric-value" style="color: #34d399;">SQLite WAL Mode</div>
       </div>
       <div class="metric-pill">
-        <div class="metric-label">Chiến Lược Định Lượng</div>
-        <div class="metric-value" style="color: #fbbf24;">CANSLIM + TA 4 Panel</div>
+        <div class="metric-label">Quant Strategy</div>
+        <div class="metric-value" style="color: #fbbf24;">CANSLIM + 4-Panel TA</div>
       </div>
       <div class="metric-pill">
-        <div class="metric-label">Vòng Tương Tác</div>
-        <div class="metric-value" style="color: #c084fc;">Closed-Loop 2 Chiều</div>
+        <div class="metric-label">Interaction Loop</div>
+        <div class="metric-value" style="color: #c084fc;">Closed-Loop Feedback</div>
       </div>
   </div>
 
@@ -372,9 +372,9 @@
       <rect width="1320" height="915" fill="var(--canvas-bg)" />
       <rect width="1320" height="915" fill="url(#dotGrid)" />
 
-      <text x="45" y="36" fill="#06b6d4" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">1. GIAO TIẾP NGƯỜI DÙNG &amp; CỔNG BẢO MẬT</text>
-<text x="410" y="36" fill="#a855f7" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">2. ĐIỀU PHỐI LỆNH &amp; ĐỘNG CƠ DỮ LIỆU ĐỆM</text>
-<text x="850" y="36" fill="#089981" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">3. LÕI ĐỊNH LƯỢNG &amp; TRÌNH XUẤT ĐỒ THỊ</text>
+      <text x="45" y="36" fill="#06b6d4" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">1. USER INTERACTION &amp; INGRESS GATEWAY</text>
+<text x="410" y="36" fill="#a855f7" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">2. COMMAND DISPATCHER &amp; CACHE ENGINE</text>
+<text x="850" y="36" fill="#089981" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">3. QUANT ENGINE &amp; CANDLESTICK RENDERER</text>
 <path d="M 165 275 L 165 338" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-cyan)" />
 <path d="M 165 520 L 165 588" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-cyan)" />
 <path d="M 295 680 C 375 680, 345 190, 402 190" fill="none" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
@@ -386,7 +386,7 @@
           <!-- Pill 1: beside Line 1 -->
           <g transform="translate(178, 296)">
             <rect x="0" y="0" width="108" height="20" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-            <text x="54" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">1. GỬI LỆNH /c, /top</text>
+            <text x="54" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">1. COMMAND /c, /top</text>
           </g>
 
           <!-- Pill 2: beside Line 2 -->
@@ -398,32 +398,32 @@
           <!-- Pill 3: In Corridor 1 at Y=425 -->
           <g transform="translate(302, 425)">
             <rect x="0" y="0" width="100" height="22" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
-            <text x="50" y="15" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">3. CHUYỂN TIẾP</text>
+            <text x="50" y="15" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">3. DISPATCH</text>
           </g>
 
           <!-- Pill 4: beside Line 4 in gap -->
           <g transform="translate(585, 325)">
             <rect x="0" y="0" width="126" height="20" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
-            <text x="63" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">4. TRUY VẤN DỮ LIỆU</text>
+            <text x="63" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">4. QUERY DATA</text>
           </g>
 
           <!-- Pill 5: In Corridor 2 at Y=315 -->
           <g transform="translate(746, 315)">
             <rect x="0" y="0" width="115" height="22" rx="4" fill="#451a03" stroke="#d97706" stroke-width="1" />
-            <text x="57" y="15" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">5. NẠP NẾN OHLCV</text>
+            <text x="57" y="15" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">5. LOAD OHLCV CANDLES</text>
           </g>
 
           <!-- Pill 6: beside Line 6 in gap -->
           <g transform="translate(1082, 365)">
             <rect x="0" y="0" width="128" height="20" rx="4" fill="#064e3b" stroke="#059669" stroke-width="1" />
-            <text x="64" y="14" fill="#34d399" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">6. TÍN HIỆU &amp; CHỈ BÁO</text>
+            <text x="64" y="14" fill="#34d399" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">6. SIGNALS &amp; INDICATORS</text>
           </g>
 
           <!-- Pill 7: on Feedback Rail in bottom corridor -->
           <g transform="translate(220, 839)">
             <rect x="0" y="0" width="410" height="22" rx="4" fill="#1e1b4b" stroke="#4338ca" stroke-width="1" />
             <circle cx="12" cy="11" r="3.5" fill="#38bdf8" />
-            <text x="26" y="15" fill="#a5b4fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700">7. PHẢN HỒI KẾT QUẢ &amp; ẢNH ĐỒ THỊ NẾN (SEND PHOTO) TỚI USER</text>
+            <text x="26" y="15" fill="#a5b4fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700">7. RETURN CANDLESTICK CHART (SEND PHOTO) TO USER</text>
           </g>
         
 
@@ -433,15 +433,15 @@
           <rect width="250" height="3" rx="1.5" fill="#06b6d4" />
           <rect x="14" y="14" width="86" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
           <text x="57" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">USER CLIENT</text>
-          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13.5" font-weight="700">Người Dùng &amp; App Telegram</text>
+          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13.5" font-weight="700">Telegram User &amp; Client App</text>
           <text x="14" y="78" fill="#06b6d4" font-family="var(--font-mono)" font-size="10" font-weight="700">1.</text>
-          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Gửi lệnh tra cứu: <tspan fill="#06b6d4" font-family="var(--font-mono)">/c FPT, /c VHM</tspan></text>
+          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Query stock candle: <tspan fill="#06b6d4" font-family="var(--font-mono)">/c FPT, /c VHM</tspan></text>
           <text x="14" y="100" fill="#06b6d4" font-family="var(--font-mono)" font-size="10" font-weight="700">2.</text>
-          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Quét bùng nổ CANSLIM: <tspan fill="#f59e0b" font-family="var(--font-mono)">/top</tspan></text>
+          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Scan CANSLIM breakouts: <tspan fill="#f59e0b" font-family="var(--font-mono)">/top</tspan></text>
           <text x="14" y="122" fill="#06b6d4" font-family="var(--font-mono)" font-size="10" font-weight="700">3.</text>
-          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Cài cảnh báo chủ động: <tspan fill="#a855f7" font-family="var(--font-mono)">/alert</tspan></text>
+          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Configure price alerts: <tspan fill="#a855f7" font-family="var(--font-mono)">/alert</tspan></text>
           <text x="14" y="144" fill="#06b6d4" font-family="var(--font-mono)" font-size="10" font-weight="700">4.</text>
-          <text x="28" y="144" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Nhận ảnh phân tích nến tức thì</text>
+          <text x="28" y="144" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Receive instant chart analysis</text>
           <rect x="14" y="165" width="222" height="18" rx="3" fill="#082f49" />
           <text x="125" y="177.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">TELEGRAM BOT API V20+ ASYNC</text>
         </g>
@@ -451,15 +451,15 @@
           <rect width="250" height="175" rx="8" fill="#0b101b" stroke="#1b253b" stroke-width="1.2" />
           <rect x="14" y="14" width="112" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
           <text x="70" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">INGRESS GATEWAY</text>
-          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13.5" font-weight="700">Cổng Tiếp Nhận &amp; Token Auth</text>
+          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13.5" font-weight="700">Ingress Gateway &amp; Token Auth</text>
           <text x="14" y="78" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">1.</text>
-          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Webhook Async / Polling song song</text>
+          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Async Webhook / Parallel Polling</text>
           <text x="14" y="100" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">2.</text>
-          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bộ tách tham số lệnh (Tokenizer)</text>
+          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Command Parameter Tokenizer</text>
           <text x="14" y="122" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">3.</text>
-          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Xác thực BOT_TOKEN biến môi trường</text>
+          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Validate BOT_TOKEN environment var</text>
           <rect x="14" y="145" width="222" height="18" rx="3" fill="#111827" />
-          <text x="125" y="157.5" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">THỜI GIAN GIẢI MÃ INGRESS &lt; 5MS</text>
+          <text x="125" y="157.5" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">INGRESS DECODING LATENCY &lt; 5MS</text>
         </g>
 
         <!-- Zone 1: Card 3 Rate Limiter -->
@@ -467,13 +467,13 @@
           <rect width="250" height="175" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.2" />
           <rect x="14" y="14" width="130" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
           <text x="79" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SECURITY &amp; ANTI-SPAM</text>
-          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13.5" font-weight="700">Bộ Điều Tiết Tần Suất Lệnh</text>
+          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13.5" font-weight="700">Command Rate Limiter</text>
           <text x="14" y="78" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">1.</text>
-          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Thuật toán Token Bucket per User ID</text>
+          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Token Bucket algorithm per User ID</text>
           <text x="14" y="100" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">2.</text>
-          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Ngưỡng an toàn: Tối đa 5 lệnh / phút</text>
+          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Safe threshold: Max 5 queries / min</text>
           <text x="14" y="122" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">3.</text>
-          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Chống spam làm cạn kết nối mạng</text>
+          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Anti-spam DDoS &amp; pool defense</text>
           <rect x="14" y="145" width="222" height="18" rx="3" fill="#451a03" />
           <text x="125" y="157.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">TOKEN BUCKET DEFENSE LEAKY</text>
         </g>
@@ -484,28 +484,28 @@
           <rect width="330" height="225" rx="8" fill="#0b101b" stroke="#a855f7" stroke-width="1.5" />
           <rect x="16" y="14" width="144" height="18" rx="3" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
           <text x="88" y="26.5" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">COMMAND DISPATCHER</text>
-          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Lõi Điều Phối Lệnh &amp; Quản Lý Phiên</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Command Dispatcher &amp; Session State</text>
 
           <g transform="translate(16, 68)">
             <rect x="0" y="0" width="92" height="32" rx="4" fill="#140e2b" stroke="#3b206e" stroke-width="1" />
-            <text x="46" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">LỆNH /c</text>
-            <text x="46" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Tra cứu nến</text>
+            <text x="46" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">/c COMMAND</text>
+            <text x="46" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Candle Lookup</text>
 
             <rect x="102" y="0" width="92" height="32" rx="4" fill="#140e2b" stroke="#3b206e" stroke-width="1" />
-            <text x="148" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">LỆNH /top</text>
-            <text x="148" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Lọc CANSLIM</text>
+            <text x="148" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">/top COMMAND</text>
+            <text x="148" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">CANSLIM Screener</text>
 
             <rect x="204" y="0" width="92" height="32" rx="4" fill="#140e2b" stroke="#3b206e" stroke-width="1" />
-            <text x="250" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">LỆNH /alert</text>
-            <text x="250" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Cảnh báo giá</text>
+            <text x="250" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">/alert COMMAND</text>
+            <text x="250" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Price Alerts</text>
           </g>
 
           <text x="16" y="126" fill="#a855f7" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="126" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Định tuyến tác vụ tới Động cơ Dữ liệu hoặc Bộ lọc</text>
+          <text x="28" y="126" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Route tasks to Data Engine or Quant Screener</text>
           <text x="16" y="148" fill="#a855f7" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="148" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Quản lý ngữ cảnh Session Context từng người dùng</text>
+          <text x="28" y="148" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Manage per-user Session Context states</text>
           <text x="16" y="170" fill="#a855f7" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="170" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hàng đợi asyncio.create_task không nghẽn luồng chính</text>
+          <text x="28" y="170" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Non-blocking asyncio.create_task task queue</text>
 
           <rect x="16" y="193" width="298" height="18" rx="3" fill="#2e1065" />
           <text x="165" y="205.5" fill="#e9d5ff" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">ASYNCIO EVENT LOOP &middot; NON-BLOCKING ROUTER</text>
@@ -516,7 +516,7 @@
           <rect width="330" height="405" rx="8" fill="#0b101b" stroke="#1b253b" stroke-width="1.2" />
           <rect x="16" y="14" width="148" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
           <text x="90" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">DATA ADAPTER &amp; CACHE</text>
-          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Động Cơ Dữ Liệu &amp; Đệm Kép SQLite</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Data Adapter &amp; Dual SQLite Cache</text>
 
           <!-- Subcard 1 -->
           <g transform="translate(16, 68)">
@@ -524,13 +524,13 @@
             <rect x="10" y="10" width="136" height="16" rx="3" fill="#082f49" />
             <text x="78" y="21.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">SSI &amp; TCBS DCHART API</text>
             <text x="12" y="44" fill="#06b6d4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-            <text x="24" y="44" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Kéo nến OHLCV thời gian thực qua REST API</text>
+            <text x="24" y="44" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Fetch real-time OHLCV candles via REST API</text>
             <text x="12" y="64" fill="#06b6d4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-            <text x="24" y="64" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Tự động xoay Header &amp; User-Agent (Bypass WAF)</text>
+            <text x="24" y="64" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Auto-rotate Headers &amp; User-Agent (Bypass WAF)</text>
             <text x="12" y="84" fill="#06b6d4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-            <text x="24" y="84" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Cơ chế tự động Retry với Exponential Backoff</text>
+            <text x="24" y="84" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Exponential Backoff retry mechanism</text>
             <text x="12" y="104" fill="#06b6d4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-            <text x="24" y="104" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Chuẩn hóa dữ liệu nến: Open, High, Low, Close, Vol</text>
+            <text x="24" y="104" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Standardize candles: Open, High, Low, Close, Vol</text>
           </g>
 
           <!-- Subcard 2 -->
@@ -539,15 +539,15 @@
             <rect x="10" y="10" width="168" height="16" rx="3" fill="#064e3b" />
             <text x="94" y="21.5" fill="#34d399" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">SQLITE CACHE (data_cache/stock.db)</text>
             <text x="12" y="44" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-            <text x="24" y="44" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5"><tspan fill="#34d399" font-family="var(--font-mono)">Bảng stock_ohlcv:</tspan> Lưu trữ nến 100 phiên gần nhất</text>
+            <text x="24" y="44" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5"><tspan fill="#34d399" font-family="var(--font-mono)">stock_ohlcv table:</tspan> Store 100 recent sessions</text>
             <text x="12" y="66" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-            <text x="24" y="66" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5"><tspan fill="#34d399" font-family="var(--font-mono)">Bảng user_watchlist:</tspan> Lưu danh mục theo dõi</text>
+            <text x="24" y="66" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5"><tspan fill="#34d399" font-family="var(--font-mono)">user_watchlist table:</tspan> Store tracked portfolios</text>
             <text x="12" y="88" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-            <text x="24" y="88" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5"><tspan fill="#34d399" font-family="var(--font-mono)">Cơ chế TTL:</tspan> 15p trong phiên, 24h ngoài phiên</text>
+            <text x="24" y="88" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5"><tspan fill="#34d399" font-family="var(--font-mono)">TTL policy:</tspan> 15m in-session, 24h off-session</text>
             <text x="12" y="110" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-            <text x="24" y="110" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Cắt giảm hơn <tspan fill="#089981" font-weight="700">80%</tspan> lưu lượng gọi API ngoài</text>
+            <text x="24" y="110" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Reduces external API traffic by <tspan fill="#089981" font-weight="700">&gt; 80%</tspan></text>
             <text x="12" y="132" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-            <text x="24" y="132" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Chế độ ghi WAL đọc/ghi đồng thời không khóa</text>
+            <text x="24" y="132" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">WAL concurrency mode: non-blocking read/write</text>
           </g>
 
           <rect x="16" y="368" width="298" height="18" rx="3" fill="#064e3b" />
@@ -560,41 +560,41 @@
           <rect width="430" height="265" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.5" />
           <rect x="16" y="14" width="142" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
           <text x="87" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">STRATEGY ENGINE</text>
-          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">Lõi Định Lượng &amp; Bộ Lọc Tín Hiệu CANSLIM</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">CANSLIM Quant Engine &amp; Signal Filter</text>
 
           <g transform="translate(16, 68)">
             <rect x="0" y="0" width="94" height="48" rx="4" fill="#181206" stroke="#451a03" stroke-width="1" />
-            <text x="47" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">XU HƯỚNG</text>
+            <text x="47" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">TREND</text>
             <text x="47" y="32" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">EMA 20/50/200</text>
             <text x="47" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Golden Cross</text>
 
             <rect x="101" y="0" width="94" height="48" rx="4" fill="#181206" stroke="#451a03" stroke-width="1" />
-            <text x="148" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">ĐỘNG LƯỢNG</text>
+            <text x="148" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">MOMENTUM</text>
             <text x="148" y="32" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">RSI (14) &amp; MACD</text>
-            <text x="148" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Quá Mua / Bán</text>
+            <text x="148" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Overbought/Sold</text>
 
             <rect x="202" y="0" width="94" height="48" rx="4" fill="#181206" stroke="#451a03" stroke-width="1" />
-            <text x="249" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">BIÊN ĐỘ</text>
+            <text x="249" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">VOLATILITY</text>
             <text x="249" y="32" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">Bollinger (20,2)</text>
-            <text x="249" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Nút Cổ Chai</text>
+            <text x="249" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Squeeze Band</text>
 
             <rect x="303" y="0" width="95" height="48" rx="4" fill="#181206" stroke="#451a03" stroke-width="1" />
-            <text x="350" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">BÙNG NỔ VOL</text>
+            <text x="350" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">VOL BREAKOUT</text>
             <text x="350" y="32" fill="#34d399" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">Vol &gt; 150% MA20</text>
             <text x="350" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Pocket Pivot</text>
           </g>
 
           <text x="16" y="142" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="142" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Chấm điểm kỹ thuật tự động theo chuẩn CANSLIM (Thang 100)</text>
+          <text x="28" y="142" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Automated CANSLIM quantitative scoring (100-point scale)</text>
           <text x="16" y="164" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="164" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Phát hiện sớm điểm mua Pocket Pivot trong nền giá tích lũy chặt</text>
+          <text x="28" y="164" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Early detection of Pocket Pivot in tight base consolidations</text>
           <text x="16" y="186" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="186" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tín hiệu khuyến nghị chuẩn xác: <tspan fill="#089981" font-weight="700">MUA</tspan>, <tspan fill="#f59e0b" font-weight="700">GIỮ</tspan>, <tspan fill="#f23645" font-weight="700">BÁN</tspan></text>
+          <text x="28" y="186" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Actionable signal recommendations: <tspan fill="#089981" font-weight="700">BUY</tspan>, <tspan fill="#f59e0b" font-weight="700">HOLD</tspan>, <tspan fill="#f23645" font-weight="700">SELL</tspan></text>
           <text x="16" y="208" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="208" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tích hợp mô-đun Backtest kiểm tra tỷ lệ Win Rate và Sharpe Ratio</text>
+          <text x="28" y="208" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Built-in Backtest module verifying Win Rate and Sharpe Ratio</text>
 
           <rect x="16" y="228" width="398" height="18" rx="3" fill="#451a03" />
-          <text x="215" y="240.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">THỜI GIAN QUÉT VÀ TÍNH TOÁN TOÀN BỘ CHỈ BÁO &lt; 35MS</text>
+          <text x="215" y="240.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">FULL INDICATOR SCAN &amp; COMPUTATION &lt; 35MS</text>
         </g>
 
         <!-- Zone 3: Card 7 Candlestick Renderer -->
@@ -602,7 +602,7 @@
           <rect width="430" height="415" rx="8" fill="#0b101b" stroke="#089981" stroke-width="1.5" />
           <rect x="16" y="14" width="162" height="18" rx="3" fill="#064e3b" stroke="#059669" stroke-width="1" />
           <text x="97" y="26.5" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">VISUAL CANDLESTICK RENDERER</text>
-          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">Trình Vẽ Biểu Đồ Nến Nhật &amp; Đóng Gói Phản Hồi</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">Japanese Candlestick Renderer &amp; Dispatcher</text>
 
           <!-- Mini Candlestick Mockup -->
           
@@ -612,7 +612,7 @@
         
         <!-- Header Bar -->
         <rect width="398" height="24" rx="6" fill="#0c121e" />
-        <text x="10" y="16" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700">FPT &middot; KHUNG NGÀY (D1)</text>
+        <text x="10" y="16" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700">FPT &middot; DAILY (D1)</text>
         <text x="215" y="16" fill="#34d399" font-family="var(--font-mono)" font-size="9.5" font-weight="700">91.50 (+4.2%)</text>
         <text x="320" y="16" fill="#06b6d4" font-family="var(--font-mono)" font-size="8">EMA20: 88.4</text>
 
@@ -682,23 +682,23 @@
           <!-- Signal Badge -->
           <g transform="translate(195, 2)">
             <rect x="0" y="0" width="140" height="18" rx="3" fill="#064e3b" stroke="#34d399" stroke-width="1" />
-            <text x="70" y="12.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">MUA @ 91.5 (VOL +180%)</text>
+            <text x="70" y="12.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">BUY @ 91.5 (VOL +180%)</text>
           </g>
         </g>
       </g>
     
 
           <text x="16" y="270" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="270" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tích hợp thư viện <tspan fill="#34d399" font-family="var(--font-mono)">mplfinance / matplotlib</tspan>: Sinh ảnh nến chất lượng cao</text>
+          <text x="28" y="270" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Integrated <tspan fill="#34d399" font-family="var(--font-mono)">mplfinance / matplotlib</tspan>: High-fidelity candle rendering</text>
           <text x="16" y="294" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="294" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bộ ghép văn bản: Đóng gói khuyến nghị CANSLIM, Stop-loss và Target</text>
+          <text x="28" y="294" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Text synthesis: Packages CANSLIM advice, Stop-loss and Target</text>
           <text x="16" y="318" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="318" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Gửi ảnh trực tiếp qua Telegram: <tspan fill="#06b6d4" font-family="var(--font-mono)">bot.send_photo(chat_id, photo)</tspan></text>
+          <text x="28" y="318" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Direct image dispatch via Telegram: <tspan fill="#06b6d4" font-family="var(--font-mono)">bot.send_photo(chat_id, photo)</tspan></text>
           <text x="16" y="342" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="342" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Khép kín toàn bộ chu trình tương tác hai chiều trong thời gian dưới 1 giây</text>
+          <text x="28" y="342" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Closed-loop bidirectional interaction cycle under 1 second</text>
 
           <rect x="16" y="378" width="398" height="18" rx="3" fill="#064e3b" />
-          <text x="215" y="390.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">RENDER &amp; TRẢ ẢNH ĐỒ THỊ NẾN CHO USER TRONG &lt; 120MS</text>
+          <text x="215" y="390.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">RENDER &amp; RETURN CANDLESTICK CHART TO USER IN &lt; 120MS</text>
         </g>
         
     </svg>
@@ -707,20 +707,20 @@
   <div class="footer-notes">
     
     <div class="note-card">
-      <div class="note-title"><span style="color: #06b6d4; font-size: 14px;">&bull;</span> CỔNG TIẾP NHẬN TELEGRAM</div>
-      <div class="note-desc">Webhook / Polling async giải mã tham số dòng lệnh siêu tốc < 5ms kèm cơ chế chống spam Token Bucket per User ID.</div>
+      <div class="note-title"><span style="color: #06b6d4; font-size: 14px;">&bull;</span> TELEGRAM INGRESS GATEWAY</div>
+      <div class="note-desc">Async Webhook/Polling decodes command parameters in < 5ms with Token Bucket per User ID anti-spam enforcement.</div>
     </div>
     <div class="note-card">
-      <div class="note-title"><span style="color: #a855f7; font-size: 14px;">&bull;</span> BỘ ĐỆM KÉP SQLITE</div>
-      <div class="note-desc">Lưu trữ nến 100 phiên cục bộ tại data_cache/stock.db, TTL thông minh giúp giảm hơn 80% truy vấn mạng bên ngoài.</div>
+      <div class="note-title"><span style="color: #a855f7; font-size: 14px;">&bull;</span> DUAL SQLITE CACHE</div>
+      <div class="note-desc">Local OHLCV storage at data_cache/stock.db with smart TTL reduces outbound API requests by more than 80%.</div>
     </div>
     <div class="note-card">
-      <div class="note-title"><span style="color: #f59e0b; font-size: 14px;">&bull;</span> ĐỊNH LƯỢNG CANSLIM</div>
-      <div class="note-desc">Bộ chỉ báo 4 chiều (Xu hướng, Động lượng, Biên độ, Bùng nổ Vol) tính toán tín hiệu Mua/Bán và Pocket Pivot trong < 35ms.</div>
+      <div class="note-title"><span style="color: #f59e0b; font-size: 14px;">&bull;</span> CANSLIM QUANT ENGINE</div>
+      <div class="note-desc">4-dimensional indicator suite (Trend, Momentum, Volatility, Vol Breakout) calculates Buy/Sell and Pocket Pivot in < 35ms.</div>
     </div>
     <div class="note-card">
-      <div class="note-title"><span style="color: #089981; font-size: 14px;">&bull;</span> ĐỒ THỊ NẾN 4 PANEL</div>
-      <div class="note-desc">Trình kết xuất đồ họa nến chuyên nghiệp qua mplfinance, đóng gói gửi ảnh trực tiếp về Telegram User trong < 120ms.</div>
+      <div class="note-title"><span style="color: #089981; font-size: 14px;">&bull;</span> 4-PANEL CANDLESTICK RENDERER</div>
+      <div class="note-desc">High-fidelity candlestick charting via mplfinance, dispatched directly to Telegram Users in < 120ms.</div>
     </div>
   </div>
 </div>
@@ -729,16 +729,16 @@
 <div class="modal-overlay" id="helpModal">
   <div class="modal-card">
     <div class="modal-header">
-      <span class="modal-title">PHÍM TẮT ĐIỀU KHIỂN (VIEWER SHORTCUTS)</span>
+      <span class="modal-title">VIEWER KEYBOARD SHORTCUTS</span>
       <button class="modal-close" id="closeModalBtn">ESC</button>
     </div>
     <div class="shortcuts-list">
-      <div class="shortcut-row"><span>Tìm kiếm thành phần</span> <kbd>/</kbd></div>
-      <div class="shortcut-row"><span>Chuyển đổi giao diện Sáng / Tối</span> <kbd>T</kbd></div>
-      <div class="shortcut-row"><span>Hủy chọn / Đặt lại bộ lọc</span> <kbd>ESC</kbd></div>
-      <div class="shortcut-row"><span>Xuất ảnh Vector SVG</span> <kbd>Alt + S</kbd></div>
-      <div class="shortcut-row"><span>Xuất ảnh Raster PNG 2x</span> <kbd>Alt + P</kbd></div>
-      <div class="shortcut-row"><span>Mở bảng trợ giúp này</span> <kbd>?</kbd></div>
+      <div class="shortcut-row"><span>Search components</span> <kbd>/</kbd></div>
+      <div class="shortcut-row"><span>Toggle Light / Dark theme</span> <kbd>T</kbd></div>
+      <div class="shortcut-row"><span>Deselect / Reset active filters</span> <kbd>ESC</kbd></div>
+      <div class="shortcut-row"><span>Export Vector SVG</span> <kbd>Alt + S</kbd></div>
+      <div class="shortcut-row"><span>Export Raster PNG 2x</span> <kbd>Alt + P</kbd></div>
+      <div class="shortcut-row"><span>Open this shortcut modal</span> <kbd>?</kbd></div>
     </div>
   </div>
 </div>
@@ -863,7 +863,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'Telegram Stock Bot - Kiến Trúc Luồng Sự Kiện Tương Tác & Phân Tích Định Lượng'.replace(/[^a-zA-Z0-9_-]/g, '_') + '.svg';
+      a.download = 'Telegram Stock Bot - Event-Driven Closed-Loop Quantitative Pipeline'.replace(/[^a-zA-Z0-9_-]/g, '_') + '.svg';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -897,7 +897,7 @@
         canvas.toBlob(function(blob) {
           const a = document.createElement('a');
           a.href = URL.createObjectURL(blob);
-          a.download = 'Telegram Stock Bot - Kiến Trúc Luồng Sự Kiện Tương Tác & Phân Tích Định Lượng'.replace(/[^a-zA-Z0-9_-]/g, '_') + '_retina.png';
+          a.download = 'Telegram Stock Bot - Event-Driven Closed-Loop Quantitative Pipeline'.replace(/[^a-zA-Z0-9_-]/g, '_') + '_retina.png';
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);

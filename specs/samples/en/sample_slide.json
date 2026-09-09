@@ -1,0 +1,45 @@
+{
+  "title": "Multi-Factor Quantitative Model",
+  "category": "FINANCIAL DEPTH",
+  "badge": "No Single Indicator Bias",
+  "branches": [
+    {
+      "name": "Technical Analysis (TA)",
+      "weight": "50% Weight",
+      "color": "sky",
+      "rules": [
+        {
+          "title": "1. Trend",
+          "desc": "Golden Cross EMA 20 > EMA 50"
+        },
+        {
+          "title": "2. Momentum",
+          "desc": "RSI 14 in range 50 ≤ RSI < 70"
+        },
+        {
+          "title": "3. Dynamics",
+          "desc": "MACD Histogram > 0 expanding"
+        }
+      ]
+    },
+    {
+      "name": "Fundamental & Flow (CANSLIM)",
+      "weight": "50% Weight",
+      "color": "emerald",
+      "rules": [
+        {
+          "title": "1. Profitability",
+          "desc": "ROE ≥ 15% (Economic Moat)"
+        },
+        {
+          "title": "2. Growth",
+          "desc": "Net Profit YoY ≥ 15% (D/E ≤ 2.0)"
+        },
+        {
+          "title": "3. Flow",
+          "desc": "Volume Breakout ≥ 1.5× SMA20"
+        }
+      ]
+    }
+  ]
+}

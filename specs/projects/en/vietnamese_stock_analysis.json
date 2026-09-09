@@ -1,0 +1,36 @@
+{
+  "title": "Vietnamese Stock Analysis - Medallion Parquet Lakehouse & Multi-Pane Terminal",
+  "eyebrow": "MEDALLION ARCHITECTURE · COLUMNAR LAKEHOUSE · MULTI-PANE QUANT ENGINE",
+  "locale": "en",
+  "topology": "medallion",
+  "width": 1320,
+  "height": 915,
+  "metrics": [
+    { "label": "Parquet Column Queries", "value": "< 250 ms (1,500+ Tickers)", "color": "#38bdf8" },
+    { "label": "Snappy Compression", "value": "-85% Disk Storage", "color": "#34d399" },
+    { "label": "Technical Charting", "value": "4 Panes Plotly Synced", "color": "#fbbf24" },
+    { "label": "Data Architecture", "value": "Medallion Bronze → Platinum", "color": "#c084fc" }
+  ],
+  "footer_notes": [
+    {
+      "color": "#f59e0b",
+      "title": "BRONZE LAKE LAYER",
+      "desc": "Automated daily ingestion of 10+ years CafeF Upto ZIP data across all exchanges with MD5 integrity and multi-threading."
+    },
+    {
+      "color": "#06b6d4",
+      "title": "SILVER PARQUET LAKE",
+      "desc": "Standardized columnar OHLCV schema, Snappy compression saving 85% storage, with 10x faster query speeds than CSV."
+    },
+    {
+      "color": "#a855f7",
+      "title": "GOLD FEATURE STORE",
+      "desc": "Centralized vector technical indicators (SMA, MACD, RSI, Bollinger) and 15-sector capital flow matrix for quant screener."
+    },
+    {
+      "color": "#089981",
+      "title": "PLATINUM TERMINAL",
+      "desc": "Streamlit Dark Terminal with 4 synchronized Plotly chart panes (Candle, Volume, MACD, RSI) rendered on WebGL."
+    }
+  ]
+}

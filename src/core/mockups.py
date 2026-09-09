@@ -11,8 +11,12 @@ from .palette import (
     TEXT_MAIN, TEXT_DIM, BORDER_BASE
 )
 
-def render_mini_treemap(x, y, width=440, height=170):
+def render_mini_treemap(x, y, width=440, height=170, is_en=False):
     """Mô phỏng bản đồ nhiệt trực quan ECharts Treemap Mini Canvas"""
+    s_banking = "BANKING" if is_en else "NGÂN HÀNG"
+    s_realestate = "REAL ESTATE" if is_en else "BẤT ĐỘNG SẢN"
+    s_steel = "STEEL" if is_en else "THÉP"
+    s_securities = "SECURITIES" if is_en else "CHỨNG KHOÁN"
     return f"""
       <g transform="translate({x}, {y})">
         <!-- Main Treemap Box -->
@@ -20,7 +24,7 @@ def render_mini_treemap(x, y, width=440, height=170):
           <!-- Sector 1: Ngân Hàng (Emerald) -->
           <g transform="translate(10, 8)">
             <rect width="180" height="90" rx="4" fill="#064e3b" stroke="{COLOR_EMERALD}" stroke-width="1.2" />
-            <text x="10" y="18" fill="#34d399" font-family="var(--font-mono)" font-size="8.5" font-weight="700">NGÂN HÀNG</text>
+            <text x="10" y="18" fill="#34d399" font-family="var(--font-mono)" font-size="8.5" font-weight="700">{s_banking}</text>
             <rect x="10" y="26" width="75" height="52" rx="3" fill="#042f2e" />
             <text x="47" y="48" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">VCB</text>
             <text x="47" y="66" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">+3.2%</text>
@@ -33,7 +37,7 @@ def render_mini_treemap(x, y, width=440, height=170):
           <!-- Sector 2: Bất Động Sản (Rose) -->
           <g transform="translate(200, 8)">
             <rect width="120" height="90" rx="4" fill="#4c0519" stroke="{COLOR_ROSE}" stroke-width="1.2" />
-            <text x="10" y="18" fill="#fb7185" font-family="var(--font-mono)" font-size="8.5" font-weight="700">BẤT ĐỘNG SẢN</text>
+            <text x="10" y="18" fill="#fb7185" font-family="var(--font-mono)" font-size="8.5" font-weight="700">{s_realestate}</text>
             <rect x="10" y="26" width="100" height="52" rx="3" fill="#881337" />
             <text x="60" y="48" fill="#fff" font-family="var(--font-mono)" font-size="11" font-weight="700" text-anchor="middle">VHM</text>
             <text x="60" y="66" fill="#fecdd3" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">-2.4%</text>
@@ -56,8 +60,10 @@ def render_mini_treemap(x, y, width=440, height=170):
       </g>
     """
 
-def render_mini_candlestick_chart(x, y, width=398, height=180, ticker="FPT", price="91.50 (+4.2%)"):
+def render_mini_candlestick_chart(x, y, width=398, height=180, ticker="FPT", price="91.50 (+4.2%)", is_en=False):
     """Mô phỏng biểu đồ nến Nhật OHLCV kèm đường MA và cột khối lượng Volume"""
+    timeframe_label = "DAILY (D1)" if is_en else "KHUNG NGÀY (D1)"
+    buy_badge = "BUY @ 91.5 (VOL +180%)" if is_en else "MUA @ 91.5 (VOL +180%)"
     return f"""
       <g transform="translate({x}, {y})">
         <!-- Container Box -->
@@ -65,7 +71,7 @@ def render_mini_candlestick_chart(x, y, width=398, height=180, ticker="FPT", pri
         
         <!-- Header Bar -->
         <rect width="{width}" height="24" rx="6" fill="#0c121e" />
-        <text x="10" y="16" fill="{TEXT_MAIN}" font-family="var(--font-mono)" font-size="9.5" font-weight="700">{ticker} &middot; KHUNG NGÀY (D1)</text>
+        <text x="10" y="16" fill="{TEXT_MAIN}" font-family="var(--font-mono)" font-size="9.5" font-weight="700">{ticker} &middot; {timeframe_label}</text>
         <text x="215" y="16" fill="#34d399" font-family="var(--font-mono)" font-size="9.5" font-weight="700">{price}</text>
         <text x="320" y="16" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="8">EMA20: 88.4</text>
 
@@ -135,14 +141,18 @@ def render_mini_candlestick_chart(x, y, width=398, height=180, ticker="FPT", pri
           <!-- Signal Badge -->
           <g transform="translate(195, 2)">
             <rect x="0" y="0" width="140" height="18" rx="3" fill="#064e3b" stroke="#34d399" stroke-width="1" />
-            <text x="70" y="12.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">MUA @ 91.5 (VOL +180%)</text>
+            <text x="70" y="12.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">{buy_badge}</text>
           </g>
         </g>
       </g>
     """
 
-def render_mini_multipane_chart(x, y, width=418, height=235, ticker="VCB", price="96.80 (+3.2%)"):
+def render_mini_multipane_chart(x, y, width=418, height=235, ticker="VCB", price="96.80 (+3.2%)", is_en=False):
     """Mô phỏng đồ thị kỹ thuật 4 tầng đồng bộ (Nến, Volume, MACD, RSI) chuẩn Plotly"""
+    p1_label = "PANE 1: OHLCV CANDLES + MA20/50" if is_en else "PANE 1: NẾN OHLCV + MA20/MA50"
+    p2_label = "PANE 2: VOLUME + VWAP"
+    p3_label = "PANE 3: MACD (12, 26, 9)"
+    p4_label = "PANE 4: RSI (14)"
     return f"""
       <g transform="translate({x}, {y})">
         <rect width="{width}" height="{height}" rx="6" fill="#080c16" stroke="{BORDER_BASE}" stroke-width="1" />
@@ -185,7 +195,7 @@ def render_mini_multipane_chart(x, y, width=418, height=235, ticker="VCB", price
 
           <path d="M 18 64 Q 78 54, 138 48 T 228 36 T 288 22" fill="none" stroke="{COLOR_CYAN}" stroke-width="1.6" />
           <path d="M 18 70 Q 108 65, 198 55 T 288 40" fill="none" stroke="{COLOR_AMBER}" stroke-width="1.3" stroke-dasharray="3 2" />
-          <text x="6" y="12" fill="{TEXT_DIM}" font-family="var(--font-mono)" font-size="7">PANE 1: NẾN OHLCV + MA20/MA50</text>
+          <text x="6" y="12" fill="{TEXT_DIM}" font-family="var(--font-mono)" font-size="7">{p1_label}</text>
         </g>
 
         <!-- Divider 1 -->
@@ -194,7 +204,7 @@ def render_mini_multipane_chart(x, y, width=418, height=235, ticker="VCB", price
         <!-- PANE 2: VOLUME & VWAP -->
         <g transform="translate(8, 115)">
           <rect width="365" height="35" fill="#080c16" />
-          <text x="6" y="9" fill="{TEXT_DIM}" font-family="var(--font-mono)" font-size="7">PANE 2: VOLUME + VWAP</text>
+          <text x="6" y="9" fill="{TEXT_DIM}" font-family="var(--font-mono)" font-size="7">{p2_label}</text>
           <text x="372" y="24" fill="{TEXT_DIM}" font-family="var(--font-mono)" font-size="7">VOL</text>
 
           <rect x="14" y="16" width="8" height="15" fill="{COLOR_ROSE}" opacity="0.6" />

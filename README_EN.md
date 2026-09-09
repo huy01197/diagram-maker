@@ -25,9 +25,9 @@ Unlike generic charting packages that rely on unpredictable force-directed physi
 
 All flagship production architectures are integrated into a centralized interactive portal featuring dynamic tab navigation, live inspector cards, and responsive auto-scaling.
 
-[![Architecture Showcase Portal](assets/product_portal_overview.png)](Product/index.html)
+[![Architecture Showcase Portal](assets/en/product_portal_overview.png)](Product/en/index.html)
 
-*Interactive Architecture Portal ([Product/index.html](Product/index.html)) with integrated topology switching, real-time metrics bar, and standalone inspection controls.*
+*Interactive Architecture Portal ([Product/en/index.html](Product/en/index.html)) with integrated topology switching, real-time metrics bar, and standalone inspection controls.*
 
 ---
 
@@ -39,10 +39,10 @@ To demonstrate engine performance under real-world conditions with dense data fl
 
 High-throughput, real-time ingestion topology processing over 2,500 market ticks per second with asymmetric fan-in convergence and dual-rail WebSocket/REST transport.
 
-![Streaming Topology Architecture](assets/vietnam_stock_heatmap.png)
+![Streaming Topology Architecture](assets/en/vietnam_stock_heatmap.png)
 
-* **Specification Source:** [`specs/projects/vietnam_stock_heatmap.json`](specs/projects/vietnam_stock_heatmap.json)
-* **Interactive Web Artifact:** [**Product/vietnam-stock-heatmap-architecture.html**](Product/vietnam-stock-heatmap-architecture.html)
+* **Specification Source:** [`specs/projects/en/vietnam_stock_heatmap.json`](specs/projects/en/vietnam_stock_heatmap.json)
+* **Interactive Web Artifact:** [**Product/en/vietnam-stock-heatmap-architecture.html**](Product/en/vietnam-stock-heatmap-architecture.html)
 * **Core Characteristics:** Multi-source ingress authentication, In-Memory RAM Store with O(1) state resolution (< 0.12 ms), integrated micro-treemap component.
 
 ---
@@ -51,10 +51,10 @@ High-throughput, real-time ingestion topology processing over 2,500 market ticks
 
 Two-way interactive pipeline featuring token bucket rate limiting, asynchronous quant routing, and a feedback highway.
 
-![Closed-Loop Pipeline Architecture](assets/telegram_stock_bot.png)
+![Closed-Loop Pipeline Architecture](assets/en/telegram_stock_bot.png)
 
-* **Specification Source:** [`specs/projects/telegram_stock_bot.json`](specs/projects/telegram_stock_bot.json)
-* **Interactive Web Artifact:** [**Product/telegram-stock-bot-architecture.html**](Product/telegram-stock-bot-architecture.html)
+* **Specification Source:** [`specs/projects/en/telegram_stock_bot.json`](specs/projects/en/telegram_stock_bot.json)
+* **Interactive Web Artifact:** [**Product/en/telegram-stock-bot-architecture.html**](Product/en/telegram-stock-bot-architecture.html)
 * **Core Characteristics:** Sub-400ms end-to-end response budget, per-user token bucket spam defense, inline 4-panel Candlestick OHLCV micro-charting.
 
 ---
@@ -63,10 +63,10 @@ Two-way interactive pipeline featuring token bucket rate limiting, asynchronous 
 
 Four-tier analytical data lakehouse architecture handling over 10 years of historical trading data across 1,500+ listed equities.
 
-![Medallion Lakehouse Architecture](assets/vietnamese_stock_analysis.png)
+![Medallion Lakehouse Architecture](assets/en/vietnamese_stock_analysis.png)
 
-* **Specification Source:** [`specs/projects/vietnamese_stock_analysis.json`](specs/projects/vietnamese_stock_analysis.json)
-* **Interactive Web Artifact:** [**Product/vietnamese-stock-analysis-architecture.html**](Product/vietnamese-stock-analysis-architecture.html)
+* **Specification Source:** [`specs/projects/en/vietnamese_stock_analysis.json`](specs/projects/en/vietnamese_stock_analysis.json)
+* **Interactive Web Artifact:** [**Product/en/vietnamese-stock-analysis-architecture.html**](Product/en/vietnamese-stock-analysis-architecture.html)
 * **Core Characteristics:** Bronze raw staging, Silver Snappy Parquet storage (-85% disk footprint, 10x read speed), Gold DuckDB/PyArrow vectorized OLAP, Platinum 4-pane visual analytics.
 
 ---
@@ -77,9 +77,9 @@ The engine features specialized orthogonal columnar compilers (4-tier and 5-tier
 
 | Orthogonal Column Topology (4-Tier / 5-Tier) | Technical Slide Presentation (16:9 Glassmorphic) |
 | :--- | :--- |
-| [![Column Architecture Showcase](assets/column_architecture_showcase.png)](output/sample_diagram.html) | [![Technical Slide Showcase](assets/presentation_slide_showcase.png)](output/sample_slide.html) |
+| [![Column Architecture Showcase](assets/en/column_architecture_showcase.png)](output/en/sample_diagram.html) | [![Technical Slide Showcase](assets/en/presentation_slide_showcase.png)](output/en/sample_slide.html) |
 
-*Left: Orthogonal column architecture ([output/sample_diagram.html](output/sample_diagram.html)) with deterministic port spreading and dynamic Bezier routing. Right: Technical presentation slide ([output/sample_slide.html](output/sample_slide.html)) in 16:9 glassmorphic layout.*
+*Left: Orthogonal column architecture ([output/en/sample_diagram.html](output/en/sample_diagram.html)) with deterministic port spreading and dynamic Bezier routing. Right: Technical presentation slide ([output/en/sample_slide.html](output/en/sample_slide.html)) in 16:9 glassmorphic layout.*
 
 ---
 
@@ -142,11 +142,11 @@ Every generated HTML document embeds a standalone interactive runtime operating 
 Verify structural integrity, schema conformance, and connection references across all specifications:
 
 ```bash
-# Validate all specifications in specs/
+# Validate all specifications in specs/ (Vietnamese and English)
 python3 main.py validate --all
 
-# Validate a specific architecture specification
-python3 main.py validate specs/projects/vietnam_stock_heatmap.json
+# Validate a specific English architecture specification
+python3 main.py validate specs/projects/en/vietnam_stock_heatmap.json
 ```
 
 Output:
@@ -155,12 +155,18 @@ Output:
 SPECIFICATION                        TYPE         NODES/METRICS    STATUS
 --------------------------------------------------------------------------
 telegram_stock_bot.json              topology     4 metrics        [PASS]
-telegram_stock_bot_5tier.json        diagram      10n / 14e        [PASS]
 vietnam_stock_heatmap.json           topology     4 metrics        [PASS]
+vietnamese_stock_analysis.json       topology     4 metrics        [PASS]
 sample_diagram.json                  diagram      5n / 5e          [PASS]
 sample_slide.json                    slide        2 branches       [PASS]
+en/telegram_stock_bot.json           topology     4 metrics        [PASS]
+en/vietnam_stock_heatmap.json        topology     4 metrics        [PASS]
+en/vietnamese_stock_analysis.json    topology     4 metrics        [PASS]
+en/sample_diagram.json               diagram      5n / 5e          [PASS]
+en/sample_slide.json                 slide        2 branches       [PASS]
+...
 --------------------------------------------------------------------------
-Result: 10/10 specifications valid.
+Result: 15/15 specifications valid.
 ```
 
 ### 2. Compilation & Build
@@ -171,11 +177,11 @@ Compile specifications into standalone interactive HTML documents:
 # Batch compile all specifications in specs/
 python3 main.py --all
 
-# Compile a single specification
-python3 main.py specs/samples/sample_diagram.json -o output/sample_diagram.html
+# Compile a single English specification
+python3 main.py specs/samples/en/sample_diagram.json -o output/en/sample_diagram.html
 
 # Compile with Institutional Light theme by default
-python3 main.py specs/samples/sample_diagram.json -o output/sample_diagram_light.html --theme light
+python3 main.py specs/samples/en/sample_diagram.json -o output/en/sample_diagram_light.html --theme light
 ```
 
 ---
@@ -256,24 +262,46 @@ diagram-maker/
 ├── LICENSE                        # MIT License
 ├── README.md                      # Vietnamese Documentation
 ├── README_EN.md                   # English Documentation (Institutional Standard)
-├── assets/                        # High-resolution showcase assets (4.8 MB)
+├── assets/                        # High-resolution showcase assets
 │   ├── product_portal_overview.png
 │   ├── vietnam_stock_heatmap.png
 │   ├── telegram_stock_bot.png
 │   ├── vietnamese_stock_analysis.png
 │   ├── column_architecture_showcase.png
-│   └── presentation_slide_showcase.png
+│   ├── presentation_slide_showcase.png
+│   └── en/                        # English Retina screenshots (@2x)
+│       ├── product_portal_overview.png
+│       ├── vietnam_stock_heatmap.png
+│       ├── telegram_stock_bot.png
+│       ├── vietnamese_stock_analysis.png
+│       ├── column_architecture_showcase.png
+│       └── presentation_slide_showcase.png
 ├── Product/                       # Interactive architecture showcase portal
-│   ├── index.html                 # Centralized multi-tab architecture console
+│   ├── index.html                 # Centralized multi-tab architecture console (VI)
 │   ├── vietnam-stock-heatmap-architecture.html
 │   ├── telegram-stock-bot-architecture.html
-│   └── vietnamese-stock-analysis-architecture.html
+│   ├── vietnamese-stock-analysis-architecture.html
+│   └── en/                        # Centralized multi-tab architecture console (EN)
+│       ├── index.html
+│       ├── vietnam-stock-heatmap-architecture.html
+│       ├── telegram-stock-bot-architecture.html
+│       └── vietnamese-stock-analysis-architecture.html
 ├── schemas/                       # Formal JSON Schema specifications
 │   ├── diagram_spec.schema.json
 │   └── slide_spec.schema.json
 ├── specs/                         # Declarative JSON AST specifications
-│   ├── projects/                  # Production real-world pipelines
-│   └── samples/                   # Canonical template samples
+│   ├── projects/                  # Production pipelines (VI & EN)
+│   │   ├── vietnam_stock_heatmap.json
+│   │   ├── telegram_stock_bot.json
+│   │   ├── vietnamese_stock_analysis.json
+│   │   └── en/                    # English production specifications
+│   └── samples/                   # Canonical template samples (VI & EN)
+│       ├── sample_diagram.json
+│       ├── sample_slide.json
+│       └── en/                    # English template samples
+├── output/                        # Standalone compiled vector HTML deliverables
+│   ├── *.html                     # Vietnamese compiled deliverables
+│   └── en/                        # English compiled deliverables
 └── src/                           # Pure Python compilation engine
     ├── cli.py                     # Unified CLI dispatcher & argument parser
     ├── validator.py               # Deterministic AST & connection integrity validator

@@ -1,0 +1,116 @@
+{
+  "title": "Multi-Factor Engine Architecture (AI Flow Diagram)",
+  "category": "QUANTITATIVE SYSTEM",
+  "subtitle": "Unified Signal Pipeline combining Technical, Fundamental CANSLIM & Risk Governance Matrix",
+  "columns": [
+    {
+      "id": "col_input",
+      "nodes": [
+        {
+          "id": "market_stream",
+          "title": "Market Stream",
+          "badge": "INGESTION",
+          "subtitle": "Real-time Tick & OHLCV",
+          "meta": "Vnstock API Pipeline",
+          "color": "sky",
+          "width": 210,
+          "height": 115
+        }
+      ]
+    },
+    {
+      "id": "col_factors",
+      "nodes": [
+        {
+          "id": "ta_node",
+          "title": "Technical Analysis (TA)",
+          "badge": "50% WEIGHT",
+          "color": "sky",
+          "width": 300,
+          "items": [
+            "1. EMA 20/50 Golden Cross",
+            "2. RSI 14 (50 ≤ RSI < 70)",
+            "3. MACD Histogram > 0"
+          ]
+        },
+        {
+          "id": "fa_node",
+          "title": "Fundamental CANSLIM (FA)",
+          "badge": "50% WEIGHT",
+          "color": "emerald",
+          "width": 300,
+          "items": [
+            "1. ROE ≥ 15% (Economic Moat)",
+            "2. Net Profit YoY ≥ 15% (D/E < 2.0)",
+            "3. Volume Breakout ≥ 1.5× SMA20"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "col_consensus",
+      "nodes": [
+        {
+          "id": "consensus_matrix",
+          "title": "Consensus Matrix",
+          "badge": "Composite (0 - 100)",
+          "color": "amber",
+          "width": 250,
+          "custom_badges": [
+            {"label": "STRONG BUY", "color": "emerald"},
+            {"label": "BUY", "color": "sky"},
+            {"label": "HOLD", "color": "amber"},
+            {"label": "SELL", "color": "rose"}
+          ],
+          "bottom_box": "R:R = 1:2 (TP +14% / SL -7%)"
+        }
+      ]
+    },
+    {
+      "id": "col_output",
+      "nodes": [
+        {
+          "id": "telegram_bot",
+          "title": "Telegram Bot",
+          "badge": "DISPATCHED",
+          "subtitle": "Alert & Order Execution",
+          "meta": "Signal Triggered",
+          "color": "sky",
+          "width": 190,
+          "height": 115
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "market_stream",
+      "to": "ta_node",
+      "color": "sky"
+    },
+    {
+      "from": "market_stream",
+      "to": "fa_node",
+      "color": "emerald"
+    },
+    {
+      "from": "ta_node",
+      "to": "consensus_matrix",
+      "color": "sky",
+      "animated": true
+    },
+    {
+      "from": "fa_node",
+      "to": "consensus_matrix",
+      "color": "emerald",
+      "animated": true
+    },
+    {
+      "from": "consensus_matrix",
+      "to": "telegram_bot",
+      "color": "amber",
+      "label": "Score ≥ 80",
+      "animated": true
+    }
+  ]
+}

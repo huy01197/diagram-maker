@@ -1,0 +1,36 @@
+{
+  "title": "Vietnam Stock Heatmap - Real-Time Streaming & Market Distribution Pipeline",
+  "eyebrow": "STREAMING TOPOLOGY · DUAL-RAIL EVENT PIPELINE",
+  "locale": "en",
+  "topology": "streaming",
+  "width": 1320,
+  "height": 915,
+  "metrics": [
+    { "label": "Tick Execution Latency", "value": "< 16 ms (60 FPS)", "color": "#34d399" },
+    { "label": "Stream Throughput", "value": "2,500+ Ticks/Sec", "color": "#38bdf8" },
+    { "label": "RAM Store Queries", "value": "O(1) < 0.12 ms", "color": "#38bdf8" },
+    { "label": "Dual-Rail Transport", "value": "WebSocket + REST", "color": "#fbbf24" }
+  ],
+  "footer_notes": [
+    {
+      "color": "#38bdf8",
+      "title": "SIGNALR SSI INGRESS",
+      "desc": "Subscribes to live order-matching feeds exceeding 2,500 ticks/sec from exchanges with enterprise RSA/JWT auth."
+    },
+    {
+      "color": "#34d399",
+      "title": "O(1) IN-MEMORY RAM STORE",
+      "desc": "Thread-safe Mutex lock eliminates race conditions, instantly managing 700+ tickers with zero disk overhead."
+    },
+    {
+      "color": "#fbbf24",
+      "title": "15 VS-SECTOR CLASSIFICATION",
+      "desc": "5-tier amplitude color spectrum combined with sector taxonomy and holistic market breadth analytics."
+    },
+    {
+      "color": "#34d399",
+      "title": "ECHARTS CANVAS & REST FAILOVER",
+      "desc": "Primary rail broadcasts deltas via WebSocket /ws at 60 FPS, with 2.5s Polling Live ensuring uninterrupted continuity."
+    }
+  ]
+}
