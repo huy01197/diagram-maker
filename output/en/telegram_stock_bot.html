@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telegram Stock Bot - Event-Driven Closed-Loop Quantitative Pipeline</title>
+  <title>Telegram Stock Bot - Closed-Loop Architecture</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -296,8 +296,8 @@
 <div class="container">
   <div class="header">
     <div>
-      <div class="eyebrow">EVENT-DRIVEN CLOSED-LOOP PIPELINE · QUANTITATIVE BOT ENGINE</div>
-      <h1 class="title">Telegram Stock Bot - Event-Driven Closed-Loop Quantitative Pipeline</h1>
+      <div class="eyebrow">CLOSED-LOOP PIPELINE · QUANT BOT</div>
+      <h1 class="title">Telegram Stock Bot - Closed-Loop Architecture</h1>
     </div>
     <div class="controls-bar">
       <div class="search-box">
@@ -331,7 +331,7 @@
   </div>
 
   <div class="svg-wrapper">
-    <svg id="diagramSvg" viewBox="0 0 1320 915" xmlns="http://www.w3.org/2000/svg">
+    <svg id="diagramSvg" viewBox="0 0 1440 920" xmlns="http://www.w3.org/2000/svg">
       
       <defs>
         <!-- Background Dot Grid Pattern -->
@@ -369,8 +369,8 @@
     
       
       <!-- Background with Dot Grid -->
-      <rect width="1320" height="915" fill="var(--canvas-bg)" />
-      <rect width="1320" height="915" fill="url(#dotGrid)" />
+      <rect width="1440" height="920" fill="var(--canvas-bg)" />
+      <rect width="1440" height="920" fill="url(#dotGrid)" />
 
       <text x="45" y="36" fill="#06b6d4" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">1. USER INTERACTION &amp; INGRESS GATEWAY</text>
 <text x="410" y="36" fill="#a855f7" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">2. COMMAND DISPATCHER &amp; CACHE ENGINE</text>
@@ -863,7 +863,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'Telegram Stock Bot - Event-Driven Closed-Loop Quantitative Pipeline'.replace(/[^a-zA-Z0-9_-]/g, '_') + '.svg';
+      a.download = 'Telegram Stock Bot - Closed-Loop Architecture'.replace(/[^a-zA-Z0-9_-]/g, '_') + '.svg';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -874,8 +874,8 @@
       const serializer = new XMLSerializer();
       let source = serializer.serializeToString(svgEl);
       const vb = svgEl.viewBox.baseVal;
-      const w = (vb && vb.width) ? vb.width : 1320;
-      const h = (vb && vb.height) ? vb.height : 915;
+      const w = (vb && vb.width) ? vb.width : 1440;
+      const h = (vb && vb.height) ? vb.height : 920;
 
       const canvas = document.createElement('canvas');
       const scale = 2; // 2x Retina quality
@@ -897,7 +897,7 @@
         canvas.toBlob(function(blob) {
           const a = document.createElement('a');
           a.href = URL.createObjectURL(blob);
-          a.download = 'Telegram Stock Bot - Event-Driven Closed-Loop Quantitative Pipeline'.replace(/[^a-zA-Z0-9_-]/g, '_') + '_retina.png';
+          a.download = 'Telegram Stock Bot - Closed-Loop Architecture'.replace(/[^a-zA-Z0-9_-]/g, '_') + '_retina.png';
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);

@@ -1,6 +1,6 @@
 {
-  "title": "Vietnam Stock Heatmap - Kiến Trúc Luồng Streaming & Phân Bổ Thị Trường",
-  "eyebrow": "STREAMING TOPOLOGY · DUAL-RAIL EVENT PIPELINE",
+  "title": "Vietnam Stock Heatmap - Kiến Trúc Streaming",
+  "eyebrow": "STREAMING TOPOLOGY · DUAL-RAIL PIPELINE",
   "topology": "streaming",
   "width": 1440,
   "height": 920,

@@ -15,13 +15,13 @@ from ..core.mockups import render_mini_multipane_chart
 class MedallionLakehouseCompiler:
     def __init__(self, spec):
         self.spec = spec
-        self.width = spec.get("width", 1320)
-        self.height = spec.get("height", 915)
+        self.width = spec.get("width", 1440)
+        self.height = spec.get("height", 920)
         self.is_en = spec.get("locale") == "en" or spec.get("lang") == "en"
 
     def compile(self):
-        title = self.spec.get("title", "Medallion Parquet Lakehouse Architecture")
-        eyebrow = self.spec.get("eyebrow", "MEDALLION ARCHITECTURE · COLUMNAR LAKEHOUSE · MULTI-PANE QUANT ENGINE")
+        title = self.spec.get("title", "Vietnamese Stock Analysis - Medallion Lakehouse")
+        eyebrow = self.spec.get("eyebrow", "MEDALLION LAKEHOUSE · QUANT ENGINE")
         metrics = self.spec.get("metrics", [])
         footer_notes = self.spec.get("footer_notes", [])
 
@@ -33,61 +33,65 @@ class MedallionLakehouseCompiler:
         col3 = "3. PLATINUM TIER: STREAMLIT MULTI-PANE TERMINAL" if self.is_en else "3. TẦNG PLATINUM: STREAMLIT MULTI-PANE TERMINAL"
 
         body.append(f'<text x="45" y="36" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">{col1}</text>')
-        body.append(f'<text x="400" y="36" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">{col2}</text>')
-        body.append(f'<text x="830" y="36" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">{col3}</text>')
+        body.append(f'<text x="435" y="36" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">{col2}</text>')
+        body.append(f'<text x="930" y="36" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">{col3}</text>')
 
-        # CONNECTIONS
-        # 1. Line: CafeF Scanner -> Unpacker Worker
-        body.append(f'<path d="M 175 320 L 175 410" stroke="{COLOR_AMBER}" stroke-width="2" marker-end="url(#arrow-amber)" />')
-        # 2. Line: Unpacker Worker -> Silver Parquet Lakehouse
-        body.append(f'<path d="M 305 530 C 365 530, 350 200, 392 200" fill="none" stroke="{COLOR_CYAN}" stroke-width="2" marker-end="url(#arrow-cyan)" />')
-        # 3. Line: Silver Parquet Lakehouse -> Gold Quant Feature Store
-        body.append(f'<path d="M 565 375 L 565 442" stroke="{COLOR_PURPLE}" stroke-width="2" marker-end="url(#arrow-purple)" />')
-        # 4. Line: Gold Quant -> Terminal Screener
-        body.append(f'<path d="M 730 520 C 785 520, 770 180, 822 180" fill="none" stroke="{COLOR_PURPLE}" stroke-width="2" marker-end="url(#arrow-purple)" />')
-        # 5. Line: Silver Lakehouse -> Multi-Pane Candlestick Chart
-        body.append(f'<path d="M 730 250 C 785 250, 775 510, 822 510" fill="none" stroke="{COLOR_EMERALD}" stroke-width="2.2" stroke-dasharray="6 3" marker-end="url(#arrow-emerald)" />')
+        # STEP 1: RENDER CARDS FIRST (Substrate layer)
+        body.append(self._render_bronze_layer())
+        body.append(self._render_silver_gold_layer())
+        body.append(self._render_platinum_layer())
 
-        # CONNECTOR PILL BADGES
+        # STEP 2: RENDER CONNECTIONS (Circuit traces - Orthogonal Manhattan with Rounded Corners matching user sample)
+        # Line 1: Card 1 -> Card 2 (Vertical straight down at X=200)
+        body.append(f'<path d="M 200 325 L 200 423" stroke="{COLOR_AMBER}" stroke-width="2" marker-end="url(#arrow-amber)" />')
+
+        # Line 2: Card 2 -> Card 3 (Orthogonal Manhattan turn North into Corridor 1 bus X=395)
+        body.append(f'<path d="M 355 515 H 387 Q 395 515, 395 507 V 203 Q 395 195, 403 195 H 433" fill="none" stroke="{COLOR_CYAN}" stroke-width="2" marker-end="url(#arrow-cyan)" />')
+
+        # Line 3: Card 3 -> Card 4 (Vertical straight down at X=640)
+        body.append(f'<path d="M 640 375 L 640 443" stroke="{COLOR_PURPLE}" stroke-width="2" marker-end="url(#arrow-purple)" />')
+
+        # Line 4: Card 4 -> Card 5 (Orthogonal Manhattan turn North into Corridor 2 Track A X=875)
+        body.append(f'<path d="M 845 530 H 867 Q 875 530, 875 522 V 183 Q 875 175, 883 175 H 928" fill="none" stroke="{COLOR_PURPLE}" stroke-width="2" marker-end="url(#arrow-purple)" />')
+
+        # Line 5: Card 3 -> Card 6 (DASHED Orthogonal Manhattan turn South into Corridor 2 Track B X=900, matching dashed sample)
+        body.append(f'<path d="M 845 235 H 892 Q 900 235, 900 243 V 492 Q 900 500, 908 500 H 928" fill="none" stroke="{COLOR_EMERALD}" stroke-width="2.2" stroke-dasharray="6 4" marker-end="url(#arrow-emerald)" />')
+
+        # STEP 3: RENDER PILL BADGES ON TOP (Transceiver chips mounted directly on wires)
         p1 = "PARALLEL UNPACK" if self.is_en else "GIẢI NÉN ĐA LUỒNG"
         p3 = "O(1) TIME SERIES" if self.is_en else "CHUỖI THỜI GIAN O(1)"
 
         body.append(f"""
-          <!-- Pill 1: Between Card 1 and Card 2 -->
-          <g transform="translate(188, 355)">
-            <rect x="0" y="0" width="112" height="20" rx="4" fill="#451a03" stroke="#b45309" stroke-width="1" />
-            <text x="56" y="14" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{p1}</text>
+          <!-- Pill 1: Centered on Line 1 (X=200, Y=374) -->
+          <g transform="translate(142, 363)">
+            <rect x="0" y="0" width="116" height="22" rx="4" fill="#451a03" stroke="#b45309" stroke-width="1" />
+            <text x="58" y="15" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{p1}</text>
           </g>
 
-          <!-- Pill 2: In Corridor 1 at Y=415 -->
-          <g transform="translate(315, 415)">
+          <!-- Pill 2: Mounted on Corridor 1 Bus (X=395, Y=355) -->
+          <g transform="translate(357, 344)">
             <rect x="0" y="0" width="76" height="22" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
             <text x="38" y="15" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PARQUET</text>
           </g>
 
-          <!-- Pill 3: In gap between Silver and Gold -->
-          <g transform="translate(578, 398)">
-            <rect x="0" y="0" width="128" height="20" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
-            <text x="64" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{p3}</text>
+          <!-- Pill 3: Centered on Line 3 (X=640, Y=410) -->
+          <g transform="translate(575, 399)">
+            <rect x="0" y="0" width="130" height="22" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
+            <text x="65" y="15" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{p3}</text>
           </g>
 
-          <!-- Pill 4: In Corridor 2 at Y=310 -->
-          <g transform="translate(742, 310)">
+          <!-- Pill 4: Mounted on Track A Bus (X=875, Y=355) -->
+          <g transform="translate(837, 344)">
             <rect x="0" y="0" width="76" height="22" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
             <text x="38" y="15" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SCREENER</text>
           </g>
 
-          <!-- Pill 5: In Corridor 2 at Y=435 -->
-          <g transform="translate(738, 435)">
-            <rect x="0" y="0" width="84" height="22" rx="4" fill="#064e3b" stroke="#059669" stroke-width="1" />
-            <text x="42" y="15" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SYNC 4 PANES</text>
+          <!-- Pill 5: Mounted on Track B Dashed Bus (X=900, Y=430) -->
+          <g transform="translate(854, 419)">
+            <rect x="0" y="0" width="92" height="22" rx="4" fill="#064e3b" stroke="#059669" stroke-width="1" />
+            <text x="46" y="15" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SYNC 4 PANES</text>
           </g>
         """)
-
-        # CARDS
-        body.append(self._render_bronze_layer())
-        body.append(self._render_silver_gold_layer())
-        body.append(self._render_platinum_layer())
 
         svg_content = "\n".join(body)
         return render_html_document(title, eyebrow, metrics, svg_content, footer_notes, self.width, self.height)
@@ -98,7 +102,8 @@ class MedallionLakehouseCompiler:
             c1_1 = "Daily batch archive: CafeF Upto ZIP"
             c1_2 = "Covers 10+ years of historical market ticks"
             c1_3 = "1,500+ listed tickers: HSX, HNX, UPCoM"
-            c1_4 = "Log download history in download_history.json"
+            c1_4_label = "Log download history into:"
+            c1_4_file = "download_history.json"
             c1_5 = "MD5 checksum packet verification"
             c1_bot = "RAW STORAGE &gt; 15GB CSV ARCHIVE"
 
@@ -115,7 +120,8 @@ class MedallionLakehouseCompiler:
             c1_1 = "Tải tệp nén hàng ngày: CafeF Upto ZIP"
             c1_2 = "Bao phủ 10+ năm lịch sử toàn thị trường"
             c1_3 = "1.500+ mã niêm yết: HSX, HNX, UPCoM"
-            c1_4 = "Ghi nhận lịch sử tải vào download_history.json"
+            c1_4_label = "Ghi nhận nhật ký tải vào:"
+            c1_4_file = "download_history.json"
             c1_5 = "Kiểm tra tính toàn vẹn gói tin bằng MD5"
             c1_bot = "RAW STORAGE &gt; 15GB CSV LỊCH SỬ"
 
@@ -130,54 +136,67 @@ class MedallionLakehouseCompiler:
 
         return f"""
         <!-- Card 1: CafeF Ingestion Scanner -->
-        <g transform="translate(45, 80)">
-          <rect width="260" height="240" rx="8" fill="{CARD_BG}" stroke="{COLOR_AMBER}" stroke-width="1.5" />
-          <rect width="260" height="3" rx="1.5" fill="{COLOR_AMBER}" />
-          <rect x="14" y="14" width="102" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
-          <text x="65" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">BRONZE LAYER 01</text>
-          <text x="14" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14" font-weight="700">{c1_t}</text>
-          <text x="14" y="78" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10" font-weight="700">1.</text>
-          <text x="28" y="78" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_1}</text>
-          <text x="14" y="100" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10" font-weight="700">2.</text>
-          <text x="28" y="100" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_2}</text>
-          <text x="14" y="122" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10" font-weight="700">3.</text>
-          <text x="28" y="122" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_3}</text>
-          <text x="14" y="144" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10" font-weight="700">4.</text>
-          <text x="28" y="144" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_4}</text>
-          <text x="14" y="166" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10" font-weight="700">5.</text>
-          <text x="28" y="166" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_5}</text>
-          <rect x="14" y="200" width="232" height="18" rx="3" fill="#451a03" />
-          <text x="130" y="212.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c1_bot}</text>
+        <g transform="translate(45, 75)">
+          <rect width="310" height="250" rx="8" fill="{CARD_BG}" stroke="{COLOR_AMBER}" stroke-width="1.5" />
+          <rect width="310" height="3" rx="1.5" fill="{COLOR_AMBER}" />
+          <rect x="16" y="14" width="106" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
+          <text x="69" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">BRONZE LAYER 01</text>
+          <text x="16" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14" font-weight="700">{c1_t}</text>
+          
+          <text x="16" y="78" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10" font-weight="700">1.</text>
+          <text x="30" y="78" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_1}</text>
+          
+          <text x="16" y="100" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10" font-weight="700">2.</text>
+          <text x="30" y="100" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_2}</text>
+          
+          <text x="16" y="122" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10" font-weight="700">3.</text>
+          <text x="30" y="122" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_3}</text>
+          
+          <text x="16" y="144" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10" font-weight="700">4.</text>
+          <text x="30" y="144" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_4_label}</text>
+          <rect x="30" y="150" width="144" height="16" rx="3" fill="#1e293b" stroke="#334155" stroke-width="0.8" />
+          <text x="102" y="161.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c1_4_file}</text>
+          
+          <text x="16" y="186" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="10" font-weight="700">5.</text>
+          <text x="30" y="186" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c1_5}</text>
+          
+          <rect x="16" y="214" width="278" height="20" rx="3" fill="#451a03" />
+          <text x="155" y="227.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c1_bot}</text>
         </g>
 
         <!-- Card 2: Unpacker Worker -->
-        <g transform="translate(45, 415)">
-          <rect width="260" height="355" rx="8" fill="{CARD_BG}" stroke="{BORDER_BASE}" stroke-width="1.2" />
-          <rect x="14" y="14" width="112" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
-          <text x="70" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">ETL EXTRACTOR</text>
-          <text x="14" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14" font-weight="700">{c2_t}</text>
-          <text x="14" y="78" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="10">1.</text>
-          <text x="28" y="78" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_1}</text>
-          <text x="14" y="100" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="10">2.</text>
-          <text x="28" y="100" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_2}</text>
-          <text x="14" y="122" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="10">3.</text>
-          <text x="28" y="122" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_3}</text>
-          <text x="14" y="144" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="10">4.</text>
-          <text x="28" y="144" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_4}</text>
-          <text x="14" y="166" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="10">5.</text>
-          <text x="28" y="166" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_5}</text>
+        <g transform="translate(45, 425)">
+          <rect width="310" height="370" rx="8" fill="{CARD_BG}" stroke="{BORDER_BASE}" stroke-width="1.2" />
+          <rect x="16" y="14" width="116" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
+          <text x="74" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">ETL EXTRACTOR</text>
+          <text x="16" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14" font-weight="700">{c2_t}</text>
+          
+          <text x="16" y="78" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="10">1.</text>
+          <text x="30" y="78" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_1}</text>
+          
+          <text x="16" y="100" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="30" y="100" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_2}</text>
+          
+          <text x="16" y="122" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="10">3.</text>
+          <text x="30" y="122" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_3}</text>
+          
+          <text x="16" y="144" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="10">4.</text>
+          <text x="30" y="144" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_4}</text>
+          
+          <text x="16" y="166" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="10">5.</text>
+          <text x="30" y="166" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c2_5}</text>
 
-          <g transform="translate(14, 192)">
-            <rect width="232" height="110" rx="6" fill="{SUBCARD_BG}" stroke="{BORDER_BASE}" stroke-width="1" />
-            <text x="10" y="20" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="9" font-weight="700">DATA CLEANING RULES:</text>
-            <text x="10" y="38" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="8.5">&bull; Date format: YYYY-MM-DD</text>
-            <text x="10" y="56" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="8.5">&bull; Close &gt; 0, Volume &gt;= 0</text>
-            <text x="10" y="74" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="8.5">&bull; High &gt;= Low, High &gt;= Open</text>
-            <text x="10" y="92" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="8.5">&bull; {c2_rule}</text>
+          <g transform="translate(16, 192)">
+            <rect width="278" height="118" rx="6" fill="{SUBCARD_BG}" stroke="{BORDER_BASE}" stroke-width="1" />
+            <text x="12" y="22" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="9" font-weight="700">DATA CLEANING RULES:</text>
+            <text x="12" y="42" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="8.5">&bull; Date format: YYYY-MM-DD</text>
+            <text x="12" y="62" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="8.5">&bull; Close &gt; 0, Volume &gt;= 0</text>
+            <text x="12" y="82" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="8.5">&bull; High &gt;= Low, High &gt;= Open</text>
+            <text x="12" y="102" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="8.5">&bull; {c2_rule}</text>
           </g>
 
-          <rect x="14" y="320" width="232" height="18" rx="3" fill="#111827" />
-          <text x="130" y="332.5" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c2_bot}</text>
+          <rect x="16" y="332" width="278" height="20" rx="3" fill="#111827" />
+          <text x="155" y="345.5" fill="{TEXT_MUTED}" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c2_bot}</text>
         </g>
         """
 
@@ -235,68 +254,68 @@ class MedallionLakehouseCompiler:
 
         return f"""
         <!-- Card 3: Silver Parquet Lakehouse -->
-        <g transform="translate(400, 80)">
-          <rect width="330" height="295" rx="8" fill="{CARD_BG}" stroke="{COLOR_CYAN}" stroke-width="1.5" />
-          <rect x="16" y="14" width="106" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-          <text x="69" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SILVER LAYER 02</text>
+        <g transform="translate(435, 75)">
+          <rect width="410" height="300" rx="8" fill="{CARD_BG}" stroke="{COLOR_CYAN}" stroke-width="1.5" />
+          <rect x="16" y="14" width="112" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+          <text x="72" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SILVER LAYER 02</text>
           <text x="16" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14.5" font-weight="700">{c3_t}</text>
 
           <g transform="translate(16, 68)">
-            <rect x="0" y="0" width="94" height="32" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-            <text x="47" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb1_t}</text>
-            <text x="47" y="26" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb1_d}</text>
+            <rect x="0" y="0" width="118" height="34" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+            <text x="59" y="15" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb1_t}</text>
+            <text x="59" y="28" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb1_d}</text>
 
-            <rect x="102" y="0" width="94" height="32" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-            <text x="149" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb2_t}</text>
-            <text x="149" y="26" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb2_d}</text>
+            <rect x="130" y="0" width="118" height="34" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+            <text x="189" y="15" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb2_t}</text>
+            <text x="189" y="28" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb2_d}</text>
 
-            <rect x="204" y="0" width="94" height="32" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-            <text x="251" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb3_t}</text>
-            <text x="251" y="26" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb3_d}</text>
+            <rect x="260" y="0" width="118" height="34" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+            <text x="319" y="15" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb3_t}</text>
+            <text x="319" y="28" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb3_d}</text>
           </g>
 
-          <text x="16" y="126" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="126" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l1}</text>
-          <text x="16" y="148" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="148" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l2}</text>
-          <text x="16" y="170" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="170" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l3}</text>
-          <text x="16" y="192" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="192" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l4}</text>
-          <text x="16" y="214" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="214" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l5}</text>
+          <text x="16" y="128" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="128" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l1}</text>
+          <text x="16" y="150" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="150" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l2}</text>
+          <text x="16" y="172" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="172" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l3}</text>
+          <text x="16" y="194" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="194" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l4}</text>
+          <text x="16" y="216" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="216" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c3_l5}</text>
 
-          <rect x="16" y="248" width="298" height="18" rx="3" fill="#082f49" />
-          <text x="165" y="260.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c3_bot}</text>
+          <rect x="16" y="252" width="378" height="20" rx="3" fill="#082f49" />
+          <text x="205" y="265.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c3_bot}</text>
         </g>
 
         <!-- Card 4: Gold Feature Store -->
-        <g transform="translate(400, 445)">
-          <rect width="330" height="325" rx="8" fill="{CARD_BG}" stroke="{COLOR_PURPLE}" stroke-width="1.5" />
-          <rect x="16" y="14" width="102" height="18" rx="3" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
-          <text x="67" y="26.5" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">GOLD LAYER 03</text>
+        <g transform="translate(435, 445)">
+          <rect width="410" height="350" rx="8" fill="{CARD_BG}" stroke="{COLOR_PURPLE}" stroke-width="1.5" />
+          <rect x="16" y="14" width="108" height="18" rx="3" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
+          <text x="70" y="26.5" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">GOLD LAYER 03</text>
           <text x="16" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14.5" font-weight="700">{c4_t}</text>
 
           <g transform="translate(16, 68)">
-            <rect width="298" height="98" rx="6" fill="{SUBCARD_BG}" stroke="{BORDER_BASE}" stroke-width="1" />
-            <text x="10" y="20" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700">{sec1_hdr}</text>
-            <text x="10" y="38" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="10.5">&bull; {sec1_l1}</text>
-            <text x="10" y="56" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="10.5">&bull; {sec1_l2}</text>
-            <text x="10" y="74" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="10.5">&bull; {sec1_l3}</text>
-            <text x="10" y="90" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="9">{sec1_sub}</text>
+            <rect width="378" height="106" rx="6" fill="{SUBCARD_BG}" stroke="{BORDER_BASE}" stroke-width="1" />
+            <text x="12" y="22" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700">{sec1_hdr}</text>
+            <text x="12" y="42" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="10.5">&bull; {sec1_l1}</text>
+            <text x="12" y="62" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="10.5">&bull; {sec1_l2}</text>
+            <text x="12" y="82" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="10.5">&bull; {sec1_l3}</text>
+            <text x="12" y="98" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="9">{sec1_sub}</text>
           </g>
 
-          <g transform="translate(16, 178)">
-            <rect width="298" height="98" rx="6" fill="{SUBCARD_BG}" stroke="{COLOR_PURPLE}" stroke-width="1" />
-            <text x="10" y="20" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700">{sec2_hdr}</text>
-            <text x="10" y="38" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="10.5">&bull; {sec2_l1}</text>
-            <text x="10" y="56" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="10.5">&bull; {sec2_l2}</text>
-            <text x="10" y="74" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="10.5">&bull; {sec2_l3}</text>
-            <text x="10" y="90" fill="{COLOR_PURPLE}" font-family="var(--font-mono)" font-size="9">{sec2_sub}</text>
+          <g transform="translate(16, 186)">
+            <rect width="378" height="106" rx="6" fill="{SUBCARD_BG}" stroke="{COLOR_PURPLE}" stroke-width="1" />
+            <text x="12" y="22" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700">{sec2_hdr}</text>
+            <text x="12" y="42" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="10.5">&bull; {sec2_l1}</text>
+            <text x="12" y="62" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="10.5">&bull; {sec2_l2}</text>
+            <text x="12" y="82" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="10.5">&bull; {sec2_l3}</text>
+            <text x="12" y="98" fill="{COLOR_PURPLE}" font-family="var(--font-mono)" font-size="9">{sec2_sub}</text>
           </g>
 
-          <rect x="16" y="288" width="298" height="18" rx="3" fill="#2e1065" />
-          <text x="165" y="300.5" fill="#e9d5ff" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c4_bot}</text>
+          <rect x="16" y="308" width="378" height="20" rx="3" fill="#2e1065" />
+          <text x="205" y="321.5" fill="#e9d5ff" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c4_bot}</text>
         </g>
         """
 
@@ -336,59 +355,59 @@ class MedallionLakehouseCompiler:
 
         return f"""
         <!-- Card 5: Streamlit Financial Terminal -->
-        <g transform="translate(830, 80)">
-          <rect width="450" height="235" rx="8" fill="{CARD_BG}" stroke="{COLOR_BLUE}" stroke-width="1.5" />
-          <rect x="16" y="14" width="128" height="18" rx="3" fill="#1e1b4b" stroke="#4338ca" stroke-width="1" />
-          <text x="80" y="26.5" fill="#818cf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PLATINUM LAYER 04</text>
+        <g transform="translate(930, 75)">
+          <rect width="465" height="245" rx="8" fill="{CARD_BG}" stroke="{COLOR_BLUE}" stroke-width="1.5" />
+          <rect x="16" y="14" width="134" height="18" rx="3" fill="#1e1b4b" stroke="#4338ca" stroke-width="1" />
+          <text x="83" y="26.5" fill="#818cf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PLATINUM LAYER 04</text>
           <text x="16" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14.5" font-weight="700">{c5_t}</text>
 
           <g transform="translate(16, 68)">
-            <rect x="0" y="0" width="100" height="32" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
-            <text x="50" y="14" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb1_t}</text>
-            <text x="50" y="26" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb1_d}</text>
+            <rect x="0" y="0" width="102" height="34" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
+            <text x="51" y="15" fill="{COLOR_CYAN}" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb1_t}</text>
+            <text x="51" y="28" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb1_d}</text>
 
-            <rect x="108" y="0" width="100" height="32" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
-            <text x="158" y="14" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb2_t}</text>
-            <text x="158" y="26" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb2_d}</text>
+            <rect x="111" y="0" width="102" height="34" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
+            <text x="162" y="15" fill="{COLOR_AMBER}" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb2_t}</text>
+            <text x="162" y="28" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb2_d}</text>
 
-            <rect x="216" y="0" width="100" height="32" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
-            <text x="266" y="14" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb3_t}</text>
-            <text x="266" y="26" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb3_d}</text>
+            <rect x="222" y="0" width="102" height="34" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
+            <text x="273" y="15" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb3_t}</text>
+            <text x="273" y="28" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb3_d}</text>
 
-            <rect x="324" y="0" width="94" height="32" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
-            <text x="371" y="14" fill="{COLOR_PURPLE}" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb4_t}</text>
-            <text x="371" y="26" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb4_d}</text>
+            <rect x="333" y="0" width="100" height="34" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
+            <text x="383" y="15" fill="{COLOR_PURPLE}" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">{sb4_t}</text>
+            <text x="383" y="28" fill="{TEXT_MUTED}" font-family="var(--font-sans)" font-size="8" text-anchor="middle">{sb4_d}</text>
           </g>
 
-          <text x="16" y="126" fill="{COLOR_BLUE}" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="126" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c5_l1}</text>
-          <text x="16" y="148" fill="{COLOR_BLUE}" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="148" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c5_l2}</text>
-          <text x="16" y="170" fill="{COLOR_BLUE}" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="170" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c5_l3}</text>
+          <text x="16" y="130" fill="{COLOR_BLUE}" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="130" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c5_l1}</text>
+          <text x="16" y="152" fill="{COLOR_BLUE}" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="152" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c5_l2}</text>
+          <text x="16" y="174" fill="{COLOR_BLUE}" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="174" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c5_l3}</text>
 
-          <rect x="16" y="198" width="418" height="18" rx="3" fill="#1e1b4b" />
-          <text x="225" y="210.5" fill="#c7d2fe" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c5_bot}</text>
+          <rect x="16" y="206" width="433" height="20" rx="3" fill="#1e1b4b" />
+          <text x="232" y="219.5" fill="#c7d2fe" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c5_bot}</text>
         </g>
 
         <!-- Card 6: Multi-Pane Chart Canvas -->
-        <g transform="translate(830, 345)">
-          <rect width="450" height="425" rx="8" fill="{CARD_BG}" stroke="{COLOR_EMERALD}" stroke-width="1.5" />
-          <rect x="16" y="14" width="162" height="18" rx="3" fill="#064e3b" stroke="#059669" stroke-width="1" />
-          <text x="97" y="26.5" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PLOTLY MULTI-PANE ENGINE</text>
+        <g transform="translate(930, 350)">
+          <rect width="465" height="445" rx="8" fill="{CARD_BG}" stroke="{COLOR_EMERALD}" stroke-width="1.5" />
+          <rect x="16" y="14" width="168" height="18" rx="3" fill="#064e3b" stroke="#059669" stroke-width="1" />
+          <text x="100" y="26.5" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PLOTLY MULTI-PANE ENGINE</text>
           <text x="16" y="52" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="14.5" font-weight="700">{c6_t}</text>
 
-          <!-- 4-Pane Mini Chart Mockup -->
-          {render_mini_multipane_chart(16, 68, 418, 235, "VCB", "96.80 (+3.2%)", is_en=self.is_en)}
+          <!-- 4-Pane Mini Chart Mockup (width=433 inside 465 card) -->
+          {render_mini_multipane_chart(16, 68, 433, 235, "VCB", "96.80 (+3.2%)", is_en=self.is_en)}
 
-          <text x="16" y="325" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="325" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c6_l1}</text>
-          <text x="16" y="347" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="347" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c6_l2}</text>
-          <text x="16" y="369" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="10">&bull;</text>
-          <text x="28" y="369" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c6_l3}</text>
+          <text x="16" y="332" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="332" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c6_l1}</text>
+          <text x="16" y="354" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="354" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c6_l2}</text>
+          <text x="16" y="376" fill="{COLOR_EMERALD}" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="376" fill="{TEXT_MAIN}" font-family="var(--font-sans)" font-size="11">{c6_l3}</text>
 
-          <rect x="16" y="392" width="418" height="18" rx="3" fill="#064e3b" />
-          <text x="225" y="404.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c6_bot}</text>
+          <rect x="16" y="406" width="433" height="20" rx="3" fill="#064e3b" />
+          <text x="232" y="419.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">{c6_bot}</text>
         </g>
         """
