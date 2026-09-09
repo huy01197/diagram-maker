@@ -1,28 +1,55 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vietnamese Stock Analysis - Kiến Trúc Medallion Parquet Lakehouse &amp; Terminal Đa Khung</title>
+  <title>Vietnamese Stock Analysis - Kiến Trúc Medallion Parquet Lakehouse & Terminal Đa Khung</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
+    :root, [data-theme="dark"] {
       --bg: #070a12;
       --card-bg: #0c121e;
       --border-base: #1b253b;
       --text-main: #e2e8f0;
       --text-muted: #8b9bb4;
+      --canvas-bg: #080c16;
+      --canvas-border: #1b253b;
+      --toolbar-bg: #0d1424;
+      --btn-bg: #131b2e;
+      --btn-border: #23314f;
+      --btn-hover: #1e2a47;
       --accent-cyan: #06b6d4;
       --accent-emerald: #089981;
       --accent-amber: #f59e0b;
       --accent-purple: #a855f7;
       --accent-rose: #f23645;
       --accent-blue: #2962ff;
-      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --font-mono: "Geist Mono", "SF Mono", Menlo, Consolas, monospace;
+      --dot-grid-color: #ffffff;
+      --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Geist Mono', Menlo, Consolas, monospace;
+    }
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border-base: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --canvas-bg: #ffffff;
+      --canvas-border: #cbd5e1;
+      --toolbar-bg: #f1f5f9;
+      --btn-bg: #ffffff;
+      --btn-border: #cbd5e1;
+      --btn-hover: #e2e8f0;
+      --accent-cyan: #0284c7;
+      --accent-emerald: #059669;
+      --accent-amber: #d97706;
+      --accent-purple: #7c3aed;
+      --accent-rose: #e11d48;
+      --accent-blue: #1d4ed8;
+      --dot-grid-color: #000000;
     }
     body {
       background-color: var(--bg);
@@ -33,18 +60,21 @@
       align-items: flex-start;
       min-height: 100vh;
       padding: 24px 16px;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
     .container {
       width: 100%;
       max-width: 1360px;
     }
     .header {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
       border-bottom: 1px solid var(--border-base);
       padding-bottom: 14px;
+      gap: 16px;
+      flex-wrap: wrap;
     }
     .eyebrow {
       font-family: var(--font-mono);
@@ -59,14 +89,60 @@
       font-size: 22px;
       font-weight: 700;
       letter-spacing: -0.02em;
-      color: #fff;
+      color: var(--text-main);
+    }
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-box input {
+      background: var(--toolbar-bg);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 7px 12px;
+      width: 160px;
+      outline: none;
+      transition: width 0.2s ease, border-color 0.2s ease;
+    }
+    .search-box input:focus {
+      width: 210px;
+      border-color: var(--accent-cyan);
+    }
+    .btn {
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 7px 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .btn:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent-cyan);
     }
     .metrics-bar {
       display: flex;
-      gap: 12px;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
     }
     .metric-pill {
-      background: #0d1424;
+      background: var(--toolbar-bg);
       border: 1px solid var(--border-base);
       border-radius: 6px;
       padding: 6px 14px;
@@ -86,16 +162,37 @@
       margin-top: 2px;
     }
     .svg-wrapper {
-      background: #080c16;
-      border: 1px solid var(--border-base);
+      background: var(--canvas-bg);
+      border: 1px solid var(--canvas-border);
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      position: relative;
+      transition: background 0.2s ease, border-color 0.2s ease;
     }
     svg {
       display: block;
       width: 100%;
       height: auto;
+      color: var(--dot-grid-color);
+    }
+    .diagram-node {
+      cursor: pointer;
+      transition: opacity 0.2s ease, filter 0.2s ease;
+    }
+    .diagram-wire {
+      transition: opacity 0.2s ease, stroke-width 0.2s ease;
+    }
+    .dimmed {
+      opacity: 0.15 !important;
+    }
+    .highlighted {
+      opacity: 1 !important;
+      filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.7));
+    }
+    .highlighted-wire {
+      opacity: 1 !important;
+      stroke-width: 3.5px !important;
     }
     .footer-notes {
       margin-top: 18px;
@@ -104,10 +201,11 @@
       gap: 14px;
     }
     .note-card {
-      background: #0a0e1a;
+      background: var(--card-bg);
       border: 1px solid var(--border-base);
       border-radius: 6px;
       padding: 12px 14px;
+      transition: background 0.2s ease, border-color 0.2s ease;
     }
     .note-title {
       font-family: var(--font-mono);
@@ -124,6 +222,73 @@
       color: var(--text-muted);
       line-height: 1.45;
     }
+    /* Modal Shortcuts Dialog */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-base);
+      border-radius: 10px;
+      padding: 24px;
+      max-width: 440px;
+      width: 90%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-base);
+      padding-bottom: 10px;
+    }
+    .modal-title {
+      font-size: 14px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text-main);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 14px;
+    }
+    .shortcuts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .shortcut-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    kbd {
+      background: var(--toolbar-bg);
+      border: 1px solid var(--border-base);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -131,13 +296,25 @@
 <div class="container">
   <div class="header">
     <div>
-      <div class="eyebrow">MEDALLION ARCHITECTURE &middot; COLUMNAR LAKEHOUSE &middot; MULTI-PANE QUANT ENGINE</div>
-      <h1 class="title">Vietnamese Stock Analysis - Kiến Trúc Medallion Parquet Lakehouse &amp; Terminal Đa Khung</h1>
+      <div class="eyebrow">MEDALLION ARCHITECTURE · COLUMNAR LAKEHOUSE · MULTI-PANE QUANT ENGINE</div>
+      <h1 class="title">Vietnamese Stock Analysis - Kiến Trúc Medallion Parquet Lakehouse & Terminal Đa Khung</h1>
     </div>
-    <div class="metrics-bar">
+    <div class="controls-bar">
+      <div class="search-box">
+        <input type="text" id="nodeSearch" placeholder="Tìm thành phần... (/)" />
+      </div>
+      <button class="btn" id="themeToggleBtn" title="Chuyển đổi Sáng/Tối (Phím T)">THEME: DARK</button>
+      <button class="btn" id="exportSvgBtn" title="Xuất mã nguồn SVG">SVG</button>
+      <button class="btn" id="exportPngBtn" title="Xuất ảnh PNG Retina 2x">PNG</button>
+      <button class="btn" id="helpBtn" title="Phím tắt (?)">?</button>
+    </div>
+  </div>
+
+  <div class="metrics-bar">
+    
       <div class="metric-pill">
         <div class="metric-label">Truy Vấn Cột Parquet</div>
-        <div class="metric-value" style="color: #38bdf8;">&lt; 250 ms (1.500+ Mã)</div>
+        <div class="metric-value" style="color: #38bdf8;">< 250 ms (1.500+ Mã)</div>
       </div>
       <div class="metric-pill">
         <div class="metric-label">Chuẩn Nén Snappy</div>
@@ -149,17 +326,17 @@
       </div>
       <div class="metric-pill">
         <div class="metric-label">Kiến Trúc Dữ Liệu</div>
-        <div class="metric-value" style="color: #c084fc;">Medallion Bronze &rarr; Platinum</div>
+        <div class="metric-value" style="color: #c084fc;">Medallion Bronze → Platinum</div>
       </div>
-    </div>
   </div>
 
   <div class="svg-wrapper">
-    <svg viewBox="0 0 1320 915" xmlns="http://www.w3.org/2000/svg">
+    <svg id="diagramSvg" viewBox="0 0 1320 915" xmlns="http://www.w3.org/2000/svg">
+      
       <defs>
-        <!-- Grids -->
+        <!-- Background Dot Grid Pattern -->
         <pattern id="dotGrid" width="24" height="24" patternUnits="userSpaceOnUse">
-          <circle cx="12" cy="12" r="1.1" fill="rgba(255, 255, 255, 0.07)" />
+          <circle cx="12" cy="12" r="1.1" fill="currentColor" opacity="0.08" />
         </pattern>
 
         <!-- Arrow Markers -->
@@ -175,475 +352,589 @@
         <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
           <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#a855f7" />
         </marker>
-        <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2962ff" />
         </marker>
         
+        <!-- Glow Filters -->
+        <filter id="blueGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
         <filter id="emeraldGlow" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="2.5" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
       </defs>
-
+    
+      
       <!-- Background with Dot Grid -->
-      <rect width="1320" height="915" fill="#070a12" />
+      <rect width="1320" height="915" fill="var(--canvas-bg)" />
       <rect width="1320" height="915" fill="url(#dotGrid)" />
 
-      <!-- Column Header Titles at Top -->
       <text x="45" y="36" fill="#f59e0b" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">1. TẦNG BRONZE: TIẾP NHẬN THÔ &amp; LỊCH SỬ</text>
-      <text x="400" y="36" fill="#06b6d4" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">2. TẦNG SILVER &amp; GOLD: HỒ CỘT PARQUET &amp; ĐỊNH LƯỢNG</text>
-      <text x="830" y="36" fill="#089981" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">3. TẦNG PLATINUM: STREAMLIT MULTI-PANE TERMINAL</text>
+<text x="400" y="36" fill="#06b6d4" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">2. TẦNG SILVER &amp; GOLD: HỒ CỘT PARQUET &amp; ĐỊNH LƯỢNG</text>
+<text x="830" y="36" fill="#089981" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">3. TẦNG PLATINUM: STREAMLIT MULTI-PANE TERMINAL</text>
+<path d="M 175 320 L 175 410" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)" />
+<path d="M 305 530 C 365 530, 350 200, 392 200" fill="none" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-cyan)" />
+<path d="M 565 375 L 565 442" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
+<path d="M 730 520 C 785 520, 770 180, 822 180" fill="none" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
+<path d="M 730 250 C 785 250, 775 510, 822 510" fill="none" stroke="#089981" stroke-width="2.2" stroke-dasharray="6 3" marker-end="url(#arrow-emerald)" />
 
-      <!-- ============================================================ -->
-      <!-- CONNECTIONS (Drawn first with precise routing)               -->
-      <!-- ============================================================ -->
-      
-      <!-- 1. Line: CafeF Scanner -> Unpacker Worker (Zone 1 internal) -->
-      <path d="M 175 320 L 175 410" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)" />
+          <!-- Pill 1: Between Card 1 and Card 2 -->
+          <g transform="translate(188, 355)">
+            <rect x="0" y="0" width="102" height="20" rx="4" fill="#451a03" stroke="#b45309" stroke-width="1" />
+            <text x="51" y="14" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">GIẢI NÉN ĐA LUỒNG</text>
+          </g>
 
-      <!-- 2. Line: Unpacker Worker -> Silver Parquet Lakehouse (Corridor 1 Bezier) -->
-      <path d="M 305 530 C 365 530, 350 200, 392 200" fill="none" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-cyan)" />
+          <!-- Pill 2: In Corridor 1 at Y=415 -->
+          <g transform="translate(315, 415)">
+            <rect x="0" y="0" width="76" height="22" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+            <text x="38" y="15" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PARQUET</text>
+          </g>
 
-      <!-- 3. Line: Silver Parquet Lakehouse -> Gold Quant Feature Store (Zone 2 vertical) -->
-      <path d="M 565 375 L 565 442" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
+          <!-- Pill 3: In gap between Silver and Gold -->
+          <g transform="translate(578, 398)">
+            <rect x="0" y="0" width="128" height="20" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
+            <text x="64" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">CHUỖI THỜI GIAN O(1)</text>
+          </g>
 
-      <!-- 4. Line: Gold Quant -> Terminal Screener (Corridor 2 upper Bezier) -->
-      <path d="M 730 520 C 785 520, 770 180, 822 180" fill="none" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
+          <!-- Pill 4: In Corridor 2 at Y=310 -->
+          <g transform="translate(742, 310)">
+            <rect x="0" y="0" width="76" height="22" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
+            <text x="38" y="15" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SCREENER</text>
+          </g>
 
-      <!-- 5. Line: Silver Lakehouse -> Multi-Pane Candlestick Chart (Corridor 2 long curve) -->
-      <path d="M 730 250 C 785 250, 775 510, 822 510" fill="none" stroke="#089981" stroke-width="2.2" stroke-dasharray="6 3" marker-end="url(#arrow-emerald)" />
-
-      <!-- ============================================================ -->
-      <!-- CONNECTOR PILL BADGES (Positioned in open areas)             -->
-      <!-- ============================================================ -->
-      
-      <!-- Pill 1: Between Card 1 and Card 2 -->
-      <g transform="translate(188, 355)">
-        <rect x="0" y="0" width="102" height="20" rx="4" fill="#451a03" stroke="#b45309" stroke-width="1" />
-        <text x="51" y="14" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">GIẢI NÉN ĐA LUỒNG</text>
-      </g>
-
-      <!-- Pill 2: In Corridor 1 (X: 305..400) at Y=420 -->
-      <g transform="translate(315, 415)">
-        <rect x="0" y="0" width="76" height="22" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-        <text x="38" y="15" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PARQUET</text>
-      </g>
-
-      <!-- Pill 3: In gap between Silver and Gold (Y: 375..450) -->
-      <g transform="translate(578, 398)">
-        <rect x="0" y="0" width="128" height="20" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
-        <text x="64" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">CHUỖI THỜI GIAN O(1)</text>
-      </g>
-
-      <!-- Pill 4: In Corridor 2 at Y=320 -->
-      <g transform="translate(742, 310)">
-        <rect x="0" y="0" width="76" height="22" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
-        <text x="38" y="15" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SCREENER</text>
-      </g>
-
-      <!-- Pill 5: In Corridor 2 at Y=440 -->
-      <g transform="translate(738, 435)">
-        <rect x="0" y="0" width="84" height="22" rx="4" fill="#064e3b" stroke="#059669" stroke-width="1" />
-        <text x="42" y="15" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SYNC 4 PANES</text>
-      </g>
-
-
-      <!-- ============================================================ -->
-      <!-- ZONE 1: BRONZE RAW DATA LAKE (Left Column)                   -->
-      <!-- ============================================================ -->
-
-      <!-- Card 1: CafeF Ingestion Scanner -->
-      <g transform="translate(45, 80)">
-        <rect width="260" height="240" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.5" />
-        <rect width="260" height="3" rx="1.5" fill="#f59e0b" />
+          <!-- Pill 5: In Corridor 2 at Y=435 -->
+          <g transform="translate(738, 435)">
+            <rect x="0" y="0" width="84" height="22" rx="4" fill="#064e3b" stroke="#059669" stroke-width="1" />
+            <text x="42" y="15" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SYNC 4 PANES</text>
+          </g>
         
-        <!-- Header Tag -->
-        <rect x="14" y="14" width="102" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
-        <text x="65" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">BRONZE LAYER 01</text>
-        
-        <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">Hồ Dữ Liệu Thô CafeF ZIP</text>
-        
-        <!-- Bullets -->
-        <text x="14" y="78" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">1.</text>
-        <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tải tệp nén hàng ngày: CafeF Upto ZIP</text>
 
-        <text x="14" y="100" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">2.</text>
-        <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bao phủ 10+ năm lịch sử toàn thị trường</text>
-
-        <text x="14" y="122" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">3.</text>
-        <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">1.500+ mã niêm yết: HSX, HNX, UPCoM</text>
-
-        <text x="14" y="144" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">4.</text>
-        <text x="28" y="144" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Ghi nhận lịch sử tải vào download_history.json</text>
-
-        <text x="14" y="166" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">5.</text>
-        <text x="28" y="166" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Kiểm tra tính toàn vẹn gói tin bằng MD5</text>
-
-        <!-- Footer Metric -->
-        <rect x="14" y="200" width="232" height="18" rx="3" fill="#451a03" />
-        <text x="130" y="212.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">RAW STORAGE &gt; 15GB CSV LỊCH SỬ</text>
-      </g>
-
-      <!-- Card 2: Unpacker Worker & Schema Sanitizer -->
-      <g transform="translate(45, 415)">
-        <rect width="260" height="355" rx="8" fill="#0b101b" stroke="#1b253b" stroke-width="1.2" />
-        
-        <!-- Header Tag -->
-        <rect x="14" y="14" width="112" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
-        <text x="70" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">ETL EXTRACTOR</text>
-        
-        <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">Giải Nén &amp; Làm Sạch Schema</text>
-
-        <!-- Bullets -->
-        <text x="14" y="78" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">1.</text>
-        <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Giải nén ZIP đa luồng song song</text>
-
-        <text x="14" y="100" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">2.</text>
-        <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Lọc bỏ dòng trống, định dạng sai số</text>
-
-        <text x="14" y="122" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">3.</text>
-        <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Chuẩn hóa cột: Ticker, Date, O, H, L, C, V</text>
-
-        <text x="14" y="144" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">4.</text>
-        <text x="28" y="144" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hiệu chỉnh giá chia tách cổ tức &amp; quyền mua</text>
-
-        <text x="14" y="166" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">5.</text>
-        <text x="28" y="166" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Khử trùng lặp (Deduplication) theo Ngày/Mã</text>
-
-        <!-- Subcard Data Integrity -->
-        <g transform="translate(14, 192)">
-          <rect width="232" height="110" rx="6" fill="#0e1524" stroke="#1b253b" stroke-width="1" />
-          <text x="10" y="20" fill="#06b6d4" font-family="var(--font-mono)" font-size="9" font-weight="700">DATA CLEANING RULES:</text>
-          <text x="10" y="38" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5">&bull; Date format: YYYY-MM-DD</text>
-          <text x="10" y="56" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5">&bull; Close &gt; 0, Volume &gt;= 0</text>
-          <text x="10" y="74" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5">&bull; High &gt;= Low, High &gt;= Open</text>
-          <text x="10" y="92" fill="#089981" font-family="var(--font-mono)" font-size="8.5">&bull; Đạt chuẩn toàn vẹn 99.98%</text>
+        <!-- Card 1: CafeF Ingestion Scanner -->
+        <g transform="translate(45, 80)">
+          <rect width="260" height="240" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.5" />
+          <rect width="260" height="3" rx="1.5" fill="#f59e0b" />
+          <rect x="14" y="14" width="102" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
+          <text x="65" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">BRONZE LAYER 01</text>
+          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">Hồ Dữ Liệu Thô CafeF ZIP</text>
+          <text x="14" y="78" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">1.</text>
+          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tải tệp nén hàng ngày: CafeF Upto ZIP</text>
+          <text x="14" y="100" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">2.</text>
+          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bao phủ 10+ năm lịch sử toàn thị trường</text>
+          <text x="14" y="122" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">3.</text>
+          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">1.500+ mã niêm yết: HSX, HNX, UPCoM</text>
+          <text x="14" y="144" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">4.</text>
+          <text x="28" y="144" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Ghi nhận lịch sử tải vào download_history.json</text>
+          <text x="14" y="166" fill="#f59e0b" font-family="var(--font-mono)" font-size="10" font-weight="700">5.</text>
+          <text x="28" y="166" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Kiểm tra tính toàn vẹn gói tin bằng MD5</text>
+          <rect x="14" y="200" width="232" height="18" rx="3" fill="#451a03" />
+          <text x="130" y="212.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">RAW STORAGE &gt; 15GB CSV LỊCH SỬ</text>
         </g>
 
-        <!-- Footer Metric -->
-        <rect x="14" y="320" width="232" height="18" rx="3" fill="#111827" />
-        <text x="130" y="332.5" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">XỬ LÝ 10 TRIỆU BẢN GHI &lt; 4.2 GIÂY</text>
-      </g>
+        <!-- Card 2: Unpacker Worker -->
+        <g transform="translate(45, 415)">
+          <rect width="260" height="355" rx="8" fill="#0b101b" stroke="#1b253b" stroke-width="1.2" />
+          <rect x="14" y="14" width="112" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
+          <text x="70" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">ETL EXTRACTOR</text>
+          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14" font-weight="700">Giải Nén &amp; Làm Sạch Schema</text>
+          <text x="14" y="78" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">1.</text>
+          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Giải nén ZIP đa luồng song song</text>
+          <text x="14" y="100" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Lọc bỏ dòng trống, định dạng sai số</text>
+          <text x="14" y="122" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">3.</text>
+          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Chuẩn hóa cột: Ticker, Date, O, H, L, C, V</text>
+          <text x="14" y="144" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">4.</text>
+          <text x="28" y="144" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hiệu chỉnh giá chia tách cổ tức &amp; quyền mua</text>
+          <text x="14" y="166" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">5.</text>
+          <text x="28" y="166" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Khử trùng lặp (Deduplication) theo Ngày/Mã</text>
 
+          <g transform="translate(14, 192)">
+            <rect width="232" height="110" rx="6" fill="#0e1524" stroke="#1b253b" stroke-width="1" />
+            <text x="10" y="20" fill="#06b6d4" font-family="var(--font-mono)" font-size="9" font-weight="700">DATA CLEANING RULES:</text>
+            <text x="10" y="38" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5">&bull; Date format: YYYY-MM-DD</text>
+            <text x="10" y="56" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5">&bull; Close &gt; 0, Volume &gt;= 0</text>
+            <text x="10" y="74" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5">&bull; High &gt;= Low, High &gt;= Open</text>
+            <text x="10" y="92" fill="#089981" font-family="var(--font-mono)" font-size="8.5">&bull; Đạt chuẩn toàn vẹn 99.98%</text>
+          </g>
 
-      <!-- ============================================================ -->
-      <!-- ZONE 2: SILVER LAKEHOUSE & GOLD FEATURES (Center Column)     -->
-      <!-- ============================================================ -->
-
-      <!-- Card 3: Silver Parquet Columnar Lakehouse -->
-      <g transform="translate(400, 80)">
-        <rect width="330" height="295" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
+          <rect x="14" y="320" width="232" height="18" rx="3" fill="#111827" />
+          <text x="130" y="332.5" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">XỬ LÝ 10 TRIỆU BẢN GHI &lt; 4.2 GIÂY</text>
+        </g>
         
-        <!-- Header Tag -->
-        <rect x="16" y="14" width="106" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-        <text x="69" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SILVER LAYER 02</text>
-        
-        <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Hồ Lưu Trữ Cột Apache Parquet</text>
 
-        <!-- 3 Feature Badges -->
-        <g transform="translate(16, 68)">
-          <rect x="0" y="0" width="94" height="32" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-          <text x="47" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SNAPPY NÉN</text>
-          <text x="47" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">-85% Dung Lượng</text>
+        <!-- Card 3: Silver Parquet Lakehouse -->
+        <g transform="translate(400, 80)">
+          <rect width="330" height="295" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
+          <rect x="16" y="14" width="106" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+          <text x="69" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SILVER LAYER 02</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Hồ Lưu Trữ Cột Apache Parquet</text>
 
-          <rect x="102" y="0" width="94" height="32" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-          <text x="149" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">LƯU TRỮ CỘT</text>
-          <text x="149" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Tốc Độ Đọc 10x</text>
+          <g transform="translate(16, 68)">
+            <rect x="0" y="0" width="94" height="32" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+            <text x="47" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SNAPPY NÉN</text>
+            <text x="47" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">-85% Dung Lượng</text>
 
-          <rect x="204" y="0" width="94" height="32" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-          <text x="251" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">MMAP ACCESS</text>
-          <text x="251" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Không Tải Hết RAM</text>
+            <rect x="102" y="0" width="94" height="32" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+            <text x="149" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">LƯU TRỮ CỘT</text>
+            <text x="149" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Tốc Độ Đọc 10x</text>
+
+            <rect x="204" y="0" width="94" height="32" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+            <text x="251" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">MMAP ACCESS</text>
+            <text x="251" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Không Tải Hết RAM</text>
+          </g>
+
+          <text x="16" y="126" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="126" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Phân vùng lưu trữ Parquet theo Ticker / Niên độ</text>
+          <text x="16" y="148" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="148" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tích hợp DuckDB / PyArrow: Truy vấn cột siêu tốc</text>
+          <text x="16" y="170" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="170" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Độ trễ truy vấn lọc dữ liệu lịch sử &lt; 250ms</text>
+          <text x="16" y="192" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="192" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Loại bỏ hoàn toàn nghẽn cổ chai I/O tệp CSV lớn</text>
+          <text x="16" y="214" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="214" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hỗ trợ cập nhật nạp nối thêm (Append-only daily sync)</text>
+
+          <rect x="16" y="248" width="298" height="18" rx="3" fill="#082f49" />
+          <text x="165" y="260.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">TRUY VẤN CỘT 1.500+ MÃ CỔ PHIẾU TRONG &lt; 250MS</text>
         </g>
 
-        <!-- Bullets -->
-        <text x="16" y="126" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="126" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Phân vùng lưu trữ Parquet theo Ticker / Niên độ</text>
+        <!-- Card 4: Gold Feature Store -->
+        <g transform="translate(400, 445)">
+          <rect width="330" height="325" rx="8" fill="#0b101b" stroke="#a855f7" stroke-width="1.5" />
+          <rect x="16" y="14" width="102" height="18" rx="3" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
+          <text x="67" y="26.5" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">GOLD LAYER 03</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Lõi Định Lượng &amp; Độ Rộng Thị Trường</text>
 
-        <text x="16" y="148" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="148" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tích hợp DuckDB / PyArrow: Truy vấn cột siêu tốc</text>
+          <g transform="translate(16, 68)">
+            <rect width="298" height="98" rx="6" fill="#0e1524" stroke="#1b253b" stroke-width="1" />
+            <text x="10" y="20" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700">TÍNH TOÁN CHỈ BÁO KỸ THUẬT ĐỒNG THỜI:</text>
+            <text x="10" y="38" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; <tspan fill="#06b6d4" font-family="var(--font-mono)">Xu Hướng:</tspan> SMA 20, 50, 200, EMA 10, 20</text>
+            <text x="10" y="56" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; <tspan fill="#f59e0b" font-family="var(--font-mono)">Động Lượng:</tspan> RSI(14), MACD(12,26,9) Histogram</text>
+            <text x="10" y="74" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; <tspan fill="#089981" font-family="var(--font-mono)">Biến Động &amp; Khối Lượng:</tspan> Bollinger Bands, ATR, VWAP</text>
+            <text x="10" y="90" fill="#8b9bb4" font-family="var(--font-sans)" font-size="9">Tối ưu hóa vector hóa (Vectorized NumPy / Pandas)</text>
+          </g>
 
-        <text x="16" y="170" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="170" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Độ trễ truy vấn lọc dữ liệu lịch sử &lt; 250ms</text>
+          <g transform="translate(16, 178)">
+            <rect width="298" height="98" rx="6" fill="#0e1524" stroke="#a855f7" stroke-width="1" />
+            <text x="10" y="20" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700">MA TRẬN ĐỘ RỘNG DÒNG TIỀN 15 NGÀNH:</text>
+            <text x="10" y="38" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; Phân bổ tỷ trọng dòng tiền (Turnover Weight)</text>
+            <text x="10" y="56" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; Tỷ lệ mã Tăng / Giảm / Vượt đỉnh 52 tuần</text>
+            <text x="10" y="74" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; Tự động phát hiện ngành dẫn sóng thị trường</text>
+            <text x="10" y="90" fill="#a855f7" font-family="var(--font-mono)" font-size="9">Cập nhật động theo phiên giao dịch</text>
+          </g>
 
-        <text x="16" y="192" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="192" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Loại bỏ hoàn toàn nghẽn cổ chai I/O tệp CSV lớn</text>
-
-        <text x="16" y="214" fill="#06b6d4" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="214" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hỗ trợ cập nhật nạp nối thêm (Append-only daily sync)</text>
-
-        <!-- Footer Metric -->
-        <rect x="16" y="248" width="298" height="18" rx="3" fill="#082f49" />
-        <text x="165" y="260.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">TRUY VẤN CỘT 1.500+ MÃ CỔ PHIẾU TRONG &lt; 250MS</text>
-      </g>
-
-      <!-- Card 4: Gold Layer Quant Feature Store & Sector Breadth -->
-      <g transform="translate(400, 445)">
-        <rect width="330" height="325" rx="8" fill="#0b101b" stroke="#a855f7" stroke-width="1.5" />
+          <rect x="16" y="288" width="298" height="18" rx="3" fill="#2e1065" />
+          <text x="165" y="300.5" fill="#e9d5ff" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">FEATURE STORE SẴN SÀNG CHO MÔ HÌNH QUANT</text>
+        </g>
         
-        <!-- Header Tag -->
-        <rect x="16" y="14" width="102" height="18" rx="3" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
-        <text x="67" y="26.5" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">GOLD LAYER 03</text>
-        
-        <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Lõi Định Lượng &amp; Độ Rộng Thị Trường</text>
 
-        <!-- Subcard 1: Technical Indicators Engine -->
-        <g transform="translate(16, 68)">
-          <rect width="298" height="98" rx="6" fill="#0e1524" stroke="#1b253b" stroke-width="1" />
-          <text x="10" y="20" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700">TÍNH TOÁN CHỈ BÁO KỸ THUẬT ĐỒNG THỜI:</text>
-          <text x="10" y="38" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; <tspan fill="#06b6d4" font-family="var(--font-mono)">Xu Hướng:</tspan> SMA 20, 50, 200, EMA 10, 20</text>
-          <text x="10" y="56" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; <tspan fill="#f59e0b" font-family="var(--font-mono)">Động Lượng:</tspan> RSI(14), MACD(12,26,9) Histogram</text>
-          <text x="10" y="74" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; <tspan fill="#089981" font-family="var(--font-mono)">Biến Động &amp; Khối Lượng:</tspan> Bollinger Bands, ATR, VWAP</text>
-          <text x="10" y="90" fill="#8b9bb4" font-family="var(--font-sans)" font-size="9">Tối ưu hóa vector hóa (Vectorized NumPy / Pandas)</text>
+        <!-- Card 5: Streamlit Financial Terminal -->
+        <g transform="translate(830, 80)">
+          <rect width="450" height="235" rx="8" fill="#0b101b" stroke="#2962ff" stroke-width="1.5" />
+          <rect x="16" y="14" width="128" height="18" rx="3" fill="#1e1b4b" stroke="#4338ca" stroke-width="1" />
+          <text x="80" y="26.5" fill="#818cf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PLATINUM LAYER 04</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Streamlit Financial Terminal &amp; Screener</text>
+
+          <g transform="translate(16, 68)">
+            <rect x="0" y="0" width="100" height="32" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
+            <text x="50" y="14" fill="#06b6d4" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">BỘ LỌC MÃ</text>
+            <text x="50" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">1.500+ CP Niêm Yết</text>
+
+            <rect x="108" y="0" width="100" height="32" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
+            <text x="158" y="14" fill="#f59e0b" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">LỌC KỸ THUẬT</text>
+            <text x="158" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Golden Cross, RSI</text>
+
+            <rect x="216" y="0" width="100" height="32" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
+            <text x="266" y="14" fill="#089981" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">XUẤT DỮ LIỆU</text>
+            <text x="266" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Excel / CSV / Parquet</text>
+
+            <rect x="324" y="0" width="94" height="32" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
+            <text x="371" y="14" fill="#a855f7" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">DARK THEME</text>
+            <text x="371" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Bloomberg Chuẩn</text>
+          </g>
+
+          <text x="16" y="126" fill="#2962ff" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="126" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tra cứu cổ phiếu theo thời gian thực kết hợp bộ nhớ đệm Streamlit Cache</text>
+          <text x="16" y="148" fill="#2962ff" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="148" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bảng soi Top thanh khoản, Top tăng/giảm và dòng tiền theo ngành</text>
+          <text x="16" y="170" fill="#2962ff" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="170" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tùy biến tham số chỉ báo kỹ thuật linh hoạt ngay trên giao diện web</text>
+
+          <rect x="16" y="198" width="418" height="18" rx="3" fill="#1e1b4b" />
+          <text x="225" y="210.5" fill="#c7d2fe" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">STREAMLIT ASYNC DASHBOARD &middot; ĐỘ TRỄ TƯƠNG TÁC &lt; 150MS</text>
         </g>
 
-        <!-- Subcard 2: Sector Breadth -->
-        <g transform="translate(16, 178)">
-          <rect width="298" height="98" rx="6" fill="#0e1524" stroke="#a855f7" stroke-width="1" />
-          <text x="10" y="20" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700">MA TRẬN ĐỘ RỘNG DÒNG TIỀN 15 NGÀNH:</text>
-          <text x="10" y="38" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; Phân bổ tỷ trọng dòng tiền (Turnover Weight)</text>
-          <text x="10" y="56" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; Tỷ lệ mã Tăng / Giảm / Vượt đỉnh 52 tuần</text>
-          <text x="10" y="74" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">&bull; Tự động phát hiện ngành dẫn sóng thị trường</text>
-          <text x="10" y="90" fill="#a855f7" font-family="var(--font-mono)" font-size="9">Cập nhật động theo phiên giao dịch</text>
-        </g>
+        <!-- Card 6: Multi-Pane Chart Canvas -->
+        <g transform="translate(830, 345)">
+          <rect width="450" height="425" rx="8" fill="#0b101b" stroke="#089981" stroke-width="1.5" />
+          <rect x="16" y="14" width="162" height="18" rx="3" fill="#064e3b" stroke="#059669" stroke-width="1" />
+          <text x="97" y="26.5" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PLOTLY MULTI-PANE ENGINE</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Đồ Thị Kỹ Thuật Đa Tầng 4 Panes Đồng Bộ</text>
 
-        <!-- Footer Metric -->
-        <rect x="16" y="288" width="298" height="18" rx="3" fill="#2e1065" />
-        <text x="165" y="300.5" fill="#e9d5ff" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">FEATURE STORE SẴN SÀNG CHO MÔ HÌNH QUANT</text>
-      </g>
-
-
-      <!-- ============================================================ -->
-      <!-- ZONE 3: PLATINUM MULTI-PANE TERMINAL (Right Column)          -->
-      <!-- ============================================================ -->
-
-      <!-- Card 5: Streamlit Financial Terminal & Screener -->
-      <g transform="translate(830, 80)">
-        <rect width="450" height="235" rx="8" fill="#0b101b" stroke="#2962ff" stroke-width="1.5" />
-        
-        <!-- Header Tag -->
-        <rect x="16" y="14" width="128" height="18" rx="3" fill="#1e1b4b" stroke="#4338ca" stroke-width="1" />
-        <text x="80" y="26.5" fill="#818cf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PLATINUM LAYER 04</text>
-        
-        <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Streamlit Financial Terminal &amp; Screener</text>
-
-        <!-- Screener Controls Matrix -->
-        <g transform="translate(16, 68)">
-          <rect x="0" y="0" width="100" height="32" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
-          <text x="50" y="14" fill="#06b6d4" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">BỘ LỌC MÃ</text>
-          <text x="50" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">1.500+ CP Niêm Yết</text>
-
-          <rect x="108" y="0" width="100" height="32" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
-          <text x="158" y="14" fill="#f59e0b" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">LỌC KỸ THUẬT</text>
-          <text x="158" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Golden Cross, RSI</text>
-
-          <rect x="216" y="0" width="100" height="32" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
-          <text x="266" y="14" fill="#089981" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">XUẤT DỮ LIỆU</text>
-          <text x="266" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Excel / CSV / Parquet</text>
-
-          <rect x="324" y="0" width="94" height="32" rx="4" fill="#0d1424" stroke="#1b253b" stroke-width="1" />
-          <text x="371" y="14" fill="#a855f7" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">DARK THEME</text>
-          <text x="371" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Bloomberg Chuẩn</text>
-        </g>
-
-        <!-- Bullets -->
-        <text x="16" y="126" fill="#2962ff" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="126" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tra cứu cổ phiếu theo thời gian thực kết hợp bộ nhớ đệm Streamlit Cache</text>
-
-        <text x="16" y="148" fill="#2962ff" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="148" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bảng soi Top thanh khoản, Top tăng/giảm và dòng tiền theo ngành</text>
-
-        <text x="16" y="170" fill="#2962ff" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="170" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tùy biến tham số chỉ báo kỹ thuật linh hoạt ngay trên giao diện web</text>
-
-        <!-- Footer Metric -->
-        <rect x="16" y="198" width="418" height="18" rx="3" fill="#1e1b4b" />
-        <text x="225" y="210.5" fill="#c7d2fe" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">STREAMLIT ASYNC DASHBOARD &middot; ĐỘ TRỄ TƯƠNG TÁC &lt; 150MS</text>
-      </g>
-
-      <!-- Card 6: Multi-Pane Candlestick & Indicators Chart Canvas -->
-      <g transform="translate(830, 345)">
-        <rect width="450" height="425" rx="8" fill="#0b101b" stroke="#089981" stroke-width="1.5" />
-        
-        <!-- Header Tag -->
-        <rect x="16" y="14" width="162" height="18" rx="3" fill="#064e3b" stroke="#059669" stroke-width="1" />
-        <text x="97" y="26.5" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">PLOTLY MULTI-PANE ENGINE</text>
-        
-        <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Đồ Thị Kỹ Thuật Đa Tầng 4 Panes Đồng Bộ</text>
-
-        <!-- ============================================================ -->
-        <!-- EMBEDDED MINI 4-PANE TECHNICAL CHART SVG MOCKUP              -->
-        <!-- ============================================================ -->
-        <g transform="translate(16, 68)">
-          <rect width="418" height="235" rx="6" fill="#080c16" stroke="#1b253b" stroke-width="1" />
+          <!-- 4-Pane Mini Chart Mockup -->
           
-          <!-- Mockup Top Bar -->
-          <rect width="418" height="22" rx="6" fill="#0c121e" />
-          <text x="10" y="15" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700">VCB &middot; NGÂN HÀNG NGOẠI THƯƠNG VN</text>
-          <text x="250" y="15" fill="#34d399" font-family="var(--font-mono)" font-size="9.5" font-weight="700">96.80 (+3.2%)</text>
-          <text x="350" y="15" fill="#06b6d4" font-family="var(--font-mono)" font-size="8">D1 &middot; HOSE</text>
+      <g transform="translate(16, 68)">
+        <rect width="418" height="235" rx="6" fill="#080c16" stroke="#1b253b" stroke-width="1" />
+        
+        <!-- Header Bar -->
+        <rect width="418" height="22" rx="6" fill="#0c121e" />
+        <text x="10" y="15" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700">VCB &middot; HOSE D1</text>
+        <text x="250" y="15" fill="#34d399" font-family="var(--font-mono)" font-size="9.5" font-weight="700">96.80 (+3.2%)</text>
+        <text x="350" y="15" fill="#06b6d4" font-family="var(--font-mono)" font-size="8">PLOTLY SYNC</text>
 
-          <!-- ================= PANE 1: PRICE CANDLESTICK & MA (H=85) ================= -->
-          <g transform="translate(8, 26)">
-            <rect width="365" height="85" fill="#080c16" />
-            <line x1="0" y1="22" x2="365" y2="22" stroke="#141c2e" stroke-width="0.8" stroke-dasharray="2 2" />
-            <line x1="0" y1="52" x2="365" y2="52" stroke="#141c2e" stroke-width="0.8" stroke-dasharray="2 2" />
-            
-            <text x="372" y="25" fill="#64748b" font-family="var(--font-mono)" font-size="7">98.0</text>
-            <text x="372" y="55" fill="#64748b" font-family="var(--font-mono)" font-size="7">94.0</text>
-            <text x="372" y="80" fill="#06b6d4" font-family="var(--font-mono)" font-size="6.5">MA20/50</text>
+        <!-- PANE 1: PRICE CANDLES & MA -->
+        <g transform="translate(8, 26)">
+          <rect width="365" height="85" fill="#080c16" />
+          <line x1="0" y1="22" x2="365" y2="22" stroke="#141c2e" stroke-width="0.8" stroke-dasharray="2 2" />
+          <line x1="0" y1="52" x2="365" y2="52" stroke="#141c2e" stroke-width="0.8" stroke-dasharray="2 2" />
+          <text x="372" y="25" fill="#64748b" font-family="var(--font-mono)" font-size="7">98.0</text>
+          <text x="372" y="55" fill="#64748b" font-family="var(--font-mono)" font-size="7">94.0</text>
 
-            <!-- 10 Candlesticks -->
-            <!-- C1 -->
-            <line x1="18" y1="50" x2="18" y2="70" stroke="#f23645" stroke-width="1.2" />
-            <rect x="14" y="54" width="8" height="12" fill="#f23645" rx="1" />
-            <!-- C2 -->
-            <line x1="48" y1="45" x2="48" y2="65" stroke="#089981" stroke-width="1.2" />
-            <rect x="44" y="48" width="8" height="12" fill="#089981" rx="1" />
-            <!-- C3 -->
-            <line x1="78" y1="40" x2="78" y2="60" stroke="#089981" stroke-width="1.2" />
-            <rect x="74" y="44" width="8" height="12" fill="#089981" rx="1" />
-            <!-- C4 -->
-            <line x1="108" y1="48" x2="108" y2="62" stroke="#f23645" stroke-width="1.2" />
-            <rect x="104" y="50" width="8" height="8" fill="#f23645" rx="1" />
-            <!-- C5 -->
-            <line x1="138" y1="42" x2="138" y2="58" stroke="#089981" stroke-width="1.2" />
-            <rect x="134" y="46" width="8" height="8" fill="#089981" rx="1" />
-            <!-- C6 -->
-            <line x1="168" y1="36" x2="168" y2="54" stroke="#089981" stroke-width="1.2" />
-            <rect x="164" y="40" width="8" height="10" fill="#089981" rx="1" />
-            <!-- C7 -->
-            <line x1="198" y1="38" x2="198" y2="52" stroke="#f23645" stroke-width="1.2" />
-            <rect x="194" y="41" width="8" height="7" fill="#f23645" rx="1" />
-            <!-- C8 -->
-            <line x1="228" y1="30" x2="228" y2="48" stroke="#089981" stroke-width="1.2" />
-            <rect x="224" y="34" width="8" height="10" fill="#089981" rx="1" />
-            <!-- C9: Strong Breakout -->
-            <line x1="258" y1="16" x2="258" y2="42" stroke="#089981" stroke-width="1.5" />
-            <rect x="254" y="20" width="8" height="18" fill="#089981" rx="1" />
-            <!-- C10: Peak -->
-            <line x1="288" y1="10" x2="288" y2="30" stroke="#089981" stroke-width="1.2" />
-            <rect x="284" y="14" width="8" height="10" fill="#089981" rx="1" />
+          <!-- 10 Candlesticks -->
+          <line x1="18" y1="50" x2="18" y2="70" stroke="#f23645" stroke-width="1.2" />
+          <rect x="14" y="54" width="8" height="12" fill="#f23645" rx="1" />
+          <line x1="48" y1="45" x2="48" y2="65" stroke="#089981" stroke-width="1.2" />
+          <rect x="44" y="48" width="8" height="12" fill="#089981" rx="1" />
+          <line x1="78" y1="40" x2="78" y2="60" stroke="#089981" stroke-width="1.2" />
+          <rect x="74" y="44" width="8" height="12" fill="#089981" rx="1" />
+          <line x1="108" y1="48" x2="108" y2="62" stroke="#f23645" stroke-width="1.2" />
+          <rect x="104" y="50" width="8" height="8" fill="#f23645" rx="1" />
+          <line x1="138" y1="42" x2="138" y2="58" stroke="#089981" stroke-width="1.2" />
+          <rect x="134" y="46" width="8" height="8" fill="#089981" rx="1" />
+          <line x1="168" y1="36" x2="168" y2="54" stroke="#089981" stroke-width="1.2" />
+          <rect x="164" y="40" width="8" height="10" fill="#089981" rx="1" />
+          <line x1="198" y1="38" x2="198" y2="52" stroke="#f23645" stroke-width="1.2" />
+          <rect x="194" y="41" width="8" height="7" fill="#f23645" rx="1" />
+          <line x1="228" y1="30" x2="228" y2="48" stroke="#089981" stroke-width="1.2" />
+          <rect x="224" y="34" width="8" height="10" fill="#089981" rx="1" />
+          <line x1="258" y1="16" x2="258" y2="42" stroke="#089981" stroke-width="1.5" />
+          <rect x="254" y="20" width="8" height="18" fill="#089981" rx="1" />
+          <line x1="288" y1="10" x2="288" y2="30" stroke="#089981" stroke-width="1.2" />
+          <rect x="284" y="14" width="8" height="10" fill="#089981" rx="1" />
 
-            <!-- MA 20 Curve (Cyan) -->
-            <path d="M 18 64 Q 78 54, 138 48 T 228 36 T 288 22" fill="none" stroke="#06b6d4" stroke-width="1.6" />
-            <!-- MA 50 Curve (Amber) -->
-            <path d="M 18 70 Q 108 65, 198 55 T 288 40" fill="none" stroke="#f59e0b" stroke-width="1.3" stroke-dasharray="3 2" />
-
-            <!-- Subtitle Tag inside chart -->
-            <text x="6" y="12" fill="#64748b" font-family="var(--font-mono)" font-size="7">PANE 1: NẾN OHLCV + MA20/MA50</text>
-          </g>
-
-          <!-- Divider 1 -->
-          <line x1="8" y1="113" x2="408" y2="113" stroke="#1b253b" stroke-width="1" />
-
-          <!-- ================= PANE 2: VOLUME & VWAP (H=35) ================= -->
-          <g transform="translate(8, 115)">
-            <rect width="365" height="35" fill="#080c16" />
-            <text x="6" y="9" fill="#64748b" font-family="var(--font-mono)" font-size="7">PANE 2: VOLUME + VWAP</text>
-            <text x="372" y="24" fill="#64748b" font-family="var(--font-mono)" font-size="7">VOL</text>
-
-            <!-- Volume bars matching candles -->
-            <rect x="14" y="16" width="8" height="15" fill="#f23645" opacity="0.6" />
-            <rect x="44" y="14" width="8" height="17" fill="#089981" opacity="0.6" />
-            <rect x="74" y="18" width="8" height="13" fill="#089981" opacity="0.6" />
-            <rect x="104" y="22" width="8" height="9" fill="#f23645" opacity="0.6" />
-            <rect x="134" y="20" width="8" height="11" fill="#089981" opacity="0.6" />
-            <rect x="164" y="15" width="8" height="16" fill="#089981" opacity="0.6" />
-            <rect x="194" y="23" width="8" height="8" fill="#f23645" opacity="0.6" />
-            <rect x="224" y="12" width="8" height="19" fill="#089981" opacity="0.7" />
-            <rect x="254" y="4" width="8" height="27" fill="#089981" opacity="0.9" /> <!-- Huge Vol -->
-            <rect x="284" y="8" width="8" height="23" fill="#089981" opacity="0.8" />
-
-            <!-- VWAP line (Purple) -->
-            <path d="M 18 24 Q 108 22, 198 18 T 288 12" fill="none" stroke="#a855f7" stroke-width="1.2" />
-          </g>
-
-          <!-- Divider 2 -->
-          <line x1="8" y1="152" x2="408" y2="152" stroke="#1b253b" stroke-width="1" />
-
-          <!-- ================= PANE 3: MACD HISTOGRAM (H=38) ================= -->
-          <g transform="translate(8, 154)">
-            <rect width="365" height="38" fill="#080c16" />
-            <line x1="0" y1="20" x2="365" y2="20" stroke="#1e293b" stroke-width="0.8" /> <!-- Zero Line -->
-            
-            <text x="6" y="9" fill="#64748b" font-family="var(--font-mono)" font-size="7">PANE 3: MACD (12, 26, 9)</text>
-            <text x="372" y="24" fill="#64748b" font-family="var(--font-mono)" font-size="7">MACD</text>
-
-            <!-- Histogram bars around zero line y=20 -->
-            <rect x="14" y="20" width="6" height="7" fill="#f23645" />
-            <rect x="44" y="20" width="6" height="4" fill="#f23645" />
-            <rect x="74" y="17" width="6" height="3" fill="#089981" />
-            <rect x="104" y="18" width="6" height="2" fill="#f23645" />
-            <rect x="134" y="15" width="6" height="5" fill="#089981" />
-            <rect x="164" y="12" width="6" height="8" fill="#089981" />
-            <rect x="194" y="14" width="6" height="6" fill="#089981" />
-            <rect x="224" y="9" width="6" height="11" fill="#089981" />
-            <rect x="254" y="4" width="6" height="16" fill="#089981" />
-            <rect x="284" y="2" width="6" height="18" fill="#089981" />
-
-            <!-- MACD line (Blue) & Signal line (Amber) -->
-            <path d="M 18 24 Q 108 20, 198 14 T 288 6" fill="none" stroke="#2962ff" stroke-width="1.3" />
-            <path d="M 18 23 Q 108 21, 198 16 T 288 10" fill="none" stroke="#f59e0b" stroke-width="1.1" stroke-dasharray="2 1" />
-          </g>
-
-          <!-- Divider 3 -->
-          <line x1="8" y1="194" x2="408" y2="194" stroke="#1b253b" stroke-width="1" />
-
-          <!-- ================= PANE 4: RSI WITH 30/70 BANDS (H=36) ================= -->
-          <g transform="translate(8, 196)">
-            <rect width="365" height="36" fill="#080c16" />
-            <!-- Overbought line 70 -->
-            <line x1="0" y1="8" x2="365" y2="8" stroke="#f23645" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.6" />
-            <!-- Oversold line 30 -->
-            <line x1="0" y1="26" x2="365" y2="26" stroke="#089981" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.6" />
-
-            <text x="6" y="8" fill="#64748b" font-family="var(--font-mono)" font-size="7">PANE 4: RSI (14)</text>
-            <text x="372" y="10" fill="#f23645" font-family="var(--font-mono)" font-size="6.5">70</text>
-            <text x="372" y="28" fill="#089981" font-family="var(--font-mono)" font-size="6.5">30</text>
-
-            <!-- RSI Curve (Purple) -->
-            <path d="M 18 24 Q 78 20, 138 18 T 228 14 T 258 8 T 288 6" fill="none" stroke="#a855f7" stroke-width="1.5" />
-          </g>
+          <path d="M 18 64 Q 78 54, 138 48 T 228 36 T 288 22" fill="none" stroke="#06b6d4" stroke-width="1.6" />
+          <path d="M 18 70 Q 108 65, 198 55 T 288 40" fill="none" stroke="#f59e0b" stroke-width="1.3" stroke-dasharray="3 2" />
+          <text x="6" y="12" fill="#64748b" font-family="var(--font-mono)" font-size="7">PANE 1: NẾN OHLCV + MA20/MA50</text>
         </g>
 
-        <!-- Technical Description below 4-pane chart -->
-        <text x="16" y="325" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="325" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Đồng bộ trục thời gian X giữa 4 Panes đồ thị khi phóng to (Zoom) / Cuộn (Pan)</text>
+        <!-- Divider 1 -->
+        <line x1="8" y1="113" x2="408" y2="113" stroke="#1b253b" stroke-width="1" />
 
-        <text x="16" y="347" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="347" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hiển thị Tooltip đa thông số chi tiết khi rê chuột (Hover Inspector)</text>
+        <!-- PANE 2: VOLUME & VWAP -->
+        <g transform="translate(8, 115)">
+          <rect width="365" height="35" fill="#080c16" />
+          <text x="6" y="9" fill="#64748b" font-family="var(--font-mono)" font-size="7">PANE 2: VOLUME + VWAP</text>
+          <text x="372" y="24" fill="#64748b" font-family="var(--font-mono)" font-size="7">VOL</text>
 
-        <text x="16" y="369" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="369" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Render mượt mà 2.000+ phiên nến lịch sử bằng Plotly WebGL Engine</text>
+          <rect x="14" y="16" width="8" height="15" fill="#f23645" opacity="0.6" />
+          <rect x="44" y="14" width="8" height="17" fill="#089981" opacity="0.6" />
+          <rect x="74" y="18" width="8" height="13" fill="#089981" opacity="0.6" />
+          <rect x="104" y="22" width="8" height="9" fill="#f23645" opacity="0.6" />
+          <rect x="134" y="20" width="8" height="11" fill="#089981" opacity="0.6" />
+          <rect x="164" y="15" width="8" height="16" fill="#089981" opacity="0.6" />
+          <rect x="194" y="23" width="8" height="8" fill="#f23645" opacity="0.6" />
+          <rect x="224" y="12" width="8" height="19" fill="#089981" opacity="0.7" />
+          <rect x="254" y="4" width="8" height="27" fill="#089981" opacity="0.9" />
+          <rect x="284" y="8" width="8" height="23" fill="#089981" opacity="0.8" />
+          <path d="M 18 24 Q 108 22, 198 18 T 288 12" fill="none" stroke="#a855f7" stroke-width="1.2" />
+        </g>
 
-        <!-- Footer Metric -->
-        <rect x="16" y="392" width="418" height="18" rx="3" fill="#064e3b" />
-        <text x="225" y="404.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">PLOTLY WEBGL RENDER 4 PANES ĐỒNG BỘ TRONG &lt; 90MS</text>
+        <!-- Divider 2 -->
+        <line x1="8" y1="152" x2="408" y2="152" stroke="#1b253b" stroke-width="1" />
+
+        <!-- PANE 3: MACD HISTOGRAM -->
+        <g transform="translate(8, 154)">
+          <rect width="365" height="38" fill="#080c16" />
+          <line x1="0" y1="20" x2="365" y2="20" stroke="#1e293b" stroke-width="0.8" />
+          <text x="6" y="9" fill="#64748b" font-family="var(--font-mono)" font-size="7">PANE 3: MACD (12, 26, 9)</text>
+          <text x="372" y="24" fill="#64748b" font-family="var(--font-mono)" font-size="7">MACD</text>
+
+          <rect x="14" y="20" width="6" height="7" fill="#f23645" />
+          <rect x="44" y="20" width="6" height="4" fill="#f23645" />
+          <rect x="74" y="17" width="6" height="3" fill="#089981" />
+          <rect x="104" y="18" width="6" height="2" fill="#f23645" />
+          <rect x="134" y="15" width="6" height="5" fill="#089981" />
+          <rect x="164" y="12" width="6" height="8" fill="#089981" />
+          <rect x="194" y="14" width="6" height="6" fill="#089981" />
+          <rect x="224" y="9" width="6" height="11" fill="#089981" />
+          <rect x="254" y="4" width="6" height="16" fill="#089981" />
+          <rect x="284" y="2" width="6" height="18" fill="#089981" />
+          <path d="M 18 24 Q 108 20, 198 14 T 288 6" fill="none" stroke="#2962ff" stroke-width="1.3" />
+          <path d="M 18 23 Q 108 21, 198 16 T 288 10" fill="none" stroke="#f59e0b" stroke-width="1.1" stroke-dasharray="2 1" />
+        </g>
+
+        <!-- Divider 3 -->
+        <line x1="8" y1="194" x2="408" y2="194" stroke="#1b253b" stroke-width="1" />
+
+        <!-- PANE 4: RSI WITH 30/70 BANDS -->
+        <g transform="translate(8, 196)">
+          <rect width="365" height="36" fill="#080c16" />
+          <line x1="0" y1="8" x2="365" y2="8" stroke="#f23645" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.6" />
+          <line x1="0" y1="26" x2="365" y2="26" stroke="#089981" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.6" />
+          <text x="6" y="8" fill="#64748b" font-family="var(--font-mono)" font-size="7">PANE 4: RSI (14)</text>
+          <text x="372" y="10" fill="#f23645" font-family="var(--font-mono)" font-size="6.5">70</text>
+          <text x="372" y="28" fill="#089981" font-family="var(--font-mono)" font-size="6.5">30</text>
+          <path d="M 18 24 Q 78 20, 138 18 T 228 14 T 258 8 T 288 6" fill="none" stroke="#a855f7" stroke-width="1.5" />
+        </g>
       </g>
+    
 
+          <text x="16" y="325" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="325" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Đồng bộ trục thời gian X giữa 4 Panes đồ thị khi phóng to (Zoom) / Cuộn (Pan)</text>
+          <text x="16" y="347" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="347" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hiển thị Tooltip đa thông số chi tiết khi rê chuột (Hover Inspector)</text>
+          <text x="16" y="369" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="369" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Render mượt mà 2.000+ phiên nến lịch sử bằng Plotly WebGL Engine</text>
+
+          <rect x="16" y="392" width="418" height="18" rx="3" fill="#064e3b" />
+          <text x="225" y="404.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">PLOTLY WEBGL RENDER 4 PANES ĐỒNG BỘ TRONG &lt; 90MS</text>
+        </g>
+        
     </svg>
   </div>
 
-  <!-- Bottom Architecture Specifications -->
   <div class="footer-notes">
+    
     <div class="note-card">
-      <div class="note-title"><span style="color: #f59e0b;">&bull;</span> TẦNG BRONZE LAKE</div>
+      <div class="note-title"><span style="color: #f59e0b; font-size: 14px;">&bull;</span> TẦNG BRONZE LAKE</div>
       <div class="note-desc">Thu thập tự động 10+ năm lịch sử CafeF Upto ZIP toàn thị trường, kiểm tra mã MD5 và giải nén đa luồng song song.</div>
     </div>
     <div class="note-card">
-      <div class="note-title"><span style="color: #06b6d4;">&bull;</span> TẦNG SILVER PARQUET</div>
+      <div class="note-title"><span style="color: #06b6d4; font-size: 14px;">&bull;</span> TẦNG SILVER PARQUET</div>
       <div class="note-desc">Chuẩn hóa schema cột OHLCV, nén Snappy tiết kiệm 85% dung lượng đĩa, tốc độ đọc nhanh gấp 10x so với CSV.</div>
     </div>
     <div class="note-card">
-      <div class="note-title"><span style="color: #a855f7;">&bull;</span> TẦNG GOLD FEATURE STORE</div>
+      <div class="note-title"><span style="color: #a855f7; font-size: 14px;">&bull;</span> TẦNG GOLD FEATURE STORE</div>
       <div class="note-desc">Kho tính toán chỉ báo kỹ thuật (SMA, MACD, RSI, Bollinger) và phân bổ dòng tiền 15 ngành tối ưu cho phân tích định lượng.</div>
     </div>
     <div class="note-card">
-      <div class="note-title"><span style="color: #089981;">&bull;</span> TẦNG PLATINUM TERMINAL</div>
+      <div class="note-title"><span style="color: #089981; font-size: 14px;">&bull;</span> TẦNG PLATINUM TERMINAL</div>
       <div class="note-desc">Giao diện Streamlit Dark Terminal với biểu đồ 4 tầng Plotly đồng bộ (Nến, Khối lượng, MACD, RSI) kết xuất WebGL siêu tốc.</div>
     </div>
   </div>
 </div>
 
+<!-- Modal Trợ Giúp Phím Tắt -->
+<div class="modal-overlay" id="helpModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <span class="modal-title">PHÍM TẮT ĐIỀU KHIỂN (VIEWER SHORTCUTS)</span>
+      <button class="modal-close" id="closeModalBtn">ESC</button>
+    </div>
+    <div class="shortcuts-list">
+      <div class="shortcut-row"><span>Tìm kiếm thành phần</span> <kbd>/</kbd></div>
+      <div class="shortcut-row"><span>Chuyển đổi giao diện Sáng / Tối</span> <kbd>T</kbd></div>
+      <div class="shortcut-row"><span>Hủy chọn / Đặt lại bộ lọc</span> <kbd>ESC</kbd></div>
+      <div class="shortcut-row"><span>Xuất ảnh Vector SVG</span> <kbd>Alt + S</kbd></div>
+      <div class="shortcut-row"><span>Xuất ảnh Raster PNG 2x</span> <kbd>Alt + P</kbd></div>
+      <div class="shortcut-row"><span>Mở bảng trợ giúp này</span> <kbd>?</kbd></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Institutional Interactive Engine (Zero External Dependencies)
+  (function() {
+    const htmlEl = document.documentElement;
+    const svgEl = document.getElementById('diagramSvg');
+    const searchInput = document.getElementById('nodeSearch');
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const exportSvgBtn = document.getElementById('exportSvgBtn');
+    const exportPngBtn = document.getElementById('exportPngBtn');
+    const helpBtn = document.getElementById('helpBtn');
+    const helpModal = document.getElementById('helpModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // 1. Theme Management
+    function setTheme(theme) {
+      htmlEl.setAttribute('data-theme', theme);
+      themeBtn.textContent = 'THEME: ' + theme.toUpperCase();
+      try { localStorage.setItem('dm_theme', theme); } catch(e) {}
+    }
+
+    const savedTheme = (function() {
+      try { return localStorage.getItem('dm_theme') || 'dark'; } catch(e) { return 'dark'; }
+    })();
+    setTheme(savedTheme);
+
+    themeBtn.addEventListener('click', () => {
+      const cur = htmlEl.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      setTheme(cur);
+    });
+
+    // 2. Search & Filter
+    searchInput.addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      const nodes = svgEl.querySelectorAll('.diagram-node, g[filter="url(#nodeShadow)"]');
+      const wires = svgEl.querySelectorAll('.diagram-wire, path[stroke]');
+
+      if (!q) {
+        nodes.forEach(n => n.classList.remove('dimmed', 'highlighted'));
+        wires.forEach(w => w.classList.remove('dimmed', 'highlighted-wire'));
+        return;
+      }
+
+      nodes.forEach(n => {
+        const text = n.textContent.toLowerCase();
+        if (text.includes(q)) {
+          n.classList.remove('dimmed');
+          n.classList.add('highlighted');
+        } else {
+          n.classList.add('dimmed');
+          n.classList.remove('highlighted');
+        }
+      });
+
+      wires.forEach(w => w.classList.add('dimmed'));
+    });
+
+    // 3. Upstream & Downstream Reach Tracing
+    let selectedNodeId = null;
+    svgEl.addEventListener('click', (e) => {
+      const nodeG = e.target.closest('.diagram-node');
+      if (!nodeG) {
+        // Reset selection when clicking outside
+        selectedNodeId = null;
+        svgEl.querySelectorAll('.diagram-node, g[filter]').forEach(n => n.classList.remove('dimmed', 'highlighted'));
+        svgEl.querySelectorAll('.diagram-wire, path[stroke]').forEach(w => w.classList.remove('dimmed', 'highlighted-wire'));
+        return;
+      }
+
+      const nodeId = nodeG.getAttribute('data-node-id');
+      if (selectedNodeId === nodeId) {
+        selectedNodeId = null;
+        svgEl.querySelectorAll('.diagram-node, g[filter]').forEach(n => n.classList.remove('dimmed', 'highlighted'));
+        svgEl.querySelectorAll('.diagram-wire, path[stroke]').forEach(w => w.classList.remove('dimmed', 'highlighted-wire'));
+        return;
+      }
+
+      selectedNodeId = nodeId;
+      const allNodes = svgEl.querySelectorAll('.diagram-node');
+      const allWires = svgEl.querySelectorAll('.diagram-wire');
+
+      if (allWires.length > 0) {
+        const connectedNodes = new Set([nodeId]);
+        allWires.forEach(w => {
+          const fromId = w.getAttribute('data-from');
+          const toId = w.getAttribute('data-to');
+          if (fromId === nodeId || toId === nodeId) {
+            w.classList.remove('dimmed');
+            w.classList.add('highlighted-wire');
+            if (fromId) connectedNodes.add(fromId);
+            if (toId) connectedNodes.add(toId);
+          } else {
+            w.classList.add('dimmed');
+            w.classList.remove('highlighted-wire');
+          }
+        });
+
+        allNodes.forEach(n => {
+          const nid = n.getAttribute('data-node-id');
+          if (connectedNodes.has(nid)) {
+            n.classList.remove('dimmed');
+            n.classList.add('highlighted');
+          } else {
+            n.classList.add('dimmed');
+            n.classList.remove('highlighted');
+          }
+        });
+      }
+    });
+
+    // 4. Client-side SVG & PNG Export
+    function exportSvg() {
+      const serializer = new XMLSerializer();
+      let source = serializer.serializeToString(svgEl);
+      if (!source.includes('xmlns="http://www.w3.org/2000/svg"')) {
+        source = source.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+      }
+      const blob = new Blob(['<?xml version="1.0" standalone="no"?>\r\n', source], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Vietnamese Stock Analysis - Kiến Trúc Medallion Parquet Lakehouse & Terminal Đa Khung'.replace(/[^a-zA-Z0-9_-]/g, '_') + '.svg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function exportPng() {
+      const serializer = new XMLSerializer();
+      let source = serializer.serializeToString(svgEl);
+      const vb = svgEl.viewBox.baseVal;
+      const w = (vb && vb.width) ? vb.width : 1320;
+      const h = (vb && vb.height) ? vb.height : 915;
+
+      const canvas = document.createElement('canvas');
+      const scale = 2; // 2x Retina quality
+      canvas.width = w * scale;
+      canvas.height = h * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(scale, scale);
+
+      const img = new Image();
+      const svgBlob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+
+      img.onload = function() {
+        ctx.fillStyle = htmlEl.getAttribute('data-theme') === 'light' ? '#ffffff' : '#070a12';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+
+        canvas.toBlob(function(blob) {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'Vietnamese Stock Analysis - Kiến Trúc Medallion Parquet Lakehouse & Terminal Đa Khung'.replace(/[^a-zA-Z0-9_-]/g, '_') + '_retina.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, 'image/png');
+      };
+      img.src = url;
+    }
+
+    exportSvgBtn.addEventListener('click', exportSvg);
+    exportPngBtn.addEventListener('click', exportPng);
+
+    // 5. Modal & Keyboard Shortcuts
+    function toggleHelp(show) {
+      if (show === undefined) helpModal.classList.toggle('active');
+      else if (show) helpModal.classList.add('active');
+      else helpModal.classList.remove('active');
+    }
+
+    helpBtn.addEventListener('click', () => toggleHelp(true));
+    closeModalBtn.addEventListener('click', () => toggleHelp(false));
+    helpModal.addEventListener('click', (e) => { if (e.target === helpModal) toggleHelp(false); });
+
+    window.addEventListener('keydown', (e) => {
+      const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
+      if (e.key === 'Escape') {
+        toggleHelp(false);
+        searchInput.value = '';
+        searchInput.blur();
+        searchInput.dispatchEvent(new Event('input'));
+        selectedNodeId = null;
+        svgEl.querySelectorAll('.diagram-node, g[filter]').forEach(n => n.classList.remove('dimmed', 'highlighted'));
+        svgEl.querySelectorAll('.diagram-wire, path[stroke]').forEach(w => w.classList.remove('dimmed', 'highlighted-wire'));
+      } else if (!isInput) {
+        if (e.key === '/') {
+          e.preventDefault();
+          searchInput.focus();
+        } else if (e.key === 't' || e.key === 'T') {
+          e.preventDefault();
+          themeBtn.click();
+        } else if (e.key === '?') {
+          e.preventDefault();
+          toggleHelp();
+        }
+      }
+    });
+  })();
+</script>
 </body>
 </html>

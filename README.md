@@ -1,3 +1,7 @@
+<p align="center">
+  <strong>Tiếng Việt</strong> · <a href="./README_EN.md">English</a>
+</p>
+
 # diagram-maker
 
 ### Bộ Công Cụ Thiết Kế Sơ Đồ Kiến Trúc & Lưu Đồ Vector Độc Lập Chuẩn Institutional Terminal
@@ -222,6 +226,16 @@ open Product/index.html
 xdg-open Product/index.html
 ```
 
+### Kiểm Định Tính Toàn Vẹn AST (Validation Gate)
+Cổng kiểm định chất lượng tự động phát hiện lỗi cú pháp, trùng lặp ID, hoặc các đường nối trỏ vào node rỗng (dangling connections):
+```bash
+# Kiểm định toàn bộ 10 tệp đặc tả trong specs/
+python3 main.py validate --all
+
+# Kiểm định riêng một tệp đặc tả cụ thể
+python3 main.py validate specs/projects/vietnam_stock_heatmap.json
+```
+
 ### Biên Dịch 1-Click Toàn Bộ Đặc Tả
 Để tự động quét và biên dịch tất cả 10 tệp đặc tả JSON trong thư mục `specs/`:
 ```bash
@@ -243,16 +257,22 @@ python3 main.py specs/projects/telegram_stock_bot.json -o output/telegram_stock_
 # Biên dịch sơ đồ Kho dữ liệu cột (Medallion Lakehouse)
 python3 main.py specs/projects/vietnamese_stock_analysis.json -o output/vietnamese_stock_analysis.html
 
-# Biên dịch sơ đồ Cột 5-tier truyền thống
-python3 main.py specs/projects/vietnam_stock_heatmap_5tier.json -o output/diagram_vietnam_stock_heatmap_5tier.html
+# Biên dịch với giao diện Sáng (Institutional Light)
+python3 main.py specs/samples/sample_diagram.json -o output/sample_diagram_light.html --theme light
 ```
 
-### Hướng Dẫn Xuất Ảnh Độ Phân Giải Cao (Retina / 4K PNG)
-Các tệp HTML đầu ra được thiết kế chuẩn vector SVG tự co giãn. Để xuất ảnh chất lượng cao:
-1. Mở tệp HTML bằng Google Chrome hoặc trình duyệt dựa trên Chromium.
-2. Nhấn `F12` (hoặc `Cmd + Option + I` trên macOS) để mở DevTools.
-3. Nhấn tổ hợp phím `Cmd + Shift + P` (macOS) hoặc `Ctrl + Shift + P` (Windows/Linux).
-4. Gõ lệnh: **`Capture full size screenshot`**. Trình duyệt sẽ xuất ra tệp PNG độ nét cao (2880×1972) sắc nét tuyệt đối.
+### Bộ Điều Khiển Tương Tác & Phím Tắt (Interactive Viewer)
+Mỗi tệp HTML đầu ra được nhúng sẵn engine tương tác thuần JavaScript (100% không phụ thuộc thư viện ngoài):
+
+| Thao tác / Tính năng | Phím tắt | Mô tả chi tiết |
+| :--- | :---: | :--- |
+| **Tìm kiếm thành phần** | <kbd>/</kbd> | Tìm kiếm nhanh tên node, tự động làm nổi bật node khớp và làm mờ các thành phần khác. |
+| **Chuyển đổi giao diện** | <kbd>T</kbd> | Chuyển đổi qua lại giữa phong cách Neo-Dark (`#070a12`) và Institutional Light (`#f8fafc`). |
+| **Truy vết luồng dữ liệu** | Nhấp chuột | Chọn node để tự động làm sáng toàn bộ các kết nối vào (Upstream) và ra (Downstream). |
+| **Hủy chọn / Đặt lại** | <kbd>ESC</kbd> | Đặt lại toàn bộ khung nhìn, hủy chọn node và đóng cửa sổ trợ giúp. |
+| **Xuất ảnh Vector SVG** | <kbd>Alt</kbd> + <kbd>S</kbd> | Tải xuống trực tiếp tệp mã nguồn vector SVG từ trình duyệt. |
+| **Xuất ảnh Raster PNG** | <kbd>Alt</kbd> + <kbd>P</kbd> | Render SVG sang Canvas 2x và tải xuống ảnh PNG Retina sắc nét. |
+| **Trợ giúp phím tắt** | <kbd>?</kbd> | Mở bảng hướng dẫn danh mục phím tắt trên màn hình. |
 
 ---
 
@@ -293,13 +313,14 @@ So sánh định lượng giữa `diagram-maker` và các công cụ vẽ sơ đ
 
 ```
 diagram-maker/
-├── main.py                        # Điểm khởi chạy 1-Click & CLI Entrypoint
+├── main.py                        # Điểm khởi chạy 1-Click & CLI Entrypoint (validate, compile, --all)
 ├── requirements.txt               # Danh mục phụ thuộc (Zero External Dependencies)
 ├── LICENSE                        # Giấy phép nguồn mở MIT
-├── README.md                      # Tài liệu kỹ thuật chi tiết dự án
+├── README.md                      # Tài liệu kỹ thuật tiếng Việt
+├── README_EN.md                   # Tài liệu kỹ thuật tiếng Anh (Chuẩn Quốc Tế)
 │
 ├── Product/                       # Trạm điều phối sơ đồ kiến trúc thành phẩm
-│   ├── index.html                 # Trạm điều khiển tập trung (Dashboard Hub có chuyển Tab)
+│   ├── index.html                 # Trạm điều khiển tập trung (Dashboard Hub có chuyển Tab & Theme)
 │   ├── telegram-stock-bot-architecture.html
 │   ├── vietnam-stock-heatmap-architecture.html
 │   └── vietnamese-stock-analysis-architecture.html
@@ -307,8 +328,9 @@ diagram-maker/
 ├── src/                           # Mã nguồn động cơ lõi (Core Engine)
 │   ├── __init__.py                # Xuất các lớp và hàm biên dịch chính
 │   ├── engine.py                  # DiagramEngine: Bộ điều phối tự động nhận diện Topology
-│   ├── cli.py                     # Trình xử lý dòng lệnh đa năng
-│   ├── compiler.py                # GraphCompiler: Trình biên dịch kế thừa (4/5-tier cột)
+│   ├── cli.py                     # Trình xử lý dòng lệnh đa năng & cổng kiểm định
+│   ├── validator.py               # SpecValidator: Cổng kiểm định tính toàn vẹn AST & kết nối
+│   ├── compiler.py                # GraphCompiler: Trình biên dịch cột phân tầng (port spread & bezier)
 │   ├── slide_compiler.py          # SlideCompiler: Trình biên dịch slide thuyết trình
 │   │
 │   ├── core/                      # Các thành phần hạ tầng dùng chung

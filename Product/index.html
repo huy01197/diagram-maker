@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
+    :root, [data-theme="dark"] {
       --bg: #070a12;
       --panel-bg: #0d121f;
       --card-bg: #111728;
@@ -26,6 +26,22 @@
       --indigo: #818cf8;
       --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       --font-mono: 'Geist Mono', monospace;
+    }
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --panel-bg: #ffffff;
+      --card-bg: #f1f5f9;
+      --card-border: #e2e8f0;
+      --border-accent: #1d4ed8;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+      --blue: #0284c7;
+      --green: #059669;
+      --red: #e11d48;
+      --amber: #d97706;
+      --purple: #7c3aed;
+      --indigo: #4338ca;
     }
     body {
       background: var(--bg);
@@ -251,6 +267,7 @@
       <span class="brand-title">Trạm Điều Phối Sơ Đồ Kiến Trúc Hệ Thống Đầu Tư Chứng Khoán</span>
     </div>
     <div class="top-meta">
+      <button class="action-btn" id="themeToggleBtn" onclick="togglePortalTheme()" style="margin-right: 12px;">THEME: DARK</button>
       <div class="status-indicator">
         <span class="status-dot"></span>
         <span>TOÀN BỘ SƠ ĐỒ ĐÃ SẴN SÀNG</span>
@@ -352,6 +369,21 @@
     function reloadIframe() {
       const frame = document.getElementById('diagramFrame');
       frame.src = frame.src;
+    }
+
+    function togglePortalTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', cur);
+      document.getElementById('themeToggleBtn').textContent = 'THEME: ' + cur.toUpperCase();
+      const frame = document.getElementById('diagramFrame');
+      try {
+        if (frame && frame.contentWindow) {
+          const doc = frame.contentWindow.document;
+          doc.documentElement.setAttribute('data-theme', cur);
+          const fBtn = doc.getElementById('themeToggleBtn');
+          if (fBtn) fBtn.textContent = 'THEME: ' + cur.toUpperCase();
+        }
+      } catch(e) {}
     }
   </script>
 

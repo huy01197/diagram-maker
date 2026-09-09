@@ -1,6 +1,7 @@
 """
 diagram-maker: Command Line Interface & Unified Dispatcher
-Provides commands to compile individual JSON specs or batch process entire specification suites.
+Provides commands to compile individual JSON specs, batch process entire specification suites,
+and execute deterministic AST validation gates.
 """
 
 import sys
@@ -10,39 +11,43 @@ from pathlib import Path
 from .compiler import GraphCompiler
 from .slide_compiler import SlideCompiler
 from .engine import DiagramEngine
+from .validator import validate_file, validate_all, SpecValidator
 
 def detect_spec_type(spec_data):
     """Xác định loại spec: 'topology' (Topology 2.0 đa dạng), 'diagram' (Cột 4/5-tier), hoặc 'slide'"""
-    if "topology" in spec_data:
-        return "topology"
-    if "columns" in spec_data or "connections" in spec_data:
-        return "diagram"
-    return "slide"
+    return SpecValidator.detect_type(spec_data)
 
-def compile_spec(spec_data):
-    """Biên dịch đối tượng dictionary spec thành mã HTML"""
+def compile_spec(spec_data, theme="dark"):
+    """Biên dịch đối tượng dictionary spec thành mã HTML với theme chỉ định"""
     spec_type = detect_spec_type(spec_data)
     if spec_type == "topology":
         engine = DiagramEngine(spec_data)
         topo_name = engine.detect_topology()
+        # Pass theme to compiler if supported
         return f"topology:{topo_name}", engine.compile()
     elif spec_type == "diagram":
         compiler = GraphCompiler(spec_data)
-        return "diagram", compiler.compile_to_html()
+        return "diagram", compiler.compile_to_html(default_theme=theme)
     else:
         compiler = SlideCompiler(spec_data)
         return "slide", compiler.compile_to_html()
 
-def compile_file(input_path, output_path=None):
+def compile_file(input_path, output_path=None, theme="dark", skip_validate=False):
     """Biên dịch tệp JSON spec sang tệp HTML đích"""
     input_path = Path(input_path).resolve()
     if not input_path.exists():
         raise FileNotFoundError(f"Khong tim thay tep dac ta: {input_path}")
 
+    if not skip_validate:
+        val_res = validate_file(input_path)
+        if not val_res.valid:
+            err_msg = "; ".join(val_res.errors)
+            raise ValueError(f"Kiem dinh AST that bai cho {input_path.name}: {err_msg}")
+
     with open(input_path, "r", encoding="utf-8") as f:
         spec_data = json.load(f)
 
-    spec_type, html_content = compile_spec(spec_data)
+    spec_type, html_content = compile_spec(spec_data, theme=theme)
 
     if output_path is None:
         base_name = input_path.stem
@@ -62,7 +67,7 @@ def compile_file(input_path, output_path=None):
 
     return spec_type, output_path
 
-def compile_all(repo_root=None):
+def compile_all(repo_root=None, theme="dark"):
     """Tự động tìm kiếm và biên dịch toàn bộ các file spec trong thư mục specs/"""
     if repo_root is None:
         repo_root = Path(__file__).resolve().parent.parent
@@ -80,7 +85,7 @@ def compile_all(repo_root=None):
     results = []
     spec_files = sorted(specs_dir.rglob("*.json"))
 
-    print(f"=== diagram-maker: Bat dau bien dich {len(spec_files)} dac ta ===")
+    print(f"=== diagram-maker: Bat dau bien dich {len(spec_files)} dac ta (Theme: {theme.upper()}) ===")
     for spec_file in spec_files:
         rel_spec = spec_file.relative_to(specs_dir)
         spec_stem = spec_file.stem
@@ -95,7 +100,7 @@ def compile_all(repo_root=None):
 
         out_path = output_dir / out_filename
         try:
-            spec_type, final_path = compile_file(spec_file, out_path)
+            spec_type, final_path = compile_file(spec_file, out_path, theme=theme)
             print(f"  [OK] [{spec_type.upper()}] {rel_spec} -> output/{out_filename}")
             results.append((spec_file, final_path, True, ""))
         except Exception as e:
@@ -106,41 +111,96 @@ def compile_all(repo_root=None):
     print(f"=== Hoan tat: {success_count}/{len(results)} tep bien dich thanh cong ===")
     return results
 
+def run_validation(target_path=None, repo_root=None):
+    """Chạy cổng kiểm định AST và in kết quả bảng chuyên nghiệp"""
+    if repo_root is None:
+        repo_root = Path(__file__).resolve().parent.parent
+    else:
+        repo_root = Path(repo_root).resolve()
+
+    if target_path and Path(target_path).is_file():
+        results = [validate_file(Path(target_path))]
+    else:
+        results = validate_all(repo_root)
+
+    print("\n=== diagram-maker: AST & Schema Validation Gate ===")
+    print(f"{'SPECIFICATION':<36} {'TYPE':<12} {'NODES/METRICS':<16} {'STATUS'}")
+    print("-" * 74)
+
+    all_pass = True
+    for r in results:
+        file_name = Path(r.spec_path).name
+        if len(file_name) > 34:
+            file_name = file_name[:31] + "..."
+        
+        count_str = "-"
+        if "nodes_count" in r.stats:
+            count_str = f"{r.stats.get('nodes_count', 0)}n / {r.stats.get('connections_count', 0)}e"
+        elif "metrics_count" in r.stats:
+            count_str = f"{r.stats.get('metrics_count', 0)} metrics"
+        elif "branches_count" in r.stats:
+            count_str = f"{r.stats.get('branches_count', 0)} branches"
+
+        status_str = "PASS" if r.valid else "FAIL"
+        if not r.valid:
+            all_pass = False
+
+        print(f"{file_name:<36} {r.spec_type:<12} {count_str:<16} [{status_str}]")
+        for err in r.errors:
+            print(f"    x ERROR: {err}")
+        for warn in r.warnings:
+            print(f"    ! WARN:  {warn}")
+
+    print("-" * 74)
+    pass_count = sum(1 for r in results if r.valid)
+    print(f"Ket qua: {pass_count}/{len(results)} specifications hop le.\n")
+    return 0 if all_pass else 1
+
 def main():
+    # Kiểm tra lệnh phụ đặc biệt
+    if len(sys.argv) > 1 and sys.argv[1] in ["validate", "--validate"]:
+        val_parser = argparse.ArgumentParser(
+            prog="diagram-maker validate",
+            description="Kiem tra tinh toan ven cua tep dac ta JSON AST"
+        )
+        val_parser.add_argument("spec_file", nargs="?", help="Duong dan tep JSON can kiem tra (bo trong de kiem tra toan bo)")
+        val_parser.add_argument("--all", action="store_true", help="Kiem tra toan bo specs")
+        args = val_parser.parse_args(sys.argv[2:])
+        target = None if args.all else args.spec_file
+        return run_validation(target)
+
+    # Parser chuẩn cho biên dịch
     parser = argparse.ArgumentParser(
         prog="diagram-maker",
         description="Institutional Vector Flowchart & Architecture Diagram Engine"
     )
-    parser.add_argument(
-        "spec_file",
-        nargs="?",
-        help="Duong dan toi tep dac ta JSON can bien dich (tuy chon)"
-    )
-    parser.add_argument(
-        "-o", "--output",
-        help="Duong dan tep HTML dau ra (mac dinh: tu dong sinh trong output/)"
-    )
-    parser.add_argument(
-        "--all",
-        action="store_true",
-        help="Bien dich toan bo cac tep dac ta trong thu muc specs/"
-    )
+    # Bỏ qua từ khóa 'compile' nếu người dùng gõ: python3 main.py compile <file>
+    parse_args_list = sys.argv[1:]
+    if parse_args_list and parse_args_list[0] == "compile":
+        parse_args_list = parse_args_list[1:]
 
-    args = parser.parse_args()
+    parser.add_argument("spec_file", nargs="?", help="Duong dan tep dac ta JSON can bien dich")
+    parser.add_argument("-o", "--output", help="Duong dan tep HTML dau ra")
+    parser.add_argument("--theme", choices=["dark", "light"], default="dark", help="Giao dien mac dinh (dark hoac light)")
+    parser.add_argument("--all", action="store_true", help="Bien dich toan bo cac tep dac ta trong thu muc specs/")
+    parser.add_argument("--validate", action="store_true", help="Chay kiem tra AST thay vi bien dich")
 
-    # Trường hợp 1: Chạy biên dịch toàn bộ (--all hoặc không truyền tham số)
+    args = parser.parse_args(parse_args_list)
+
+    if args.validate:
+        return run_validation(args.spec_file)
+
     if args.all or args.spec_file is None:
-        compile_all()
+        compile_all(theme=args.theme)
         return 0
 
-    # Trường hợp 2: Chạy file cụ thể
     input_file = Path(args.spec_file)
     if not input_file.exists():
         print(f"[Loi] Khong tim thay tep: {args.spec_file}", file=sys.stderr)
         return 1
 
     try:
-        spec_type, out_path = compile_file(input_file, args.output)
+        spec_type, out_path = compile_file(input_file, args.output, theme=args.theme)
         print(f"[Thanh cong] [{spec_type.upper()}] Da bien dich: {out_path}")
         return 0
     except Exception as e:

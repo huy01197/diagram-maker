@@ -1,28 +1,55 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telegram Stock Bot - Kiến Trúc Luồng Sự Kiện Tương Tác &amp; Phân Tích Định Lượng</title>
+  <title>Telegram Stock Bot - Kiến Trúc Luồng Sự Kiện Tương Tác & Phân Tích Định Lượng</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
+    :root, [data-theme="dark"] {
       --bg: #070a12;
       --card-bg: #0c121e;
       --border-base: #1b253b;
       --text-main: #e2e8f0;
       --text-muted: #8b9bb4;
+      --canvas-bg: #080c16;
+      --canvas-border: #1b253b;
+      --toolbar-bg: #0d1424;
+      --btn-bg: #131b2e;
+      --btn-border: #23314f;
+      --btn-hover: #1e2a47;
       --accent-cyan: #06b6d4;
       --accent-emerald: #089981;
       --accent-amber: #f59e0b;
       --accent-purple: #a855f7;
       --accent-rose: #f23645;
       --accent-blue: #2962ff;
-      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --font-mono: "Geist Mono", "SF Mono", Menlo, Consolas, monospace;
+      --dot-grid-color: #ffffff;
+      --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Geist Mono', Menlo, Consolas, monospace;
+    }
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border-base: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --canvas-bg: #ffffff;
+      --canvas-border: #cbd5e1;
+      --toolbar-bg: #f1f5f9;
+      --btn-bg: #ffffff;
+      --btn-border: #cbd5e1;
+      --btn-hover: #e2e8f0;
+      --accent-cyan: #0284c7;
+      --accent-emerald: #059669;
+      --accent-amber: #d97706;
+      --accent-purple: #7c3aed;
+      --accent-rose: #e11d48;
+      --accent-blue: #1d4ed8;
+      --dot-grid-color: #000000;
     }
     body {
       background-color: var(--bg);
@@ -33,18 +60,21 @@
       align-items: flex-start;
       min-height: 100vh;
       padding: 24px 16px;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
     .container {
       width: 100%;
       max-width: 1360px;
     }
     .header {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
       border-bottom: 1px solid var(--border-base);
       padding-bottom: 14px;
+      gap: 16px;
+      flex-wrap: wrap;
     }
     .eyebrow {
       font-family: var(--font-mono);
@@ -59,14 +89,60 @@
       font-size: 22px;
       font-weight: 700;
       letter-spacing: -0.02em;
-      color: #fff;
+      color: var(--text-main);
+    }
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-box input {
+      background: var(--toolbar-bg);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 7px 12px;
+      width: 160px;
+      outline: none;
+      transition: width 0.2s ease, border-color 0.2s ease;
+    }
+    .search-box input:focus {
+      width: 210px;
+      border-color: var(--accent-cyan);
+    }
+    .btn {
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 7px 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .btn:hover {
+      background: var(--btn-hover);
+      border-color: var(--accent-cyan);
     }
     .metrics-bar {
       display: flex;
-      gap: 12px;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
     }
     .metric-pill {
-      background: #0d1424;
+      background: var(--toolbar-bg);
       border: 1px solid var(--border-base);
       border-radius: 6px;
       padding: 6px 14px;
@@ -86,16 +162,37 @@
       margin-top: 2px;
     }
     .svg-wrapper {
-      background: #080c16;
-      border: 1px solid var(--border-base);
+      background: var(--canvas-bg);
+      border: 1px solid var(--canvas-border);
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      position: relative;
+      transition: background 0.2s ease, border-color 0.2s ease;
     }
     svg {
       display: block;
       width: 100%;
       height: auto;
+      color: var(--dot-grid-color);
+    }
+    .diagram-node {
+      cursor: pointer;
+      transition: opacity 0.2s ease, filter 0.2s ease;
+    }
+    .diagram-wire {
+      transition: opacity 0.2s ease, stroke-width 0.2s ease;
+    }
+    .dimmed {
+      opacity: 0.15 !important;
+    }
+    .highlighted {
+      opacity: 1 !important;
+      filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.7));
+    }
+    .highlighted-wire {
+      opacity: 1 !important;
+      stroke-width: 3.5px !important;
     }
     .footer-notes {
       margin-top: 18px;
@@ -104,10 +201,11 @@
       gap: 14px;
     }
     .note-card {
-      background: #0a0e1a;
+      background: var(--card-bg);
       border: 1px solid var(--border-base);
       border-radius: 6px;
       padding: 12px 14px;
+      transition: background 0.2s ease, border-color 0.2s ease;
     }
     .note-title {
       font-family: var(--font-mono);
@@ -124,6 +222,73 @@
       color: var(--text-muted);
       line-height: 1.45;
     }
+    /* Modal Shortcuts Dialog */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-base);
+      border-radius: 10px;
+      padding: 24px;
+      max-width: 440px;
+      width: 90%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-base);
+      padding-bottom: 10px;
+    }
+    .modal-title {
+      font-size: 14px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text-main);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 14px;
+    }
+    .shortcuts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .shortcut-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    kbd {
+      background: var(--toolbar-bg);
+      border: 1px solid var(--border-base);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -131,13 +296,25 @@
 <div class="container">
   <div class="header">
     <div>
-      <div class="eyebrow">EVENT-DRIVEN CLOSED-LOOP PIPELINE &middot; QUANTITATIVE BOT ENGINE</div>
-      <h1 class="title">Telegram Stock Bot - Kiến Trúc Luồng Sự Kiện Tương Tác &amp; Phân Tích Định Lượng</h1>
+      <div class="eyebrow">EVENT-DRIVEN CLOSED-LOOP PIPELINE · QUANTITATIVE BOT ENGINE</div>
+      <h1 class="title">Telegram Stock Bot - Kiến Trúc Luồng Sự Kiện Tương Tác & Phân Tích Định Lượng</h1>
     </div>
-    <div class="metrics-bar">
+    <div class="controls-bar">
+      <div class="search-box">
+        <input type="text" id="nodeSearch" placeholder="Tìm thành phần... (/)" />
+      </div>
+      <button class="btn" id="themeToggleBtn" title="Chuyển đổi Sáng/Tối (Phím T)">THEME: DARK</button>
+      <button class="btn" id="exportSvgBtn" title="Xuất mã nguồn SVG">SVG</button>
+      <button class="btn" id="exportPngBtn" title="Xuất ảnh PNG Retina 2x">PNG</button>
+      <button class="btn" id="helpBtn" title="Phím tắt (?)">?</button>
+    </div>
+  </div>
+
+  <div class="metrics-bar">
+    
       <div class="metric-pill">
         <div class="metric-label">Độ Trễ Phản Hồi</div>
-        <div class="metric-value" style="color: #38bdf8;">&lt; 850 ms</div>
+        <div class="metric-value" style="color: #38bdf8;">< 850 ms</div>
       </div>
       <div class="metric-pill">
         <div class="metric-label">Bộ Nhớ Đệm</div>
@@ -151,15 +328,15 @@
         <div class="metric-label">Vòng Tương Tác</div>
         <div class="metric-value" style="color: #c084fc;">Closed-Loop 2 Chiều</div>
       </div>
-    </div>
   </div>
 
   <div class="svg-wrapper">
-    <svg viewBox="0 0 1320 915" xmlns="http://www.w3.org/2000/svg">
+    <svg id="diagramSvg" viewBox="0 0 1320 915" xmlns="http://www.w3.org/2000/svg">
+      
       <defs>
-        <!-- Grids -->
+        <!-- Background Dot Grid Pattern -->
         <pattern id="dotGrid" width="24" height="24" patternUnits="userSpaceOnUse">
-          <circle cx="12" cy="12" r="1.1" fill="rgba(255, 255, 255, 0.07)" />
+          <circle cx="12" cy="12" r="1.1" fill="currentColor" opacity="0.08" />
         </pattern>
 
         <!-- Arrow Markers -->
@@ -179,487 +356,594 @@
           <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2962ff" />
         </marker>
         
-        <!-- Filter glow -->
+        <!-- Glow Filters -->
         <filter id="blueGlow" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="3" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
+        <filter id="emeraldGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
       </defs>
-
+    
+      
       <!-- Background with Dot Grid -->
-      <rect width="1320" height="915" fill="#070a12" />
+      <rect width="1320" height="915" fill="var(--canvas-bg)" />
       <rect width="1320" height="915" fill="url(#dotGrid)" />
 
-      <!-- Column Header Titles at Top -->
       <text x="45" y="36" fill="#06b6d4" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">1. GIAO TIẾP NGƯỜI DÙNG &amp; CỔNG BẢO MẬT</text>
-      <text x="410" y="36" fill="#a855f7" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">2. ĐIỀU PHỐI LỆNH &amp; ĐỘNG CƠ DỮ LIỆU ĐỆM</text>
-      <text x="850" y="36" fill="#089981" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">3. LÕI ĐỊNH LƯỢNG &amp; TRÌNH XUẤT ĐỒ THỊ</text>
+<text x="410" y="36" fill="#a855f7" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">2. ĐIỀU PHỐI LỆNH &amp; ĐỘNG CƠ DỮ LIỆU ĐỆM</text>
+<text x="850" y="36" fill="#089981" font-family="var(--font-mono)" font-size="11" font-weight="700" letter-spacing="0.08em">3. LÕI ĐỊNH LƯỢNG &amp; TRÌNH XUẤT ĐỒ THỊ</text>
+<path d="M 165 275 L 165 338" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-cyan)" />
+<path d="M 165 520 L 165 588" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-cyan)" />
+<path d="M 295 680 C 375 680, 345 190, 402 190" fill="none" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
+<path d="M 575 305 L 575 363" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
+<path d="M 740 480 C 815 480, 790 215, 842 215" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow-amber)" />
+<path d="M 1070 345 L 1070 403" stroke="#089981" stroke-width="2" marker-end="url(#arrow-emerald)" />
+<path d="M 850 780 C 790 780, 770 850, 680 850 L 50 850 C 26 850, 16 820, 16 750 L 16 230 C 16 175, 26 175, 38 175" fill="none" stroke="#2962ff" stroke-width="2.5" stroke-dasharray="8 5" marker-end="url(#arrow-blue)" />
 
-      <!-- ============================================================ -->
-      <!-- CONNECTIONS (Drawn with generous clearances)                 -->
-      <!-- ============================================================ -->
-      
-      <!-- 1. Line: User Client -> Ingress Gateway -->
-      <path d="M 165 275 L 165 338" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-cyan)" />
-      
-      <!-- 2. Line: Ingress Gateway -> Rate Limiter -->
-      <path d="M 165 520 L 165 588" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-cyan)" />
-      
-      <!-- 3. Line: Rate Limiter -> Command Dispatcher (Wide Smooth Bezier through Corridor 1) -->
-      <path d="M 295 680 C 375 680, 345 190, 402 190" fill="none" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
-      
-      <!-- 4. Line: Command Dispatcher -> Data Engine -->
-      <path d="M 575 305 L 575 363" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
-      
-      <!-- 5. Line: Data Engine -> Strategy Engine (Wide Smooth Bezier through Corridor 2) -->
-      <path d="M 740 480 C 815 480, 790 215, 842 215" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow-amber)" />
+          <!-- Pill 1: beside Line 1 -->
+          <g transform="translate(178, 296)">
+            <rect x="0" y="0" width="108" height="20" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+            <text x="54" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">1. GỬI LỆNH /c, /top</text>
+          </g>
 
-      <!-- 6. Line: Strategy Engine -> Visual Chart Renderer -->
-      <path d="M 1070 345 L 1070 403" stroke="#089981" stroke-width="2" marker-end="url(#arrow-emerald)" />
+          <!-- Pill 2: beside Line 2 -->
+          <g transform="translate(178, 545)">
+            <rect x="0" y="0" width="110" height="20" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+            <text x="55" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">2. RATE LIMIT TOKEN</text>
+          </g>
 
-      <!-- 7. CLOSED-LOOP FEEDBACK HIGHWAY: From Renderer back to User! -->
-      <path d="M 850 780 C 790 780, 770 850, 680 850 L 50 850 C 26 850, 16 820, 16 750 L 16 230 C 16 175, 26 175, 38 175" 
-            fill="none" stroke="#2962ff" stroke-width="2.5" stroke-dasharray="8 5" marker-end="url(#arrow-blue)" />
+          <!-- Pill 3: In Corridor 1 at Y=425 -->
+          <g transform="translate(302, 425)">
+            <rect x="0" y="0" width="100" height="22" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
+            <text x="50" y="15" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">3. CHUYỂN TIẾP</text>
+          </g>
 
-      <!-- ============================================================ -->
-      <!-- CONNECTOR PILL BADGES (Positioned cleanly with zero overlap) -->
-      <!-- ============================================================ -->
-      
-      <!-- Pill 1: beside Line 1 -->
-      <g transform="translate(178, 296)">
-        <rect x="0" y="0" width="108" height="20" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-        <text x="54" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">1. GỬI LỆNH /c, /top</text>
-      </g>
+          <!-- Pill 4: beside Line 4 in gap -->
+          <g transform="translate(585, 325)">
+            <rect x="0" y="0" width="126" height="20" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
+            <text x="63" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">4. TRUY VẤN DỮ LIỆU</text>
+          </g>
 
-      <!-- Pill 2: beside Line 2 -->
-      <g transform="translate(178, 545)">
-        <rect x="0" y="0" width="110" height="20" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-        <text x="55" y="14" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">2. RATE LIMIT TOKEN</text>
-      </g>
+          <!-- Pill 5: In Corridor 2 at Y=315 -->
+          <g transform="translate(746, 315)">
+            <rect x="0" y="0" width="98" height="22" rx="4" fill="#451a03" stroke="#d97706" stroke-width="1" />
+            <text x="49" y="15" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">5. NẠP NẾN OHLCV</text>
+          </g>
 
-      <!-- Pill 3: In Corridor 1 (Width 115px between X:295 and X:410) at Y=430 -->
-      <g transform="translate(302, 425)">
-        <rect x="0" y="0" width="100" height="22" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
-        <text x="50" y="15" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">3. CHUYỂN TIẾP</text>
-      </g>
+          <!-- Pill 6: beside Line 6 in gap -->
+          <g transform="translate(1082, 365)">
+            <rect x="0" y="0" width="128" height="20" rx="4" fill="#064e3b" stroke="#059669" stroke-width="1" />
+            <text x="64" y="14" fill="#34d399" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">6. TÍN HIỆU &amp; CHỈ BÁO</text>
+          </g>
 
-      <!-- Pill 4: beside Line 4 in the 65px gap between Card 4 and Card 5 -->
-      <g transform="translate(585, 325)">
-        <rect x="0" y="0" width="126" height="20" rx="4" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
-        <text x="63" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">4. TRUY VẤN DỮ LIỆU</text>
-      </g>
-
-      <!-- Pill 5: In Corridor 2 (Width 110px between X:740 and X:850) at Y=320 -->
-      <g transform="translate(746, 315)">
-        <rect x="0" y="0" width="98" height="22" rx="4" fill="#451a03" stroke="#d97706" stroke-width="1" />
-        <text x="49" y="15" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">5. NẠP NẾN OHLCV</text>
-      </g>
-
-      <!-- Pill 6: beside Line 6 in the 65px gap between Card 6 and Card 7 -->
-      <g transform="translate(1082, 365)">
-        <rect x="0" y="0" width="128" height="20" rx="4" fill="#064e3b" stroke="#059669" stroke-width="1" />
-        <text x="64" y="14" fill="#34d399" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">6. TÍN HIỆU &amp; CHỈ BÁO</text>
-      </g>
-
-      <!-- Pill 7: on Feedback Rail in bottom corridor -->
-      <g transform="translate(240, 839)">
-        <rect x="0" y="0" width="370" height="22" rx="4" fill="#1e1b4b" stroke="#4338ca" stroke-width="1" />
-        <circle cx="12" cy="11" r="3.5" fill="#38bdf8" />
-        <text x="26" y="15" fill="#a5b4fc" font-family="var(--font-mono)" font-size="10" font-weight="700">7. PHẢN HỒI KẾT QUẢ &amp; ẢNH ĐỒ THỊ NẾN (SEND PHOTO) TỚI USER</text>
-      </g>
-
-
-      <!-- ============================================================ -->
-      <!-- ZONE 1: USER INTERACTION & INGRESS GATEWAY (Left Column)     -->
-      <!-- ============================================================ -->
-
-      <!-- Card 1: User Client -->
-      <g transform="translate(45, 80)">
-        <rect width="250" height="195" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
-        <rect width="250" height="3" rx="1.5" fill="#06b6d4" />
+          <!-- Pill 7: on Feedback Rail in bottom corridor -->
+          <g transform="translate(240, 839)">
+            <rect x="0" y="0" width="370" height="22" rx="4" fill="#1e1b4b" stroke="#4338ca" stroke-width="1" />
+            <circle cx="12" cy="11" r="3.5" fill="#38bdf8" />
+            <text x="26" y="15" fill="#a5b4fc" font-family="var(--font-mono)" font-size="10" font-weight="700">7. PHẢN HỒI KẾT QUẢ &amp; ẢNH ĐỒ THỊ NẾN (SEND PHOTO) TỚI USER</text>
+          </g>
         
-        <!-- Header Tag -->
-        <rect x="14" y="14" width="86" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
-        <text x="57" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">USER CLIENT</text>
-        
-        <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13.5" font-weight="700">Người Dùng &amp; App Telegram</text>
-        
-        <!-- Bullet Items -->
-        <text x="14" y="78" fill="#06b6d4" font-family="var(--font-mono)" font-size="10" font-weight="700">1.</text>
-        <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Gửi lệnh tra cứu: <tspan fill="#06b6d4" font-family="var(--font-mono)">/c FPT, /c VHM</tspan></text>
 
-        <text x="14" y="100" fill="#06b6d4" font-family="var(--font-mono)" font-size="10" font-weight="700">2.</text>
-        <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Quét bùng nổ CANSLIM: <tspan fill="#f59e0b" font-family="var(--font-mono)">/top</tspan></text>
-
-        <text x="14" y="122" fill="#06b6d4" font-family="var(--font-mono)" font-size="10" font-weight="700">3.</text>
-        <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Cài cảnh báo chủ động: <tspan fill="#a855f7" font-family="var(--font-mono)">/alert</tspan></text>
-
-        <text x="14" y="144" fill="#06b6d4" font-family="var(--font-mono)" font-size="10" font-weight="700">4.</text>
-        <text x="28" y="144" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Nhận ảnh phân tích nến tức thì</text>
-
-        <!-- Footer Metric -->
-        <rect x="14" y="165" width="222" height="18" rx="3" fill="#082f49" />
-        <text x="125" y="177.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">TELEGRAM BOT API V20+ ASYNC</text>
-      </g>
-
-      <!-- Card 2: Ingress Gateway -->
-      <g transform="translate(45, 345)">
-        <rect width="250" height="175" rx="8" fill="#0b101b" stroke="#1b253b" stroke-width="1.2" />
-        
-        <!-- Header Tag -->
-        <rect x="14" y="14" width="112" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
-        <text x="70" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">INGRESS GATEWAY</text>
-        
-        <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13.5" font-weight="700">Cổng Tiếp Nhận &amp; Token Auth</text>
-
-        <!-- Bullets -->
-        <text x="14" y="78" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">1.</text>
-        <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Webhook Async / Polling song song</text>
-
-        <text x="14" y="100" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">2.</text>
-        <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bộ tách tham số lệnh (Tokenizer)</text>
-
-        <text x="14" y="122" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">3.</text>
-        <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Xác thực BOT_TOKEN biến môi trường</text>
-
-        <!-- Footer Metric -->
-        <rect x="14" y="145" width="222" height="18" rx="3" fill="#111827" />
-        <text x="125" y="157.5" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">THỜI GIAN GIẢI MÃ INGRESS &lt; 5MS</text>
-      </g>
-
-      <!-- Card 3: Rate Limiter -->
-      <g transform="translate(45, 595)">
-        <rect width="250" height="175" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.2" />
-        
-        <!-- Header Tag -->
-        <rect x="14" y="14" width="130" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
-        <text x="79" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SECURITY &amp; ANTI-SPAM</text>
-        
-        <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13.5" font-weight="700">Bộ Điều Tiết Tần Suất Lệnh</text>
-
-        <!-- Bullets -->
-        <text x="14" y="78" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">1.</text>
-        <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Thuật toán Token Bucket per User ID</text>
-
-        <text x="14" y="100" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">2.</text>
-        <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Ngưỡng an toàn: Tối đa 5 lệnh / phút</text>
-
-        <text x="14" y="122" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">3.</text>
-        <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Chống spam làm cạn kết nối mạng</text>
-
-        <!-- Footer Metric -->
-        <rect x="14" y="145" width="222" height="18" rx="3" fill="#451a03" />
-        <text x="125" y="157.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">TOKEN BUCKET DEFENSE LEAKY</text>
-      </g>
-
-
-      <!-- ============================================================ -->
-      <!-- ZONE 2: COMMAND DISPATCHER & DATA ENGINE (Center Column)    -->
-      <!-- ============================================================ -->
-
-      <!-- Card 4: Command Dispatcher -->
-      <g transform="translate(410, 80)">
-        <rect width="330" height="225" rx="8" fill="#0b101b" stroke="#a855f7" stroke-width="1.5" />
-        
-        <!-- Header Tag -->
-        <rect x="16" y="14" width="144" height="18" rx="3" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
-        <text x="88" y="26.5" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">COMMAND DISPATCHER</text>
-        
-        <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Lõi Điều Phối Lệnh &amp; Quản Lý Phiên</text>
-
-        <!-- Command Pills Grid -->
-        <g transform="translate(16, 68)">
-          <rect x="0" y="0" width="92" height="32" rx="4" fill="#140e2b" stroke="#3b206e" stroke-width="1" />
-          <text x="46" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">LỆNH /c</text>
-          <text x="46" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Tra cứu nến</text>
-
-          <rect x="102" y="0" width="92" height="32" rx="4" fill="#140e2b" stroke="#3b206e" stroke-width="1" />
-          <text x="148" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">LỆNH /top</text>
-          <text x="148" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Lọc CANSLIM</text>
-
-          <rect x="204" y="0" width="92" height="32" rx="4" fill="#140e2b" stroke="#3b206e" stroke-width="1" />
-          <text x="250" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">LỆNH /alert</text>
-          <text x="250" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Cảnh báo giá</text>
+        <!-- Zone 1: Card 1 User Client -->
+        <g transform="translate(45, 80)">
+          <rect width="250" height="195" rx="8" fill="#0b101b" stroke="#06b6d4" stroke-width="1.5" />
+          <rect width="250" height="3" rx="1.5" fill="#06b6d4" />
+          <rect x="14" y="14" width="86" height="18" rx="3" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+          <text x="57" y="26.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">USER CLIENT</text>
+          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13.5" font-weight="700">Người Dùng &amp; App Telegram</text>
+          <text x="14" y="78" fill="#06b6d4" font-family="var(--font-mono)" font-size="10" font-weight="700">1.</text>
+          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Gửi lệnh tra cứu: <tspan fill="#06b6d4" font-family="var(--font-mono)">/c FPT, /c VHM</tspan></text>
+          <text x="14" y="100" fill="#06b6d4" font-family="var(--font-mono)" font-size="10" font-weight="700">2.</text>
+          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Quét bùng nổ CANSLIM: <tspan fill="#f59e0b" font-family="var(--font-mono)">/top</tspan></text>
+          <text x="14" y="122" fill="#06b6d4" font-family="var(--font-mono)" font-size="10" font-weight="700">3.</text>
+          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Cài cảnh báo chủ động: <tspan fill="#a855f7" font-family="var(--font-mono)">/alert</tspan></text>
+          <text x="14" y="144" fill="#06b6d4" font-family="var(--font-mono)" font-size="10" font-weight="700">4.</text>
+          <text x="28" y="144" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Nhận ảnh phân tích nến tức thì</text>
+          <rect x="14" y="165" width="222" height="18" rx="3" fill="#082f49" />
+          <text x="125" y="177.5" fill="#7dd3fc" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">TELEGRAM BOT API V20+ ASYNC</text>
         </g>
 
-        <!-- Bullets -->
-        <text x="16" y="126" fill="#a855f7" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="126" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Định tuyến tác vụ tới Động cơ Dữ liệu hoặc Bộ lọc</text>
+        <!-- Zone 1: Card 2 Ingress Gateway -->
+        <g transform="translate(45, 345)">
+          <rect width="250" height="175" rx="8" fill="#0b101b" stroke="#1b253b" stroke-width="1.2" />
+          <rect x="14" y="14" width="112" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
+          <text x="70" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">INGRESS GATEWAY</text>
+          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13.5" font-weight="700">Cổng Tiếp Nhận &amp; Token Auth</text>
+          <text x="14" y="78" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">1.</text>
+          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Webhook Async / Polling song song</text>
+          <text x="14" y="100" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bộ tách tham số lệnh (Tokenizer)</text>
+          <text x="14" y="122" fill="#8b9bb4" font-family="var(--font-mono)" font-size="10">3.</text>
+          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Xác thực BOT_TOKEN biến môi trường</text>
+          <rect x="14" y="145" width="222" height="18" rx="3" fill="#111827" />
+          <text x="125" y="157.5" fill="#8b9bb4" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">THỜI GIAN GIẢI MÃ INGRESS &lt; 5MS</text>
+        </g>
 
-        <text x="16" y="148" fill="#a855f7" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="148" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Quản lý ngữ cảnh Session Context từng người dùng</text>
-
-        <text x="16" y="170" fill="#a855f7" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="170" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hàng đợi asyncio.create_task không nghẽn luồng chính</text>
-
-        <!-- Footer Metric -->
-        <rect x="16" y="193" width="298" height="18" rx="3" fill="#2e1065" />
-        <text x="165" y="205.5" fill="#e9d5ff" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">ASYNCIO EVENT LOOP &middot; NON-BLOCKING ROUTER</text>
-      </g>
-
-      <!-- Card 5: Data Engine & SQLite Cache -->
-      <g transform="translate(410, 365)">
-        <rect width="330" height="405" rx="8" fill="#0b101b" stroke="#1b253b" stroke-width="1.2" />
+        <!-- Zone 1: Card 3 Rate Limiter -->
+        <g transform="translate(45, 595)">
+          <rect width="250" height="175" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.2" />
+          <rect x="14" y="14" width="130" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
+          <text x="79" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">SECURITY &amp; ANTI-SPAM</text>
+          <text x="14" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="13.5" font-weight="700">Bộ Điều Tiết Tần Suất Lệnh</text>
+          <text x="14" y="78" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">1.</text>
+          <text x="28" y="78" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Thuật toán Token Bucket per User ID</text>
+          <text x="14" y="100" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">2.</text>
+          <text x="28" y="100" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Ngưỡng an toàn: Tối đa 5 lệnh / phút</text>
+          <text x="14" y="122" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">3.</text>
+          <text x="28" y="122" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Chống spam làm cạn kết nối mạng</text>
+          <rect x="14" y="145" width="222" height="18" rx="3" fill="#451a03" />
+          <text x="125" y="157.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">TOKEN BUCKET DEFENSE LEAKY</text>
+        </g>
         
-        <!-- Header Tag -->
-        <rect x="16" y="14" width="148" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
-        <text x="90" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">DATA ADAPTER &amp; CACHE</text>
-        
-        <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Động Cơ Dữ Liệu &amp; Đệm Kép SQLite</text>
 
-        <!-- Subcard 1: External API Fetcher -->
-        <g transform="translate(16, 68)">
-          <rect width="298" height="120" rx="6" fill="#0e1524" stroke="#1b253b" stroke-width="1" />
-          <rect x="10" y="10" width="136" height="16" rx="3" fill="#082f49" />
-          <text x="78" y="21.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">SSI &amp; TCBS DCHART API</text>
+        <!-- Zone 2: Card 4 Dispatcher -->
+        <g transform="translate(410, 80)">
+          <rect width="330" height="225" rx="8" fill="#0b101b" stroke="#a855f7" stroke-width="1.5" />
+          <rect x="16" y="14" width="144" height="18" rx="3" fill="#2e1065" stroke="#7c3aed" stroke-width="1" />
+          <text x="88" y="26.5" fill="#c084fc" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">COMMAND DISPATCHER</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Lõi Điều Phối Lệnh &amp; Quản Lý Phiên</text>
+
+          <g transform="translate(16, 68)">
+            <rect x="0" y="0" width="92" height="32" rx="4" fill="#140e2b" stroke="#3b206e" stroke-width="1" />
+            <text x="46" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">LỆNH /c</text>
+            <text x="46" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Tra cứu nến</text>
+
+            <rect x="102" y="0" width="92" height="32" rx="4" fill="#140e2b" stroke="#3b206e" stroke-width="1" />
+            <text x="148" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">LỆNH /top</text>
+            <text x="148" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Lọc CANSLIM</text>
+
+            <rect x="204" y="0" width="92" height="32" rx="4" fill="#140e2b" stroke="#3b206e" stroke-width="1" />
+            <text x="250" y="14" fill="#c084fc" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">LỆNH /alert</text>
+            <text x="250" y="26" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8.5" text-anchor="middle">Cảnh báo giá</text>
+          </g>
+
+          <text x="16" y="126" fill="#a855f7" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="126" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Định tuyến tác vụ tới Động cơ Dữ liệu hoặc Bộ lọc</text>
+          <text x="16" y="148" fill="#a855f7" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="148" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Quản lý ngữ cảnh Session Context từng người dùng</text>
+          <text x="16" y="170" fill="#a855f7" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="170" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Hàng đợi asyncio.create_task không nghẽn luồng chính</text>
+
+          <rect x="16" y="193" width="298" height="18" rx="3" fill="#2e1065" />
+          <text x="165" y="205.5" fill="#e9d5ff" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">ASYNCIO EVENT LOOP &middot; NON-BLOCKING ROUTER</text>
+        </g>
+
+        <!-- Zone 2: Card 5 Data Engine -->
+        <g transform="translate(410, 365)">
+          <rect width="330" height="405" rx="8" fill="#0b101b" stroke="#1b253b" stroke-width="1.2" />
+          <rect x="16" y="14" width="148" height="18" rx="3" fill="#1e293b" stroke="#334155" stroke-width="1" />
+          <text x="90" y="26.5" fill="#94a3b8" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">DATA ADAPTER &amp; CACHE</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="14.5" font-weight="700">Động Cơ Dữ Liệu &amp; Đệm Kép SQLite</text>
+
+          <!-- Subcard 1 -->
+          <g transform="translate(16, 68)">
+            <rect width="298" height="120" rx="6" fill="#0e1524" stroke="#1b253b" stroke-width="1" />
+            <rect x="10" y="10" width="136" height="16" rx="3" fill="#082f49" />
+            <text x="78" y="21.5" fill="#38bdf8" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">SSI &amp; TCBS DCHART API</text>
+            <text x="12" y="44" fill="#06b6d4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+            <text x="24" y="44" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Kéo nến OHLCV thời gian thực qua REST API</text>
+            <text x="12" y="64" fill="#06b6d4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+            <text x="24" y="64" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Tự động xoay Header &amp; User-Agent (Bypass WAF)</text>
+            <text x="12" y="84" fill="#06b6d4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+            <text x="24" y="84" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Cơ chế tự động Retry với Exponential Backoff</text>
+            <text x="12" y="104" fill="#06b6d4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+            <text x="24" y="104" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Chuẩn hóa dữ liệu nến: Open, High, Low, Close, Vol</text>
+          </g>
+
+          <!-- Subcard 2 -->
+          <g transform="translate(16, 202)">
+            <rect width="298" height="150" rx="6" fill="#0e1524" stroke="#089981" stroke-width="1" />
+            <rect x="10" y="10" width="168" height="16" rx="3" fill="#064e3b" />
+            <text x="94" y="21.5" fill="#34d399" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">SQLITE CACHE (data_cache/stock.db)</text>
+            <text x="12" y="44" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+            <text x="24" y="44" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5"><tspan fill="#34d399" font-family="var(--font-mono)">Bảng stock_ohlcv:</tspan> Lưu trữ nến 100 phiên gần nhất</text>
+            <text x="12" y="66" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+            <text x="24" y="66" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5"><tspan fill="#34d399" font-family="var(--font-mono)">Bảng user_watchlist:</tspan> Lưu danh mục theo dõi</text>
+            <text x="12" y="88" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+            <text x="24" y="88" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5"><tspan fill="#34d399" font-family="var(--font-mono)">Cơ chế TTL:</tspan> 15p trong phiên, 24h ngoài phiên</text>
+            <text x="12" y="110" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+            <text x="24" y="110" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Cắt giảm hơn <tspan fill="#089981" font-weight="700">80%</tspan> lưu lượng gọi API ngoài</text>
+            <text x="12" y="132" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
+            <text x="24" y="132" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Chế độ ghi WAL đọc/ghi đồng thời không khóa</text>
+          </g>
+
+          <rect x="16" y="368" width="298" height="18" rx="3" fill="#064e3b" />
+          <text x="165" y="380.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">ZERO DISK OVERHEAD &middot; LOCAL CACHE HIT &gt; 82%</text>
+        </g>
+        
+
+        <!-- Zone 3: Card 6 Strategy Engine -->
+        <g transform="translate(850, 80)">
+          <rect width="430" height="265" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.5" />
+          <rect x="16" y="14" width="142" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
+          <text x="87" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">STRATEGY ENGINE</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">Lõi Định Lượng &amp; Bộ Lọc Tín Hiệu CANSLIM</text>
+
+          <g transform="translate(16, 68)">
+            <rect x="0" y="0" width="94" height="48" rx="4" fill="#181206" stroke="#451a03" stroke-width="1" />
+            <text x="47" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">XU HƯỚNG</text>
+            <text x="47" y="32" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">EMA 20/50/200</text>
+            <text x="47" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Golden Cross</text>
+
+            <rect x="101" y="0" width="94" height="48" rx="4" fill="#181206" stroke="#451a03" stroke-width="1" />
+            <text x="148" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">ĐỘNG LƯỢNG</text>
+            <text x="148" y="32" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">RSI (14) &amp; MACD</text>
+            <text x="148" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Quá Mua / Bán</text>
+
+            <rect x="202" y="0" width="94" height="48" rx="4" fill="#181206" stroke="#451a03" stroke-width="1" />
+            <text x="249" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">BIÊN ĐỘ</text>
+            <text x="249" y="32" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">Bollinger (20,2)</text>
+            <text x="249" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Nút Cổ Chai</text>
+
+            <rect x="303" y="0" width="95" height="48" rx="4" fill="#181206" stroke="#451a03" stroke-width="1" />
+            <text x="350" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">BÙNG NỔ VOL</text>
+            <text x="350" y="32" fill="#34d399" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">Vol &gt; 150% MA20</text>
+            <text x="350" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Pocket Pivot</text>
+          </g>
+
+          <text x="16" y="142" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="142" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Chấm điểm kỹ thuật tự động theo chuẩn CANSLIM (Thang 100)</text>
+          <text x="16" y="164" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="164" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Phát hiện sớm điểm mua Pocket Pivot trong nền giá tích lũy chặt</text>
+          <text x="16" y="186" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="186" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tín hiệu khuyến nghị chuẩn xác: <tspan fill="#089981" font-weight="700">MUA</tspan>, <tspan fill="#f59e0b" font-weight="700">GIỮ</tspan>, <tspan fill="#f23645" font-weight="700">BÁN</tspan></text>
+          <text x="16" y="208" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="208" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tích hợp mô-đun Backtest kiểm tra tỷ lệ Win Rate và Sharpe Ratio</text>
+
+          <rect x="16" y="228" width="398" height="18" rx="3" fill="#451a03" />
+          <text x="215" y="240.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">THỜI GIAN QUÉT VÀ TÍNH TOÁN TOÀN BỘ CHỈ BÁO &lt; 35MS</text>
+        </g>
+
+        <!-- Zone 3: Card 7 Candlestick Renderer -->
+        <g transform="translate(850, 410)">
+          <rect width="430" height="415" rx="8" fill="#0b101b" stroke="#089981" stroke-width="1.5" />
+          <rect x="16" y="14" width="162" height="18" rx="3" fill="#064e3b" stroke="#059669" stroke-width="1" />
+          <text x="97" y="26.5" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">VISUAL CANDLESTICK RENDERER</text>
+          <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">Trình Vẽ Biểu Đồ Nến Nhật &amp; Đóng Gói Phản Hồi</text>
+
+          <!-- Mini Candlestick Mockup -->
           
-          <text x="12" y="44" fill="#06b6d4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-          <text x="24" y="44" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Kéo nến OHLCV thời gian thực qua REST API</text>
-
-          <text x="12" y="64" fill="#06b6d4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-          <text x="24" y="64" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Tự động xoay Header &amp; User-Agent (Bypass WAF)</text>
-
-          <text x="12" y="84" fill="#06b6d4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-          <text x="24" y="84" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Cơ chế tự động Retry với Exponential Backoff</text>
-
-          <text x="12" y="104" fill="#06b6d4" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-          <text x="24" y="104" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Chuẩn hóa dữ liệu nến: Open, High, Low, Close, Vol</text>
-        </g>
-
-        <!-- Subcard 2: SQLite Local Cache -->
-        <g transform="translate(16, 202)">
-          <rect width="298" height="150" rx="6" fill="#0e1524" stroke="#089981" stroke-width="1" />
-          <rect x="10" y="10" width="168" height="16" rx="3" fill="#064e3b" />
-          <text x="94" y="21.5" fill="#34d399" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">SQLITE CACHE (data_cache/stock.db)</text>
-          
-          <text x="12" y="44" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-          <text x="24" y="44" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5"><tspan fill="#34d399" font-family="var(--font-mono)">Bảng stock_ohlcv:</tspan> Lưu trữ nến 100 phiên gần nhất</text>
-
-          <text x="12" y="66" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-          <text x="24" y="66" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5"><tspan fill="#34d399" font-family="var(--font-mono)">Bảng user_watchlist:</tspan> Lưu danh mục theo dõi</text>
-
-          <text x="12" y="88" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-          <text x="24" y="88" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5"><tspan fill="#34d399" font-family="var(--font-mono)">Cơ chế TTL:</tspan> 15p trong phiên, 24h ngoài phiên</text>
-
-          <text x="12" y="110" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-          <text x="24" y="110" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Cắt giảm hơn <tspan fill="#089981" font-weight="700">80%</tspan> lưu lượng gọi API ngoài</text>
-
-          <text x="12" y="132" fill="#089981" font-family="var(--font-mono)" font-size="9.5">&bull;</text>
-          <text x="24" y="132" fill="#f1f5f9" font-family="var(--font-sans)" font-size="10.5">Chế độ ghi WAL đọc/ghi đồng thời không khóa</text>
-        </g>
-
-        <!-- Footer Metric -->
-        <rect x="16" y="368" width="298" height="18" rx="3" fill="#064e3b" />
-        <text x="165" y="380.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">ZERO DISK OVERHEAD &middot; LOCAL CACHE HIT &gt; 82%</text>
-      </g>
-
-
-      <!-- ============================================================ -->
-      <!-- ZONE 3: QUANT ENGINE & VISUAL CANDLESTICK (Right Column)     -->
-      <!-- ============================================================ -->
-
-      <!-- Card 6: Strategy Engine -->
-      <g transform="translate(850, 80)">
-        <rect width="430" height="265" rx="8" fill="#0b101b" stroke="#f59e0b" stroke-width="1.5" />
+      <g transform="translate(16, 68)">
+        <!-- Container Box -->
+        <rect width="398" height="180" rx="6" fill="#080c16" stroke="#1b253b" stroke-width="1" />
         
-        <!-- Header Tag -->
-        <rect x="16" y="14" width="142" height="18" rx="3" fill="#451a03" stroke="#b45309" stroke-width="1" />
-        <text x="87" y="26.5" fill="#fbbf24" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">STRATEGY ENGINE</text>
-        
-        <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">Lõi Định Lượng &amp; Bộ Lọc Tín Hiệu CANSLIM</text>
+        <!-- Header Bar -->
+        <rect width="398" height="24" rx="6" fill="#0c121e" />
+        <text x="10" y="16" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700">FPT &middot; KHUNG NGÀY (D1)</text>
+        <text x="215" y="16" fill="#34d399" font-family="var(--font-mono)" font-size="9.5" font-weight="700">91.50 (+4.2%)</text>
+        <text x="320" y="16" fill="#06b6d4" font-family="var(--font-mono)" font-size="8">EMA20: 88.4</text>
 
-        <!-- 4-Box Technical Matrix -->
-        <g transform="translate(16, 68)">
-          <!-- Box 1: Trend -->
-          <rect x="0" y="0" width="94" height="48" rx="4" fill="#181206" stroke="#451a03" stroke-width="1" />
-          <text x="47" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">XU HƯỚNG</text>
-          <text x="47" y="32" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">EMA 20/50/200</text>
-          <text x="47" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Golden Cross</text>
+        <!-- Chart Grid & Candles -->
+        <g transform="translate(8, 30)">
+          <line x1="0" y1="20" x2="345" y2="20" stroke="#141c2e" stroke-width="1" stroke-dasharray="2 2" />
+          <line x1="0" y1="50" x2="345" y2="50" stroke="#141c2e" stroke-width="1" stroke-dasharray="2 2" />
+          <line x1="0" y1="80" x2="345" y2="80" stroke="#141c2e" stroke-width="1" stroke-dasharray="2 2" />
+          <line x1="0" y1="105" x2="345" y2="105" stroke="#1e293b" stroke-width="1" />
 
-          <!-- Box 2: Momentum -->
-          <rect x="101" y="0" width="94" height="48" rx="4" fill="#181206" stroke="#451a03" stroke-width="1" />
-          <text x="148" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">ĐỘNG LƯỢNG</text>
-          <text x="148" y="32" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">RSI (14) &amp; MACD</text>
-          <text x="148" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Quá Mua / Bán</text>
+          <!-- Y-Axis Labels -->
+          <text x="350" y="24" fill="#64748b" font-family="var(--font-mono)" font-size="7.5">93.0</text>
+          <text x="350" y="54" fill="#64748b" font-family="var(--font-mono)" font-size="7.5">89.0</text>
+          <text x="350" y="84" fill="#64748b" font-family="var(--font-mono)" font-size="7.5">85.0</text>
+          <text x="350" y="130" fill="#64748b" font-family="var(--font-mono)" font-size="7">VOL</text>
 
-          <!-- Box 3: Volatility -->
-          <rect x="202" y="0" width="94" height="48" rx="4" fill="#181206" stroke="#451a03" stroke-width="1" />
-          <text x="249" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">BIÊN ĐỘ</text>
-          <text x="249" y="32" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">Bollinger (20,2)</text>
-          <text x="249" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Nút Cổ Chai</text>
+          <!-- Candlesticks & Volume Bars -->
+          <line x1="15" y1="65" x2="15" y2="88" stroke="#089981" stroke-width="1.2" />
+          <rect x="10" y="70" width="10" height="14" fill="#089981" rx="1" />
+          <rect x="10" y="125" width="10" height="15" fill="#089981" opacity="0.6" />
 
-          <!-- Box 4: Breakout -->
-          <rect x="303" y="0" width="95" height="48" rx="4" fill="#181206" stroke="#451a03" stroke-width="1" />
-          <text x="350" y="16" fill="#fbbf24" font-family="var(--font-mono)" font-size="8.5" font-weight="700" text-anchor="middle">BÙNG NỔ VOL</text>
-          <text x="350" y="32" fill="#34d399" font-family="var(--font-mono)" font-size="9.5" font-weight="700" text-anchor="middle">Vol &gt; 150% MA20</text>
-          <text x="350" y="42" fill="#8b9bb4" font-family="var(--font-sans)" font-size="8" text-anchor="middle">Pocket Pivot</text>
-        </g>
+          <line x1="45" y1="68" x2="45" y2="85" stroke="#f23645" stroke-width="1.2" />
+          <rect x="40" y="72" width="10" height="10" fill="#f23645" rx="1" />
+          <rect x="40" y="130" width="10" height="10" fill="#f23645" opacity="0.6" />
 
-        <!-- Bullets -->
-        <text x="16" y="142" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="142" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Chấm điểm kỹ thuật tự động theo chuẩn CANSLIM (Thang 100)</text>
+          <line x1="75" y1="58" x2="75" y2="80" stroke="#089981" stroke-width="1.2" />
+          <rect x="70" y="64" width="10" height="12" fill="#089981" rx="1" />
+          <rect x="70" y="122" width="10" height="18" fill="#089981" opacity="0.6" />
 
-        <text x="16" y="164" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="164" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Phát hiện sớm điểm mua Pocket Pivot trong nền giá tích lũy chặt</text>
+          <line x1="105" y1="50" x2="105" y2="72" stroke="#089981" stroke-width="1.2" />
+          <rect x="100" y="54" width="10" height="14" fill="#089981" rx="1" />
+          <rect x="100" y="118" width="10" height="22" fill="#089981" opacity="0.6" />
 
-        <text x="16" y="186" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="186" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tín hiệu khuyến nghị chuẩn xác: <tspan fill="#089981" font-weight="700">MUA</tspan>, <tspan fill="#f59e0b" font-weight="700">GIỮ</tspan>, <tspan fill="#f23645" font-weight="700">BÁN</tspan></text>
+          <line x1="135" y1="52" x2="135" y2="70" stroke="#f23645" stroke-width="1.2" />
+          <rect x="130" y="56" width="10" height="10" fill="#f23645" rx="1" />
+          <rect x="130" y="128" width="10" height="12" fill="#f23645" opacity="0.6" />
 
-        <text x="16" y="208" fill="#f59e0b" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="208" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tích hợp mô-đun Backtest kiểm tra tỷ lệ Win Rate và Sharpe Ratio</text>
+          <line x1="165" y1="55" x2="165" y2="75" stroke="#f23645" stroke-width="1.2" />
+          <rect x="160" y="60" width="10" height="12" fill="#f23645" rx="1" />
+          <rect x="160" y="132" width="10" height="8" fill="#f23645" opacity="0.6" />
 
-        <!-- Footer Metric -->
-        <rect x="16" y="228" width="398" height="18" rx="3" fill="#451a03" />
-        <text x="215" y="240.5" fill="#fcd34d" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">THỜI GIAN QUÉT VÀ TÍNH TOÁN TOÀN BỘ CHỈ BÁO &lt; 35MS</text>
-      </g>
+          <line x1="195" y1="52" x2="195" y2="68" stroke="#089981" stroke-width="1.2" />
+          <rect x="190" y="56" width="10" height="8" fill="#089981" rx="1" />
+          <rect x="190" y="133" width="10" height="7" fill="#089981" opacity="0.6" />
 
-      <!-- Card 7: Visual Candlestick Renderer & Response Packager -->
-      <g transform="translate(850, 410)">
-        <rect width="430" height="415" rx="8" fill="#0b101b" stroke="#089981" stroke-width="1.5" />
-        
-        <!-- Header Tag -->
-        <rect x="16" y="14" width="162" height="18" rx="3" fill="#064e3b" stroke="#059669" stroke-width="1" />
-        <text x="97" y="26.5" fill="#34d399" font-family="var(--font-mono)" font-size="9" font-weight="700" text-anchor="middle">VISUAL CANDLESTICK RENDERER</text>
-        
-        <text x="16" y="52" fill="#f1f5f9" font-family="var(--font-sans)" font-size="15" font-weight="700">Trình Vẽ Biểu Đồ Nến Nhật &amp; Đóng Gói Phản Hồi</text>
+          <line x1="225" y1="50" x2="225" y2="66" stroke="#089981" stroke-width="1.2" />
+          <rect x="220" y="54" width="10" height="8" fill="#089981" rx="1" />
+          <rect x="220" y="134" width="10" height="6" fill="#089981" opacity="0.6" />
 
-        <!-- ============================================================ -->
-        <!-- EMBEDDED MINI CANDLESTICK CHART SVG MOCKUP                   -->
-        <!-- ============================================================ -->
-        <g transform="translate(16, 68)">
-          <!-- Container Box -->
-          <rect width="398" height="180" rx="6" fill="#080c16" stroke="#1b253b" stroke-width="1" />
-          
-          <!-- Mockup Header Bar -->
-          <rect width="398" height="24" rx="6" fill="#0c121e" />
-          <text x="10" y="16" fill="#f1f5f9" font-family="var(--font-mono)" font-size="9.5" font-weight="700">FPT &middot; CÔNG TY CP FPT (D1)</text>
-          <text x="215" y="16" fill="#34d399" font-family="var(--font-mono)" font-size="9.5" font-weight="700">91.50 (+4.2%)</text>
-          <text x="320" y="16" fill="#06b6d4" font-family="var(--font-mono)" font-size="8">EMA20: 88.4</text>
+          <line x1="255" y1="42" x2="255" y2="62" stroke="#089981" stroke-width="1.2" />
+          <rect x="250" y="46" width="10" height="12" fill="#089981" rx="1" />
+          <rect x="250" y="124" width="10" height="16" fill="#089981" opacity="0.6" />
 
-          <!-- Chart Area Background & Grid -->
-          <g transform="translate(8, 30)">
-            <!-- Grid Lines -->
-            <line x1="0" y1="20" x2="345" y2="20" stroke="#141c2e" stroke-width="1" stroke-dasharray="2 2" />
-            <line x1="0" y1="50" x2="345" y2="50" stroke="#141c2e" stroke-width="1" stroke-dasharray="2 2" />
-            <line x1="0" y1="80" x2="345" y2="80" stroke="#141c2e" stroke-width="1" stroke-dasharray="2 2" />
-            <line x1="0" y1="105" x2="345" y2="105" stroke="#1e293b" stroke-width="1" /> <!-- Divider to Volume -->
+          <!-- Breakout Candle -->
+          <line x1="285" y1="18" x2="285" y2="48" stroke="#089981" stroke-width="1.6" />
+          <rect x="280" y="24" width="10" height="22" fill="#089981" rx="1" filter="url(#blueGlow)" />
+          <rect x="280" y="110" width="10" height="30" fill="#089981" opacity="0.9" />
 
-            <!-- Y-Axis Labels -->
-            <text x="350" y="24" fill="#64748b" font-family="var(--font-mono)" font-size="7.5">93.0</text>
-            <text x="350" y="54" fill="#64748b" font-family="var(--font-mono)" font-size="7.5">89.0</text>
-            <text x="350" y="84" fill="#64748b" font-family="var(--font-mono)" font-size="7.5">85.0</text>
-            <text x="350" y="130" fill="#64748b" font-family="var(--font-mono)" font-size="7">VOL</text>
+          <line x1="315" y1="12" x2="315" y2="30" stroke="#089981" stroke-width="1.2" />
+          <rect x="310" y="16" width="10" height="10" fill="#089981" rx="1" />
+          <rect x="310" y="115" width="10" height="25" fill="#089981" opacity="0.7" />
 
-            <!-- 11 Candlesticks (x spacing ~ 30px) -->
-            <!-- Bar 1: Green -->
-            <line x1="15" y1="65" x2="15" y2="88" stroke="#089981" stroke-width="1.2" />
-            <rect x="10" y="70" width="10" height="14" fill="#089981" rx="1" />
-            <rect x="10" y="125" width="10" height="15" fill="#089981" opacity="0.6" />
+          <!-- MA Curves -->
+          <path d="M 15 78 Q 75 70, 135 62 T 225 56 T 285 38 T 315 26" fill="none" stroke="#06b6d4" stroke-width="1.8" />
+          <path d="M 15 85 Q 105 80, 195 72 T 315 54" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3 2" />
 
-            <!-- Bar 2: Red -->
-            <line x1="45" y1="68" x2="45" y2="85" stroke="#f23645" stroke-width="1.2" />
-            <rect x="40" y="72" width="10" height="10" fill="#f23645" rx="1" />
-            <rect x="40" y="130" width="10" height="10" fill="#f23645" opacity="0.6" />
-
-            <!-- Bar 3: Green -->
-            <line x1="75" y1="58" x2="75" y2="80" stroke="#089981" stroke-width="1.2" />
-            <rect x="70" y="64" width="10" height="12" fill="#089981" rx="1" />
-            <rect x="70" y="122" width="10" height="18" fill="#089981" opacity="0.6" />
-
-            <!-- Bar 4: Green -->
-            <line x1="105" y1="50" x2="105" y2="72" stroke="#089981" stroke-width="1.2" />
-            <rect x="100" y="54" width="10" height="14" fill="#089981" rx="1" />
-            <rect x="100" y="118" width="10" height="22" fill="#089981" opacity="0.6" />
-
-            <!-- Bar 5: Red -->
-            <line x1="135" y1="52" x2="135" y2="70" stroke="#f23645" stroke-width="1.2" />
-            <rect x="130" y="56" width="10" height="10" fill="#f23645" rx="1" />
-            <rect x="130" y="128" width="10" height="12" fill="#f23645" opacity="0.6" />
-
-            <!-- Bar 6: Red -->
-            <line x1="165" y1="55" x2="165" y2="75" stroke="#f23645" stroke-width="1.2" />
-            <rect x="160" y="60" width="10" height="12" fill="#f23645" rx="1" />
-            <rect x="160" y="132" width="10" height="8" fill="#f23645" opacity="0.6" />
-
-            <!-- Bar 7: Green -->
-            <line x1="195" y1="52" x2="195" y2="68" stroke="#089981" stroke-width="1.2" />
-            <rect x="190" y="56" width="10" height="8" fill="#089981" rx="1" />
-            <rect x="190" y="133" width="10" height="7" fill="#089981" opacity="0.6" />
-
-            <!-- Bar 8: Green -->
-            <line x1="225" y1="50" x2="225" y2="66" stroke="#089981" stroke-width="1.2" />
-            <rect x="220" y="54" width="10" height="8" fill="#089981" rx="1" />
-            <rect x="220" y="134" width="10" height="6" fill="#089981" opacity="0.6" />
-
-            <!-- Bar 9: Green -->
-            <line x1="255" y1="42" x2="255" y2="62" stroke="#089981" stroke-width="1.2" />
-            <rect x="250" y="46" width="10" height="12" fill="#089981" rx="1" />
-            <rect x="250" y="124" width="10" height="16" fill="#089981" opacity="0.6" />
-
-            <!-- Bar 10: Huge Green Breakout Candle! -->
-            <line x1="285" y1="18" x2="285" y2="48" stroke="#089981" stroke-width="1.6" />
-            <rect x="280" y="24" width="10" height="22" fill="#089981" rx="1" filter="url(#blueGlow)" />
-            <rect x="280" y="110" width="10" height="30" fill="#089981" opacity="0.9" />
-
-            <!-- Bar 11: Current Candle -->
-            <line x1="315" y1="12" x2="315" y2="30" stroke="#089981" stroke-width="1.2" />
-            <rect x="310" y="16" width="10" height="10" fill="#089981" rx="1" />
-            <rect x="310" y="115" width="10" height="25" fill="#089981" opacity="0.7" />
-
-            <!-- EMA 20 Curve (Cyan) -->
-            <path d="M 15 78 Q 75 70, 135 62 T 225 56 T 285 38 T 315 26" fill="none" stroke="#06b6d4" stroke-width="1.8" />
-            <!-- EMA 50 Curve (Amber) -->
-            <path d="M 15 85 Q 105 80, 195 72 T 315 54" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3 2" />
-
-            <!-- BUY SIGNAL BADGE OVER BREAKOUT CANDLE -->
-            <g transform="translate(195, 2)">
-              <rect x="0" y="0" width="140" height="18" rx="3" fill="#064e3b" stroke="#34d399" stroke-width="1" />
-              <text x="70" y="12.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">MUA @ 91.5 (VOL +180%)</text>
-            </g>
+          <!-- Signal Badge -->
+          <g transform="translate(195, 2)">
+            <rect x="0" y="0" width="140" height="18" rx="3" fill="#064e3b" stroke="#34d399" stroke-width="1" />
+            <text x="70" y="12.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8" font-weight="700" text-anchor="middle">MUA @ 91.5 (VOL +180%)</text>
           </g>
         </g>
-
-        <!-- Details below chart -->
-        <text x="16" y="270" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="270" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tích hợp thư viện <tspan fill="#34d399" font-family="var(--font-mono)">mplfinance / matplotlib</tspan>: Sinh ảnh nến chất lượng cao</text>
-
-        <text x="16" y="294" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="294" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bộ ghép văn bản: Đóng gói khuyến nghị CANSLIM, Stop-loss và Target</text>
-
-        <text x="16" y="318" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="318" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Gửi ảnh trực tiếp qua Telegram: <tspan fill="#06b6d4" font-family="var(--font-mono)">bot.send_photo(chat_id, photo)</tspan></text>
-
-        <text x="16" y="342" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
-        <text x="28" y="342" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Khép kín toàn bộ chu trình tương tác hai chiều trong thời gian dưới 1 giây</text>
-
-        <!-- Footer Metric -->
-        <rect x="16" y="378" width="398" height="18" rx="3" fill="#064e3b" />
-        <text x="215" y="390.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">RENDER &amp; TRẢ ẢNH ĐỒ THỊ NẾN CHO USER TRONG &lt; 120MS</text>
       </g>
+    
 
+          <text x="16" y="270" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="270" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Tích hợp thư viện <tspan fill="#34d399" font-family="var(--font-mono)">mplfinance / matplotlib</tspan>: Sinh ảnh nến chất lượng cao</text>
+          <text x="16" y="294" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="294" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Bộ ghép văn bản: Đóng gói khuyến nghị CANSLIM, Stop-loss và Target</text>
+          <text x="16" y="318" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="318" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Gửi ảnh trực tiếp qua Telegram: <tspan fill="#06b6d4" font-family="var(--font-mono)">bot.send_photo(chat_id, photo)</tspan></text>
+          <text x="16" y="342" fill="#089981" font-family="var(--font-mono)" font-size="10">&bull;</text>
+          <text x="28" y="342" fill="#f1f5f9" font-family="var(--font-sans)" font-size="11">Khép kín toàn bộ chu trình tương tác hai chiều trong thời gian dưới 1 giây</text>
+
+          <rect x="16" y="378" width="398" height="18" rx="3" fill="#064e3b" />
+          <text x="215" y="390.5" fill="#a7f3d0" font-family="var(--font-mono)" font-size="8.5" font-weight="600" text-anchor="middle">RENDER &amp; TRẢ ẢNH ĐỒ THỊ NẾN CHO USER TRONG &lt; 120MS</text>
+        </g>
+        
     </svg>
   </div>
 
-  <!-- Bottom Architecture Specifications -->
   <div class="footer-notes">
+    
     <div class="note-card">
-      <div class="note-title"><span style="color: #06b6d4;">&bull;</span> CỔNG TIẾP NHẬN TELEGRAM</div>
-      <div class="note-desc">Webhook / Polling async giải mã tham số dòng lệnh siêu tốc &lt; 5ms kèm cơ chế chống spam Token Bucket per User ID.</div>
+      <div class="note-title"><span style="color: #06b6d4; font-size: 14px;">&bull;</span> CỔNG TIẾP NHẬN TELEGRAM</div>
+      <div class="note-desc">Webhook / Polling async giải mã tham số dòng lệnh siêu tốc < 5ms kèm cơ chế chống spam Token Bucket per User ID.</div>
     </div>
     <div class="note-card">
-      <div class="note-title"><span style="color: #a855f7;">&bull;</span> BỘ ĐỆM KÉP SQLITE</div>
+      <div class="note-title"><span style="color: #a855f7; font-size: 14px;">&bull;</span> BỘ ĐỆM KÉP SQLITE</div>
       <div class="note-desc">Lưu trữ nến 100 phiên cục bộ tại data_cache/stock.db, TTL thông minh giúp giảm hơn 80% truy vấn mạng bên ngoài.</div>
     </div>
     <div class="note-card">
-      <div class="note-title"><span style="color: #f59e0b;">&bull;</span> ĐỊNH LƯỢNG CANSLIM</div>
-      <div class="note-desc">Bộ chỉ báo 4 chiều (Xu hướng, Động lượng, Biên độ, Bùng nổ Vol) tính toán tín hiệu Mua/Bán và Pocket Pivot trong &lt; 35ms.</div>
+      <div class="note-title"><span style="color: #f59e0b; font-size: 14px;">&bull;</span> ĐỊNH LƯỢNG CANSLIM</div>
+      <div class="note-desc">Bộ chỉ báo 4 chiều (Xu hướng, Động lượng, Biên độ, Bùng nổ Vol) tính toán tín hiệu Mua/Bán và Pocket Pivot trong < 35ms.</div>
     </div>
     <div class="note-card">
-      <div class="note-title"><span style="color: #089981;">&bull;</span> ĐỒ THỊ NẾN 4 PANEL</div>
-      <div class="note-desc">Trình kết xuất đồ họa nến chuyên nghiệp qua mplfinance, đóng gói gửi ảnh trực tiếp về Telegram User trong &lt; 120ms.</div>
+      <div class="note-title"><span style="color: #089981; font-size: 14px;">&bull;</span> ĐỒ THỊ NẾN 4 PANEL</div>
+      <div class="note-desc">Trình kết xuất đồ họa nến chuyên nghiệp qua mplfinance, đóng gói gửi ảnh trực tiếp về Telegram User trong < 120ms.</div>
     </div>
   </div>
 </div>
 
+<!-- Modal Trợ Giúp Phím Tắt -->
+<div class="modal-overlay" id="helpModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <span class="modal-title">PHÍM TẮT ĐIỀU KHIỂN (VIEWER SHORTCUTS)</span>
+      <button class="modal-close" id="closeModalBtn">ESC</button>
+    </div>
+    <div class="shortcuts-list">
+      <div class="shortcut-row"><span>Tìm kiếm thành phần</span> <kbd>/</kbd></div>
+      <div class="shortcut-row"><span>Chuyển đổi giao diện Sáng / Tối</span> <kbd>T</kbd></div>
+      <div class="shortcut-row"><span>Hủy chọn / Đặt lại bộ lọc</span> <kbd>ESC</kbd></div>
+      <div class="shortcut-row"><span>Xuất ảnh Vector SVG</span> <kbd>Alt + S</kbd></div>
+      <div class="shortcut-row"><span>Xuất ảnh Raster PNG 2x</span> <kbd>Alt + P</kbd></div>
+      <div class="shortcut-row"><span>Mở bảng trợ giúp này</span> <kbd>?</kbd></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Institutional Interactive Engine (Zero External Dependencies)
+  (function() {
+    const htmlEl = document.documentElement;
+    const svgEl = document.getElementById('diagramSvg');
+    const searchInput = document.getElementById('nodeSearch');
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const exportSvgBtn = document.getElementById('exportSvgBtn');
+    const exportPngBtn = document.getElementById('exportPngBtn');
+    const helpBtn = document.getElementById('helpBtn');
+    const helpModal = document.getElementById('helpModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // 1. Theme Management
+    function setTheme(theme) {
+      htmlEl.setAttribute('data-theme', theme);
+      themeBtn.textContent = 'THEME: ' + theme.toUpperCase();
+      try { localStorage.setItem('dm_theme', theme); } catch(e) {}
+    }
+
+    const savedTheme = (function() {
+      try { return localStorage.getItem('dm_theme') || 'dark'; } catch(e) { return 'dark'; }
+    })();
+    setTheme(savedTheme);
+
+    themeBtn.addEventListener('click', () => {
+      const cur = htmlEl.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      setTheme(cur);
+    });
+
+    // 2. Search & Filter
+    searchInput.addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      const nodes = svgEl.querySelectorAll('.diagram-node, g[filter="url(#nodeShadow)"]');
+      const wires = svgEl.querySelectorAll('.diagram-wire, path[stroke]');
+
+      if (!q) {
+        nodes.forEach(n => n.classList.remove('dimmed', 'highlighted'));
+        wires.forEach(w => w.classList.remove('dimmed', 'highlighted-wire'));
+        return;
+      }
+
+      nodes.forEach(n => {
+        const text = n.textContent.toLowerCase();
+        if (text.includes(q)) {
+          n.classList.remove('dimmed');
+          n.classList.add('highlighted');
+        } else {
+          n.classList.add('dimmed');
+          n.classList.remove('highlighted');
+        }
+      });
+
+      wires.forEach(w => w.classList.add('dimmed'));
+    });
+
+    // 3. Upstream & Downstream Reach Tracing
+    let selectedNodeId = null;
+    svgEl.addEventListener('click', (e) => {
+      const nodeG = e.target.closest('.diagram-node');
+      if (!nodeG) {
+        // Reset selection when clicking outside
+        selectedNodeId = null;
+        svgEl.querySelectorAll('.diagram-node, g[filter]').forEach(n => n.classList.remove('dimmed', 'highlighted'));
+        svgEl.querySelectorAll('.diagram-wire, path[stroke]').forEach(w => w.classList.remove('dimmed', 'highlighted-wire'));
+        return;
+      }
+
+      const nodeId = nodeG.getAttribute('data-node-id');
+      if (selectedNodeId === nodeId) {
+        selectedNodeId = null;
+        svgEl.querySelectorAll('.diagram-node, g[filter]').forEach(n => n.classList.remove('dimmed', 'highlighted'));
+        svgEl.querySelectorAll('.diagram-wire, path[stroke]').forEach(w => w.classList.remove('dimmed', 'highlighted-wire'));
+        return;
+      }
+
+      selectedNodeId = nodeId;
+      const allNodes = svgEl.querySelectorAll('.diagram-node');
+      const allWires = svgEl.querySelectorAll('.diagram-wire');
+
+      if (allWires.length > 0) {
+        const connectedNodes = new Set([nodeId]);
+        allWires.forEach(w => {
+          const fromId = w.getAttribute('data-from');
+          const toId = w.getAttribute('data-to');
+          if (fromId === nodeId || toId === nodeId) {
+            w.classList.remove('dimmed');
+            w.classList.add('highlighted-wire');
+            if (fromId) connectedNodes.add(fromId);
+            if (toId) connectedNodes.add(toId);
+          } else {
+            w.classList.add('dimmed');
+            w.classList.remove('highlighted-wire');
+          }
+        });
+
+        allNodes.forEach(n => {
+          const nid = n.getAttribute('data-node-id');
+          if (connectedNodes.has(nid)) {
+            n.classList.remove('dimmed');
+            n.classList.add('highlighted');
+          } else {
+            n.classList.add('dimmed');
+            n.classList.remove('highlighted');
+          }
+        });
+      }
+    });
+
+    // 4. Client-side SVG & PNG Export
+    function exportSvg() {
+      const serializer = new XMLSerializer();
+      let source = serializer.serializeToString(svgEl);
+      if (!source.includes('xmlns="http://www.w3.org/2000/svg"')) {
+        source = source.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+      }
+      const blob = new Blob(['<?xml version="1.0" standalone="no"?>\r\n', source], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Telegram Stock Bot - Kiến Trúc Luồng Sự Kiện Tương Tác & Phân Tích Định Lượng'.replace(/[^a-zA-Z0-9_-]/g, '_') + '.svg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function exportPng() {
+      const serializer = new XMLSerializer();
+      let source = serializer.serializeToString(svgEl);
+      const vb = svgEl.viewBox.baseVal;
+      const w = (vb && vb.width) ? vb.width : 1320;
+      const h = (vb && vb.height) ? vb.height : 915;
+
+      const canvas = document.createElement('canvas');
+      const scale = 2; // 2x Retina quality
+      canvas.width = w * scale;
+      canvas.height = h * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(scale, scale);
+
+      const img = new Image();
+      const svgBlob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+
+      img.onload = function() {
+        ctx.fillStyle = htmlEl.getAttribute('data-theme') === 'light' ? '#ffffff' : '#070a12';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+
+        canvas.toBlob(function(blob) {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'Telegram Stock Bot - Kiến Trúc Luồng Sự Kiện Tương Tác & Phân Tích Định Lượng'.replace(/[^a-zA-Z0-9_-]/g, '_') + '_retina.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, 'image/png');
+      };
+      img.src = url;
+    }
+
+    exportSvgBtn.addEventListener('click', exportSvg);
+    exportPngBtn.addEventListener('click', exportPng);
+
+    // 5. Modal & Keyboard Shortcuts
+    function toggleHelp(show) {
+      if (show === undefined) helpModal.classList.toggle('active');
+      else if (show) helpModal.classList.add('active');
+      else helpModal.classList.remove('active');
+    }
+
+    helpBtn.addEventListener('click', () => toggleHelp(true));
+    closeModalBtn.addEventListener('click', () => toggleHelp(false));
+    helpModal.addEventListener('click', (e) => { if (e.target === helpModal) toggleHelp(false); });
+
+    window.addEventListener('keydown', (e) => {
+      const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
+      if (e.key === 'Escape') {
+        toggleHelp(false);
+        searchInput.value = '';
+        searchInput.blur();
+        searchInput.dispatchEvent(new Event('input'));
+        selectedNodeId = null;
+        svgEl.querySelectorAll('.diagram-node, g[filter]').forEach(n => n.classList.remove('dimmed', 'highlighted'));
+        svgEl.querySelectorAll('.diagram-wire, path[stroke]').forEach(w => w.classList.remove('dimmed', 'highlighted-wire'));
+      } else if (!isInput) {
+        if (e.key === '/') {
+          e.preventDefault();
+          searchInput.focus();
+        } else if (e.key === 't' || e.key === 'T') {
+          e.preventDefault();
+          themeBtn.click();
+        } else if (e.key === '?') {
+          e.preventDefault();
+          toggleHelp();
+        }
+      }
+    });
+  })();
+</script>
 </body>
 </html>
