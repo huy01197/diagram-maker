@@ -83,6 +83,32 @@ The engine features specialized orthogonal columnar compilers (4-tier and 5-tier
 
 ---
 
+## Core Architectural Innovations
+
+To satisfy institutional-grade clarity, dense information layout, and strict presentation aesthetics, `diagram-maker` establishes four foundational engineering standards:
+
+### 1. Virtual Port Coupling Pattern (A / B / C / D / E / F...)
+* **Cross-Tier Overlap Elimination:** Complex multi-stage architectures frequently require long feedback loops or cross-tier data conduits that cross multiple corridors, causing line tangles and visual occlusion. The Virtual Port Coupling pattern decouples physical routing into explicit transmitter-receiver port pairs labeled `(A)`, `(B)`, `(C)`...
+* **Zero Collision & Clean Sightlines:** Completely eliminates crossing lines and preserves visual hierarchy across decoupled tiers.
+* **Synchronized Interactive Pulse:** Hovering over any source port `(A)` triggers an immediate, synchronized luminous pulse (`port-pulse`) across all corresponding destination ports `(A)` diagram-wide via client-side JavaScript.
+* **Institutional Functional Palette (`PORT_PALETTE`):** Standardized functional chromatic coding (A: Quant Violet `#a855f7`, B: Live Stream Emerald `#089981`, C: Buffer Cyan `#06b6d4`, D: Failover Amber `#f59e0b`, E: Navigation Blue `#2962ff`, F: Circuit Breaker Red `#f23645`).
+
+### 2. Symmetrical Geometry & Dead Space Elimination (Tight-Fit Canvas)
+* **Header Sector Removal:** Obsolete frosted background header strips are removed, shifting the entire visual tier upward to $y = 35$, expanding vertical card capacity and internal margin headroom.
+* **Mathematical Symmetrical Spacing:** Uniform top margin ($35\text{ px}$), bottom margin ($35\text{ px}$), and lateral margins ($45\text{ px}$).
+* **Dynamic Canvas Height:** Auto-calculated using $H_{\text{canvas}} = y_{\max} + 35\text{ px}$ (Medallion Lakehouse: $795\text{ px}$; Streaming Topology: $810\text{ px}$), eliminating over $160\text{ px}$ of dead vertical space.
+* **Cohesive Footer Attachment:** The 4-card architectural note section is positioned directly below the canvas with a calibrated `margin-top: 18px`, delivering a unified, structural visual block.
+
+### 3. Micro-Typography & Inline Monospace Chips
+* **Monospace Pill Tags:** Long file extensions and technical identifiers (e.g., `download_history.json`, `config.json`) are rendered within isolated `#1e293b` chip badges in amber `Geist Mono`, enforcing a safe lateral boundary $\ge 40\text{ px}$ to eliminate text clipping or cramped borders.
+* **Compact Titles & Eyebrow Taxonomy:** Main titles are constrained to concise ecosystem designations ($\le 50$ chars); Eyebrow headers serve as crisp architectural taxonomy badges.
+
+### 4. Full-Width 1540px Desktop Container Standard
+* The root viewport container is calibrated to `max-width: 1540px` in `src/core/base.py`, allowing high-density $1440 \times 795$ canvases to display natively at 1:1 pixel fidelity without downscaling or horizontal blur.
+* Full technical specifications and implementation guidelines are detailed in [**docs/ARCHITECTURE_DESIGN_SYSTEM.md**](docs/ARCHITECTURE_DESIGN_SYSTEM.md).
+
+---
+
 ## Architectural Principles & Capabilities
 
 | Principle | Technical Implementation | Practical Benefit |
@@ -262,20 +288,13 @@ diagram-maker/
 ├── LICENSE                        # MIT License
 ├── README.md                      # Vietnamese Documentation
 ├── README_EN.md                   # English Documentation (Institutional Standard)
-├── assets/                        # High-resolution showcase assets
-│   ├── product_portal_overview.png
-│   ├── vietnam_stock_heatmap.png
-│   ├── telegram_stock_bot.png
-│   ├── vietnamese_stock_analysis.png
-│   ├── column_architecture_showcase.png
-│   ├── presentation_slide_showcase.png
-│   └── en/                        # English Retina screenshots (@2x)
-│       ├── product_portal_overview.png
-│       ├── vietnam_stock_heatmap.png
-│       ├── telegram_stock_bot.png
-│       ├── vietnamese_stock_analysis.png
-│       ├── column_architecture_showcase.png
-│       └── presentation_slide_showcase.png
+│
+├── docs/                          # Technical documentation
+│   └── ARCHITECTURE_DESIGN_SYSTEM.md # Design system & virtual port coupling specifications
+├── .gemini/                       # Ecosystem rules and system prompts
+│   └── rules/
+│       └── diagram_design.md      # Institutional diagram design rules
+│
 ├── Product/                       # Interactive architecture showcase portal
 │   ├── index.html                 # Centralized multi-tab architecture console (VI)
 │   ├── vietnam-stock-heatmap-architecture.html
@@ -290,26 +309,48 @@ diagram-maker/
 │   ├── diagram_spec.schema.json
 │   └── slide_spec.schema.json
 ├── specs/                         # Declarative JSON AST specifications
-│   ├── projects/                  # Production pipelines (VI & EN)
-│   │   ├── vietnam_stock_heatmap.json
-│   │   ├── telegram_stock_bot.json
-│   │   ├── vietnamese_stock_analysis.json
-│   │   └── en/                    # English production specifications
-│   └── samples/                   # Canonical template samples (VI & EN)
-│       ├── sample_diagram.json
-│       ├── sample_slide.json
-│       └── en/                    # English template samples
+│   ├── samples/                   # Canonical template samples (VI & EN)
+│   │   ├── sample_diagram.json
+│   │   ├── sample_slide.json
+│   │   └── en/                    # English template samples
+│   └── projects/                  # Production pipelines (VI & EN)
+│       ├── vietnam_stock_heatmap.json      # Streaming topology
+│       ├── telegram_stock_bot.json         # Closed-loop topology
+│       ├── vietnamese_stock_analysis.json  # Medallion topology
+│       ├── vietnam_stock_heatmap_4tier.json
+│       ├── vietnam_stock_heatmap_5tier.json
+│       ├── telegram_stock_bot_5tier.json
+│       ├── vietnamese_stock_analysis_4tier.json
+│       ├── vietnamese_stock_analysis_5tier.json
+│       └── en/                             # English production specifications
+│
 ├── output/                        # Standalone compiled vector HTML deliverables
 │   ├── *.html                     # Vietnamese compiled deliverables
 │   └── en/                        # English compiled deliverables
-└── src/                           # Pure Python compilation engine
-    ├── cli.py                     # Unified CLI dispatcher & argument parser
-    ├── validator.py               # Deterministic AST & connection integrity validator
-    ├── engine.py                  # Multi-topology runtime dispatcher
-    ├── compiler.py                # Orthogonal columnar vector compiler (port spread & bezier)
-    ├── slide_compiler.py          # 16:9 presentation slide compiler
-    ├── core/                      # Geometry, color palettes, micro-mockups
-    └── topologies/                # Streaming, closed-loop, and medallion compilers
+│
+├── src/                           # Pure Python compilation engine
+│   ├── cli.py                     # Unified CLI dispatcher & argument parser
+│   ├── validator.py               # Deterministic AST & connection integrity validator
+│   ├── engine.py                  # Multi-topology runtime dispatcher
+│   ├── compiler.py                # Orthogonal columnar vector compiler (port spread & bezier)
+│   ├── slide_compiler.py          # 16:9 presentation slide compiler
+│   ├── core/                      # Geometry, color palettes, micro-mockups
+│   └── topologies/                # Streaming, closed-loop, and medallion compilers
+│
+└── assets/                        # High-resolution showcase assets
+    ├── product_portal_overview.png
+    ├── vietnam_stock_heatmap.png
+    ├── telegram_stock_bot.png
+    ├── vietnamese_stock_analysis.png
+    ├── column_architecture_showcase.png
+    ├── presentation_slide_showcase.png
+    └── en/                        # English Retina screenshots (@2x)
+        ├── product_portal_overview.png
+        ├── vietnam_stock_heatmap.png
+        ├── telegram_stock_bot.png
+        ├── vietnamese_stock_analysis.png
+        ├── column_architecture_showcase.png
+        └── presentation_slide_showcase.png
 ```
 
 ---

@@ -105,7 +105,33 @@ Dưới đây là các sơ đồ kiến trúc thành phẩm được sinh ra tr�
 
 ---
 
-## 3. Đa Dạng Các Dạng Biểu Diễn (Diagram Taxonomy)
+## 3. Các Đột Phá Kỹ Thuật Đồ Họa Độc Quyền (Core Architectural Innovations)
+
+Nhằm đáp ứng yêu cầu khắt khe về độ chính xác và thẩm mỹ của các hệ thống tài chính cấp doanh nghiệp, `diagram-maker` đã nghiên cứu và chuẩn hóa 4 trụ cột kỹ thuật đồ họa độc quyền:
+
+### A. Kỹ Thuật Ghép Cổng Ảo (Virtual Port Coupling Pattern A / B / C / D / E / F...)
+* **Giải quyết bài toán giao cắt đường dây:** Trong các kiến trúc đa luồng phức tạp, các tuyến dữ liệu liên tầng (Cross-Tier Pipelines) thường phải băng qua hành lang hẹp, tạo thành các đường cao tốc dài đè chéo lên nhau. Kỹ thuật ghép cổng ảo phân tách tuyến cáp thành các cặp cổng thu-phát định danh rõ ràng `(A)`, `(B)`, `(C)`...
+* **Triệt tiêu 100% điểm đè vạch:** Loại bỏ hoàn toàn các đường dây chéo rườm rà, mắt người xem tiếp nhận cấu trúc hệ thống theo từng phân khu mạch lạc.
+* **Tương tác động đồng bộ (Coupled Port Pulse):** Khi rê chuột vào cổng nguồn `(A)`, toàn bộ các cổng đích `(A)` tương ứng trên toàn sơ đồ sẽ tự động kích hoạt hiệu ứng phát quang xung nhịp (`port-pulse`) đồng bộ thông qua bộ điều khiển JavaScript nhúng sẵn.
+* **Bảng màu phân định chuẩn hóa (`PORT_PALETTE`):** Tự động gán màu chức năng theo chuẩn Institutional Terminal (A: Tím định lượng `#a855f7`, B: Xanh ngọc Live Stream `#089981`, C: Xanh cyan bộ đệm `#06b6d4`, D: Hổ phách dự phòng `#f59e0b`, E: Xanh dương điều hướng `#2962ff`, F: Đỏ hồng ngắt mạch `#f23645`).
+
+### B. Bố Cục Hình Học Đối Xứng & Thu Gọn Khoảng Chết (Tight-Fit Canvas)
+* **Loại bỏ Header Sector tĩnh:** Lược bỏ các dải tiêu đề nền mờ chiếm dụng không gian ở đỉnh, đẩy toàn bộ khối thẻ lên tọa độ $y = 35$, mở rộng chiều cao và tăng độ thở (padding/margin) bên trong thẻ.
+* **Tỷ lệ đối xứng toán học:** Duy trì lề đỉnh đúng $35\text{ px}$, lề đáy đúng $35\text{ px}$, lề trái/phải đúng $45\text{ px}$.
+* **Thu gọn chiều cao chính xác:** Chiều cao canvas được tính toán tự động theo công thức $H_{\text{canvas}} = y_{\max} + 35\text{ px}$ (Medallion Lakehouse: $795\text{ px}$; Streaming Topology: $810\text{ px}$), triệt tiêu hoàn toàn $160\text{ px}$ khoảng chết.
+* **Gắn kết liền mạch khối chú thích (Footer Notes):** Khối 4 thẻ giải thích kiến trúc bên dưới kéo sát mép đáy sơ đồ với khoảng đệm `margin-top: 18px`, tạo nên một bố cục gắn kết, vững chãi và liền khối.
+
+### C. Quy Chuẩn Vi Mô Kiểu Chữ (Micro-Typography & Safe Margins)
+* **Chip tag Monospace chuyên biệt:** Các chuỗi ký tự kỹ thuật dài (như `download_history.json`, `config.json`) được tách khỏi dòng chữ thông thường và đặt trong chip tag nền tối `#1e293b` với phông `Geist Mono` màu hổ phách, đảm bảo lề an toàn bên phải $\ge 40\text{ px}$, xóa bỏ triệt để hiện tượng tràn viền hay chèn ép chữ.
+* **Tiêu đề cô đọng & Eyebrow Taxonomy:** Giới hạn tiêu đề chính $\le 50$ ký tự tập trung trực diện vào tên hệ sinh thái; Eyebrow Header đóng vai trò thẻ phân loại kiến trúc (`TAXONOMY TAG`) ngắn gọn, sắc sảo.
+
+### D. Khung Hiển Thị Mở Rộng (Full-Width 1540px Desktop Container)
+* Khung chứa `.container` được cấu hình `max-width: 1540px` trong `src/core/base.py`, cho phép canvas $1440 \times 795$ hiển thị ở tỷ lệ nguyên bản 1:1 siêu nét trên màn hình máy tính mà không bị co kéo hay suy hao độ phân giải.
+* Chi tiết đặc tả toàn diện được chuẩn hóa tại [**docs/ARCHITECTURE_DESIGN_SYSTEM.md**](docs/ARCHITECTURE_DESIGN_SYSTEM.md).
+
+---
+
+## 4. Đa Dạng Các Dạng Biểu Diễn (Diagram Taxonomy)
 
 Ngoài các kiến trúc luồng phức tạp, `diagram-maker` hỗ trợ đầy đủ các dạng sơ đồ phân tầng cột trực giao và slide thuyết trình kỹ thuật:
 
@@ -130,7 +156,7 @@ Ngoài các kiến trúc luồng phức tạp, `diagram-maker` hỗ trợ đầy
 
 ---
 
-## 4. Năng Lực Xuất Bản Đa Định Dạng (Outputs Matrix)
+## 5. Năng Lực Xuất Bản Đa Định Dạng (Outputs Matrix)
 
 `diagram-maker` cung cấp khả năng xuất bản linh hoạt tùy theo mục đích truyền tải:
 
@@ -143,7 +169,7 @@ Ngoài các kiến trúc luồng phức tạp, `diagram-maker` hỗ trợ đầy
 
 ---
 
-## 5. Hướng Dẫn Soạn Thảo Đặc Tả JSON (DSL Guide)
+## 6. Hướng Dẫn Soạn Thảo Đặc Tả JSON (DSL Guide)
 
 Mọi sơ đồ trong `diagram-maker` được khai báo bằng cấu trúc JSON AST tường minh, tinh gọn và dễ bảo trì:
 
@@ -153,8 +179,8 @@ Mọi sơ đồ trong `diagram-maker` được khai báo bằng cấu trúc JSON
   "title": "Tên Hệ Thống - Phụ Đề Kiến Trúc Kỹ Thuật",
   "eyebrow": "TÊN PHÂN LOẠI TOPOLOGY · PHÂN HẠNG VẬN HÀNH",
   "topology": "streaming",
-  "width": 1320,
-  "height": 915,
+  "width": 1440,
+  "height": 810,
   "metrics": [
     { "label": "Độ Trễ Phản Hồi", "value": "< 16 ms", "color": "#34d399" },
     { "label": "Thông Lượng Xử Lý", "value": "2.500+ Tick/Giây", "color": "#38bdf8" },
@@ -210,7 +236,7 @@ Mọi sơ đồ trong `diagram-maker` được khai báo bằng cấu trúc JSON
 
 ---
 
-## 6. Hướng Dẫn Vận Hành & Khởi Chạy 1-Click
+## 7. Hướng Dẫn Vận Hành & Khởi Chạy 1-Click
 
 ### Yêu Cầu Môi Trường
 * **Python >= 3.10**
@@ -229,7 +255,7 @@ xdg-open Product/index.html
 ### Kiểm Định Tính Toàn Vẹn AST (Validation Gate)
 Cổng kiểm định chất lượng tự động phát hiện lỗi cú pháp, trùng lặp ID, hoặc các đường nối trỏ vào node rỗng (dangling connections):
 ```bash
-# Kiểm định toàn bộ 10 tệp đặc tả trong specs/
+# Kiểm định toàn bộ 15 tệp đặc tả trong specs/
 python3 main.py validate --all
 
 # Kiểm định riêng một tệp đặc tả cụ thể
@@ -237,7 +263,7 @@ python3 main.py validate specs/projects/vietnam_stock_heatmap.json
 ```
 
 ### Biên Dịch 1-Click Toàn Bộ Đặc Tả
-Để tự động quét và biên dịch tất cả 10 tệp đặc tả JSON trong thư mục `specs/`:
+Để tự động quét và biên dịch tất cả 15 tệp đặc tả JSON trong thư mục `specs/`:
 ```bash
 python3 main.py --all
 ```
@@ -269,6 +295,7 @@ Mỗi tệp HTML đầu ra được nhúng sẵn engine tương tác thuần Jav
 | **Tìm kiếm thành phần** | <kbd>/</kbd> | Tìm kiếm nhanh tên node, tự động làm nổi bật node khớp và làm mờ các thành phần khác. |
 | **Chuyển đổi giao diện** | <kbd>T</kbd> | Chuyển đổi qua lại giữa phong cách Neo-Dark (`#070a12`) và Institutional Light (`#f8fafc`). |
 | **Truy vết luồng dữ liệu** | Nhấp chuột | Chọn node để tự động làm sáng toàn bộ các kết nối vào (Upstream) và ra (Downstream). |
+| **Tương tác Cổng Ghép Ảo** | Rê chuột | Rê chuột vào Cổng (A) sẽ kích hoạt hiệu ứng phát quang xung nhịp (`port-pulse`) trên toàn bộ các cổng (A) đối ứng. |
 | **Hủy chọn / Đặt lại** | <kbd>ESC</kbd> | Đặt lại toàn bộ khung nhìn, hủy chọn node và đóng cửa sổ trợ giúp. |
 | **Xuất ảnh Vector SVG** | <kbd>Alt</kbd> + <kbd>S</kbd> | Tải xuống trực tiếp tệp mã nguồn vector SVG từ trình duyệt. |
 | **Xuất ảnh Raster PNG** | <kbd>Alt</kbd> + <kbd>P</kbd> | Render SVG sang Canvas 2x và tải xuống ảnh PNG Retina sắc nét. |
@@ -276,7 +303,7 @@ Mỗi tệp HTML đầu ra được nhúng sẵn engine tương tác thuần Jav
 
 ---
 
-## 7. Bảng Đo Lường Đối Chuẩn Kỹ Thuật (Benchmark Matrix)
+## 8. Bảng Đo Lường Đối Chuẩn Kỹ Thuật (Benchmark Matrix)
 
 So sánh định lượng giữa `diagram-maker` và các công cụ vẽ sơ đồ phổ biến:
 
@@ -284,16 +311,17 @@ So sánh định lượng giữa `diagram-maker` và các công cụ vẽ sơ đ
 | :--- | :--- | :--- |
 | **Chất lượng hiển thị** | Ảnh bitmap (PNG/JPG) mờ vỡ hạt khi phóng to trên màn hình 4K/Retina | **100% Native Vector SVG**, sắc nét vô cực ở mọi tỷ lệ phóng to |
 | **Phụ thuộc môi trường** | Đòi hỏi cài đặt Java JRE, Graphviz C binaries, hoặc Node.js nặng nề | **Zero External Dependencies** (100% Python Standard Library) |
-| **Định tuyến đường dây** | Dây nối cắt chéo qua nhau, đè chữ nhãn giao thức | **Zero-Collision Bezier Routing**, duy trì hành lang $W \ge 110$px |
+| **Định tuyến đường dây** | Dây nối cắt chéo qua nhau, đè chữ nhãn giao thức | **Virtual Port Coupling & Zero-Crossing Manhattan**, khử 100% đè vạch |
+| **Khoảng chết khung nhìn** | Thừa khoảng trống lớn hoặc kích thước co rúm thiếu tự nhiên | **Tight-Fit Canvas**, lề đỉnh/đáy đối xứng $35\text{ px}$, không dead space |
 | **Phong cách thẩm mỹ** | Màu sắc văn phòng pastel đơn giản, thiếu tính chuyên sâu | **Institutional Dark Terminal** (Bloomberg / TradingView / TCBS) |
 | **Micro-Mockup nghiệp vụ** | Chỉ hỗ trợ khối hộp chữ nhật text đơn điệu | **Tích hợp sẵn Treemap, Candlestick OHLCV, 4-Pane Plotly Chart** |
-| **Tốc độ biên dịch** | 1.5 - 4.5 giây (phụ thuộc máy ảo Java / tiến trình ngoài) | **< 0.04 giây / sơ đồ** (biên dịch toàn bộ 10 specs < 0.25 giây) |
+| **Tốc độ biên dịch** | 1.5 - 4.5 giây (phụ thuộc máy ảo Java / tiến trình ngoài) | **< 0.04 giây / sơ đồ** (biên dịch toàn bộ 15 specs < 0.35 giây) |
 | **Trạm điều phối tập trung** | Không có (từng file markdown hoặc hình ảnh rời rạc) | **Trạm Portal tập trung [Product/index.html](Product/index.html)** |
 | **Chuẩn mực biểu tượng** | Dễ lạm dụng icon hoạt họa, emoji màu mè gây rối | **Quy chuẩn Zero-Emoji Tuyệt Đối**, chỉ dùng typography tài chính cao cấp |
 
 ---
 
-## 8. Ma Trận Bảng Màu Institutional Terminal
+## 9. Ma Trận Bảng Màu Institutional Terminal
 
 | Gam màu | Mã màu (HEX) | Phạm vi sử dụng trong sơ đồ | Ngữ nghĩa kỹ thuật & dữ liệu |
 | :--- | :---: | :--- | :--- |
@@ -309,7 +337,7 @@ So sánh định lượng giữa `diagram-maker` và các công cụ vẽ sơ đ
 
 ---
 
-## 9. Cấu Trúc Cây Thư Mục Dự Án
+## 10. Cấu Trúc Cây Thư Mục Dự Án
 
 ```
 diagram-maker/
@@ -318,6 +346,12 @@ diagram-maker/
 ├── LICENSE                        # Giấy phép nguồn mở MIT
 ├── README.md                      # Tài liệu kỹ thuật tiếng Việt
 ├── README_EN.md                   # Tài liệu kỹ thuật tiếng Anh (Chuẩn Quốc Tế)
+│
+├── docs/                          # Tài liệu kỹ thuật chi tiết
+│   └── ARCHITECTURE_DESIGN_SYSTEM.md # Quy chuẩn thiết kế đồ họa & kỹ thuật ghép cổng ảo
+├── .gemini/                       # Cấu hình & quy tắc hệ sinh thái Antigravity
+│   └── rules/
+│       └── diagram_design.md      # Quy tắc thiết kế sơ đồ chuẩn thể chế
 │
 ├── Product/                       # Trạm điều phối sơ đồ kiến trúc thành phẩm
 │   ├── index.html                 # Trạm điều khiển tập trung tiếng Việt (Dashboard Hub)
@@ -389,6 +423,6 @@ diagram-maker/
 
 ---
 
-## 10. Giấy Phép (License)
+## 11. Giấy Phép (License)
 
 Dự án được phân phối dưới giấy phép mã nguồn mở [MIT License](LICENSE).
